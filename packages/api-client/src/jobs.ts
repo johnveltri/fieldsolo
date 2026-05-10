@@ -456,6 +456,78 @@ export async function createBlankJobForCurrentUser(
   return (data as { id: string }).id;
 }
 
+/** Minimal job row for quick-pick lists (no rollups). */
+export type RecentJobItem = {
+  id: JobId;
+  shortDescription: string;
+  customerName: string | null;
+};
+
+/**
+ * Returns up to `limit` jobs for the current user ordered by `updated_at` desc
+ * (then `id` desc). Use for home quick-session chooser; excludes rollups.
+ */
+export async function listRecentJobsForCurrentUser(
+  client: FieldbookSupabaseClient,
+  options: { limit: number },
+): Promise<RecentJobItem[]> {
+  const limit = Math.max(1, Math.floor(options.limit));
+  const { data, error } = await client
+    .from('jobs')
+    .select('id, short_description, customer_name')
+    .is('deleted_at', null)
+    .order('updated_at', { ascending: false })
+    .order('id', { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  const rows = (data ?? []) as {
+    id: string;
+    short_description: string;
+    customer_name: string | null;
+  }[];
+
+  return rows.map((r) => ({
+    id: r.id,
+    shortDescription: r.short_description,
+    customerName: r.customer_name,
+  }));
+}
+
+export async function createBlankJobForLiveSessionStart(
+  client: FieldbookSupabaseClient,
+  input: { shortDescription: string },
+): Promise<JobId> {
+  const { data: authData, error: authError } = await client.auth.getUser();
+  if (authError) throw authError;
+  const userId = authData.user?.id;
+  if (!userId) {
+    throw new Error('No authenticated user available to create a job.');
+  }
+
+  const shortDescription = input.shortDescription.trim();
+  if (!shortDescription) {
+    throw new Error('Short description is required.');
+  }
+
+  const { data, error } = await client
+    .from('jobs')
+    .insert({
+      user_id: userId,
+      short_description: shortDescription,
+      customer_name: '',
+      service_address: '',
+      job_type: '',
+      created_via: 'session_start',
+      job_work_status: 'not_started',
+    })
+    .select('id')
+    .single();
+
+  if (error) throw error;
+  return (data as { id: string }).id;
+}
+
 export async function deleteJobById(
   client: FieldbookSupabaseClient,
   id: JobId,

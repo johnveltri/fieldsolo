@@ -40,6 +40,10 @@ export { JobDetailMetricTertiary } from './JobDetailMetricTertiary';
 export { JobDetailStatusPill, JOB_DETAIL_WORK_STATUS_LABEL } from './JobDetailStatusPill';
 export { JobDetailSummaryCard } from './JobDetailSummaryCard';
 export { NewSessionBottomSheet } from './NewSessionBottomSheet';
+export {
+  QuickActionsBottomSheet,
+  type QuickActionsRecentJob,
+} from './QuickActionsBottomSheet';
 export { SessionAddToSessionTiles } from './SessionAddToSessionTiles';
 export { SessionAttachmentList } from './SessionAttachmentList';
 export { SessionCard } from './SessionCard';

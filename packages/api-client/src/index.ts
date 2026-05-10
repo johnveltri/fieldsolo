@@ -2,12 +2,14 @@ export { createFieldbookClient, type FieldbookSupabaseClient } from './client';
 export { fetchJobDetail } from './jobDetail';
 export {
   createBlankJobForCurrentUser,
+  createBlankJobForLiveSessionStart,
   deleteJobById,
   fetchFirstJobIdForCurrentUser,
   fetchJobById,
   jobDetailWorkStatusToDbColumns,
   listJobsForCurrentUser,
   listJobsForCurrentUserPage,
+  listRecentJobsForCurrentUser,
   updateJobById,
   bumpJobToInProgressIfNotStarted,
   tryBumpJobToInProgressIfNotStarted,
@@ -17,6 +19,7 @@ export {
   type ListJobsForCurrentUserItem,
   type ListJobsForCurrentUserPageResult,
   type ListJobsForCurrentUserTab,
+  type RecentJobItem,
   type UpdateJobInput,
 } from './jobs';
 export {

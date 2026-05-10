@@ -48,10 +48,10 @@ export function JobsInboxIcon({ color }: StrokeProps) {
   );
 }
 
-/** Exact vector from Figma asset `8d423bab-9438-40b8-9595-9bd2ee41ae1a` (20x20). */
-export function JobsFabPlusIcon({ color }: StrokeProps) {
+/** Exact vector from Figma asset `8d423bab-9438-40b8-9595-9bd2ee41ae1a` (default 20×20; FAB uses 28). */
+export function JobsFabPlusIcon({ color, size = 20 }: SearchIconProps) {
   return (
-    <Svg width={20} height={20} viewBox="0 0 20 20" fill="none">
+    <Svg width={size} height={size} viewBox="0 0 20 20" fill="none">
       <Path
         d="M4.16667 10H15.8333M10 4.16667V15.8333"
         stroke={color}
