@@ -7,6 +7,7 @@ import {
 } from '@expo-google-fonts/ubuntu-sans-mono';
 import {
   createBlankJobForLiveSessionStart,
+  deleteJobById,
   listRecentJobsForCurrentUser,
   tryBumpJobToInProgressIfNotStarted,
   type RecentJobItem,
@@ -150,18 +151,39 @@ export function HomeScreen({ onOpenProfile }: HomeScreenProps) {
       return;
     }
     const shortDescription = formatLiveSessionJobTitle(new Date());
+    let createdJobId: string | null = null;
     setActionError(null);
     setStarting(true);
     try {
-      const jobId = await createBlankJobForLiveSessionStart(supabase, { shortDescription });
-      await startLiveSession({ jobId, jobShortDescription: shortDescription });
-      await tryBumpJobToInProgressIfNotStarted(supabase, jobId);
+      createdJobId = await createBlankJobForLiveSessionStart(supabase, { shortDescription });
+      await startLiveSession({ jobId: createdJobId, jobShortDescription: shortDescription });
+      await tryBumpJobToInProgressIfNotStarted(supabase, createdJobId);
       setQuickActionsVisible(false);
       invalidateJobsList();
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('[HomeScreen] startLiveSession (new job)', err);
-      void refreshLiveSession();
+      let recoveredJobId: string | null = null;
+      try {
+        const recovered = await refreshLiveSession();
+        recoveredJobId = recovered?.jobId ?? null;
+      } catch {
+        // Refresh is best-effort recovery; cleanup below still protects the quick job.
+      }
+      if (createdJobId && recoveredJobId === createdJobId) {
+        setQuickActionsVisible(false);
+        invalidateJobsList();
+        return;
+      }
+      if (createdJobId) {
+        try {
+          await deleteJobById(supabase, createdJobId);
+          invalidateJobsList();
+        } catch (cleanupErr) {
+          // eslint-disable-next-line no-console
+          console.error('[HomeScreen] cleanup orphaned quick-session job failed', cleanupErr);
+        }
+      }
       setActionError(err instanceof Error ? err.message : 'Could not start session.');
     } finally {
       setStarting(false);

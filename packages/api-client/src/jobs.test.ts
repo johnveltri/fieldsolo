@@ -3,10 +3,12 @@ import { describe, expect, it } from 'vitest';
 import { fetchJobDetail } from './jobDetail';
 import {
   createBlankJobForCurrentUser,
+  createBlankJobForLiveSessionStart,
   deleteJobById,
   jobDetailWorkStatusToDbColumns,
   listJobsForCurrentUser,
   listJobsForCurrentUserPage,
+  listRecentJobsForCurrentUser,
   updateJobById,
   updateJobNoMaterialsConfirmed,
   bumpJobToInProgressIfNotStarted,
@@ -55,6 +57,85 @@ describe('jobs api client', () => {
     await expect(createBlankJobForCurrentUser(client as never)).rejects.toThrow(
       'No authenticated user available to create a job.',
     );
+  });
+
+  it('createBlankJobForLiveSessionStart inserts a session-start job with the provided title', async () => {
+    let inserted: unknown;
+    const client = makeClient({
+      authUserId: 'user-1',
+      buildersByTable: {
+        jobs: [
+          makeBuilder({
+            onInsert: (payload) => {
+              inserted = payload;
+            },
+            singleResult: { data: { id: 'job-live-1' }, error: null },
+          }),
+        ],
+      },
+    });
+
+    const id = await createBlankJobForLiveSessionStart(client as never, {
+      shortDescription: '  Live Session May 9 at 12:00 PM  ',
+    });
+
+    expect(id).toBe('job-live-1');
+    expect(inserted).toEqual({
+      user_id: 'user-1',
+      short_description: 'Live Session May 9 at 12:00 PM',
+      customer_name: '',
+      service_address: '',
+      job_type: '',
+      created_via: 'session_start',
+      job_work_status: 'not_started',
+    });
+  });
+
+  it('createBlankJobForLiveSessionStart rejects blank titles', async () => {
+    const client = makeClient({
+      authUserId: 'user-1',
+      buildersByTable: { jobs: [] },
+    });
+
+    await expect(
+      createBlankJobForLiveSessionStart(client as never, { shortDescription: '   ' }),
+    ).rejects.toThrow('Short description is required.');
+  });
+
+  it('listRecentJobsForCurrentUser returns lightweight recent job rows', async () => {
+    const builder = makeBuilder({
+      awaitResult: {
+        data: [
+          {
+            id: 'job-2',
+            short_description: 'Replace switch',
+            customer_name: 'Alice',
+          },
+          {
+            id: 'job-1',
+            short_description: 'Install light',
+            customer_name: null,
+          },
+        ],
+        error: null,
+      },
+    });
+    const client = makeClient({
+      authUserId: 'user-1',
+      buildersByTable: { jobs: [builder] },
+    });
+
+    const jobs = await listRecentJobsForCurrentUser(client as never, { limit: 3 });
+
+    expect(jobs).toEqual([
+      { id: 'job-2', shortDescription: 'Replace switch', customerName: 'Alice' },
+      { id: 'job-1', shortDescription: 'Install light', customerName: null },
+    ]);
+    expect(builder.select).toHaveBeenCalledWith('id, short_description, customer_name');
+    expect(builder.is).toHaveBeenCalledWith('deleted_at', null);
+    expect(builder.order).toHaveBeenCalledWith('updated_at', { ascending: false });
+    expect(builder.order).toHaveBeenCalledWith('id', { ascending: false });
+    expect(builder.limit).toHaveBeenCalledWith(3);
   });
 
   it('deleteJobById performs soft-delete and validates affected rows', async () => {
