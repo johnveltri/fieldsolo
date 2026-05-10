@@ -12,10 +12,14 @@ jest.mock('../components/CanvasTiledBackground', () => ({
   CanvasTiledBackground: () => null,
 }));
 
-jest.mock('../components/ds', () => ({
-  JobDetailStatusPill: () => null,
-  JobsOpenStackSectionHeader: () => null,
-}));
+jest.mock('../components/ds', () => {
+  const actual = jest.requireActual('../components/ds') as Record<string, unknown>;
+  return {
+    ...actual,
+    JobDetailStatusPill: () => null,
+    JobsOpenStackSectionHeader: () => null,
+  };
+});
 
 jest.mock('../context/JobsListInvalidationContext', () => ({
   useJobsListInvalidation: () => ({

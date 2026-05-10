@@ -86,6 +86,7 @@ export type ProfileScreenProps = {
 export function ProfileScreen({ onBack }: ProfileScreenProps) {
   const insets = useSafeAreaInsets();
   const scrollY = useMemo(() => new Animated.Value(0), []);
+  const [scrollContentHeight, setScrollContentHeight] = useState(0);
   const { signOut, session, updatePassword, deleteAccount } = useAuth();
 
   const [fontsLoaded] = useFonts({
@@ -328,14 +329,14 @@ export function ProfileScreen({ onBack }: ProfileScreenProps) {
   if (!fontsLoaded) {
     return (
       <View style={styles.root}>
-        <CanvasTiledBackground scrollY={scrollY} />
+        <CanvasTiledBackground scrollY={scrollY} contentHeight={scrollContentHeight} />
       </View>
     );
   }
 
   return (
     <View style={styles.root}>
-      <CanvasTiledBackground scrollY={scrollY} />
+      <CanvasTiledBackground scrollY={scrollY} contentHeight={scrollContentHeight} />
       <Animated.ScrollView
         style={[styles.scroll, { paddingTop: headerTopPad }]}
         contentContainerStyle={[
@@ -349,6 +350,7 @@ export function ProfileScreen({ onBack }: ProfileScreenProps) {
           useNativeDriver: true,
         })}
         scrollEventThrottle={16}
+        onContentSizeChange={(_w, h) => setScrollContentHeight(h)}
       >
         <View style={styles.headerBand}>
           <View style={[styles.topHeaderRow, { maxWidth: TOP_HEADER_MAX_WIDTH }]}>

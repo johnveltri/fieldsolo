@@ -494,6 +494,105 @@ export async function listRecentJobsForCurrentUser(
   }));
 }
 
+export type WeeklyNetEarningsForCurrentUserResult = {
+  netEarningsCents: number;
+  /** Distinct jobs that had at least one ended session in the rolling window. */
+  jobCount: number;
+};
+
+const MS_PER_DAY = 86_400_000;
+
+/**
+ * Net earnings (revenue minus materials) summed over distinct jobs that had at
+ * least one **ended** session whose `ended_at` falls within the last 7 days.
+ * Full job revenue and all material lines for those jobs are included.
+ */
+export async function getWeeklyNetEarningsCentsForCurrentUser(
+  client: FieldbookSupabaseClient,
+): Promise<WeeklyNetEarningsForCurrentUserResult> {
+  const windowStartIso = new Date(Date.now() - 7 * MS_PER_DAY).toISOString();
+
+  const { data: sessionRows, error: sessionsError } = await client
+    .from('sessions')
+    .select('job_id')
+    .eq('session_status', 'ended')
+    .gte('ended_at', windowStartIso)
+    .is('deleted_at', null);
+
+  if (sessionsError) throw sessionsError;
+
+  const jobIds = [
+    ...new Set(
+      ((sessionRows ?? []) as { job_id: string }[]).map((r) => r.job_id).filter(Boolean),
+    ),
+  ];
+  if (jobIds.length === 0) {
+    return { netEarningsCents: 0, jobCount: 0 };
+  }
+
+  const { data: jobsData, error: jobsError } = await client
+    .from('jobs')
+    .select('revenue_cents')
+    .in('id', jobIds)
+    .is('deleted_at', null);
+
+  if (jobsError) throw jobsError;
+
+  const revenueCents = ((jobsData ?? []) as { revenue_cents: number | null }[]).reduce(
+    (acc, row) => acc + (row.revenue_cents ?? 0),
+    0,
+  );
+
+  const { data: materialsData, error: materialsError } = await client
+    .from('materials')
+    .select('total_cost_cents')
+    .in('job_id', jobIds)
+    .is('deleted_at', null);
+
+  if (materialsError) throw materialsError;
+
+  const materialsSpendCents = (
+    (materialsData ?? []) as { total_cost_cents: number }[]
+  ).reduce((acc, row) => acc + row.total_cost_cents, 0);
+
+  const netEarningsCents = revenueCents - materialsSpendCents;
+  return { netEarningsCents, jobCount: jobIds.length };
+}
+
+/**
+ * Recent jobs with full list rollups (time, materials, net), ordered by
+ * `updated_at` then `id`. Use for Home “Jump back in”.
+ */
+export async function listRecentDetailedJobsForCurrentUser(
+  client: FieldbookSupabaseClient,
+  options: { limit: number },
+): Promise<ListJobsForCurrentUserItem[]> {
+  const limit = Math.max(1, Math.floor(options.limit));
+
+  const runQuery = async (selectColumns: string) => {
+    const listQuery = client.from('jobs').select(selectColumns).is('deleted_at', null);
+    return listQuery
+      .order('updated_at', { ascending: false })
+      .order('id', { ascending: false })
+      .limit(limit);
+  };
+
+  let result = await runQuery(JOB_LIST_SELECT_FULL);
+  if (result.error != null && isMissingNoMaterialsConfirmedColumn(result.error)) {
+    result = await runQuery(JOB_LIST_SELECT_FINANCIAL_WITHOUT_NO_MATERIALS_FLAG);
+  }
+  if (result.error != null && isMissingFinancialCompletenessColumn(result.error)) {
+    result = await runQuery(JOB_LIST_SELECT_LEGACY);
+  }
+
+  if (result.error) throw result.error;
+  const rows = ((result.data ?? []) as unknown) as ListJobsRow[];
+  if (rows.length === 0) {
+    return [];
+  }
+  return enrichJobsRowsWithSessionRollups(client, rows);
+}
+
 export async function createBlankJobForLiveSessionStart(
   client: FieldbookSupabaseClient,
   input: { shortDescription: string },

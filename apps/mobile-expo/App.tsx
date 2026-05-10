@@ -22,6 +22,8 @@ import { ProfileScreen } from './src/screens/ProfileScreen';
 import { SignInScreen } from './src/screens/SignInScreen';
 import { color } from '@fieldbook/design-system/lib/tokens';
 
+import { bg } from './src/theme/nativeTokens';
+
 function AuthenticatedShell() {
   const { session, loading } = useAuth();
   /** When true, job detail covers tab shell (HOME / JOBS / EARNINGS); X returns here. */
@@ -92,7 +94,15 @@ function AuthenticatedShell() {
         <View style={styles.shellColumn}>
           <View style={styles.shellMain}>
             {mainTab === 'home' && !profileOpen ? (
-              <HomeScreen onOpenProfile={() => setProfileOpen(true)} />
+              <HomeScreen
+                onOpenProfile={() => setProfileOpen(true)}
+                onOpenJobDetail={(jobId, options) => {
+                  setSelectedJobId(jobId ?? null);
+                  setJobDetailInitialEditOpen(options?.initialEditOpen ?? false);
+                  setJobDetailLoadKey((k) => k + 1);
+                  setJobDetailOpen(true);
+                }}
+              />
             ) : null}
             {mainTab === 'home' && profileOpen ? (
               <ProfileScreen onBack={() => setProfileOpen(false)} />
@@ -173,9 +183,12 @@ const styles = StyleSheet.create({
   shellColumn: {
     flex: 1,
     width: '100%',
+    /** Match tab screens + bottom nav — avoids a lighter strip (`Background/Default`) in the nav `marginTop` gutter. */
+    backgroundColor: bg.canvasWarm,
   },
   shellMain: {
     flex: 1,
+    backgroundColor: bg.canvasWarm,
   },
   centered: {
     justifyContent: 'center',

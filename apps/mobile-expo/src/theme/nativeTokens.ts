@@ -125,6 +125,7 @@ export function createTextStyles(f: LoadedFonts) {
     labelCaps: t('Typography/LABEL', fg.muted),
     labelHeadingSecondary: t('Typography/LABEL', fg.secondary),
     metric: t('Typography/Metric'),
+    metricXL: t('Typography/Metric-XL'),
     metricS: t('Typography/Section/MetricS-Dense', color('Brand/Accent')),
     sessionTimeRange: t('Typography/Session/TimeRange', fg.secondary),
     jobDetailSubtitle: t('Typography/JobDetail/Subtitle', fg.secondary),

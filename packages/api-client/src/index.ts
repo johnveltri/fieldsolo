@@ -9,7 +9,9 @@ export {
   jobDetailWorkStatusToDbColumns,
   listJobsForCurrentUser,
   listJobsForCurrentUserPage,
+  listRecentDetailedJobsForCurrentUser,
   listRecentJobsForCurrentUser,
+  getWeeklyNetEarningsCentsForCurrentUser,
   updateJobById,
   bumpJobToInProgressIfNotStarted,
   tryBumpJobToInProgressIfNotStarted,
@@ -20,6 +22,7 @@ export {
   type ListJobsForCurrentUserPageResult,
   type ListJobsForCurrentUserTab,
   type RecentJobItem,
+  type WeeklyNetEarningsForCurrentUserResult,
   type UpdateJobInput,
 } from './jobs';
 export {

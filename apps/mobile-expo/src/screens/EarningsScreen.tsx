@@ -5,7 +5,7 @@ import {
   UbuntuSansMono_600SemiBold,
   UbuntuSansMono_700Bold,
 } from '@expo-google-fonts/ubuntu-sans-mono';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Animated, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { color } from '@fieldbook/design-system/lib/tokens';
@@ -22,6 +22,7 @@ import {
 export function EarningsScreen() {
   const insets = useSafeAreaInsets();
   const scrollY = useMemo(() => new Animated.Value(0), []);
+  const [scrollContentHeight, setScrollContentHeight] = useState(0);
 
   const [fontsLoaded] = useFonts({
     PTSerif_700Bold,
@@ -48,14 +49,14 @@ export function EarningsScreen() {
   if (!fontsLoaded) {
     return (
       <View style={styles.root}>
-        <CanvasTiledBackground scrollY={scrollY} />
+        <CanvasTiledBackground scrollY={scrollY} contentHeight={scrollContentHeight} />
       </View>
     );
   }
 
   return (
     <View style={styles.root}>
-      <CanvasTiledBackground scrollY={scrollY} />
+      <CanvasTiledBackground scrollY={scrollY} contentHeight={scrollContentHeight} />
       <View
         pointerEvents="none"
         style={[styles.safeAreaTopAccentWrap, { top: 0, maxWidth: TOP_HEADER_MAX_WIDTH }]}
@@ -75,6 +76,7 @@ export function EarningsScreen() {
           useNativeDriver: true,
         })}
         scrollEventThrottle={16}
+        onContentSizeChange={(_w, h) => setScrollContentHeight(h)}
       >
         <View style={styles.headerBand}>
           <View style={[styles.titleOnlyRow, { maxWidth: TOP_HEADER_MAX_WIDTH }]}>

@@ -8,17 +8,38 @@ import {
 import {
   createBlankJobForLiveSessionStart,
   deleteJobById,
+  getWeeklyNetEarningsCentsForCurrentUser,
+  listJobsForCurrentUserPage,
+  listRecentDetailedJobsForCurrentUser,
   listRecentJobsForCurrentUser,
   tryBumpJobToInProgressIfNotStarted,
+  type ListJobsForCurrentUserItem,
   type RecentJobItem,
 } from '@fieldbook/api-client';
 import { color, radius } from '@fieldbook/design-system/lib/tokens';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Animated, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Animated,
+  Modal,
+  Pressable,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CanvasTiledBackground } from '../components/CanvasTiledBackground';
-import { QuickActionsBottomSheet } from '../components/ds/QuickActionsBottomSheet';
+import {
+  IncompleteJobRowCard,
+  JobCard,
+  MetricSnapshotCard,
+  QuickActionsBottomSheet,
+  SectionHeader,
+} from '../components/ds';
+import { HomeJumpBackInIcon, HomeNeedsAttentionIcon } from '../components/figma-icons/HomeSectionIcons';
+import { JobDetailIconViewSessionChevron } from '../components/figma-icons/JobDetailScreenIcons';
 import { JobsFabPlusIcon } from '../components/figma-icons/JobsScreenIcons';
 import { TopHeaderProfileIcon } from '../components/figma-icons/TopHeaderIcons';
 import { shellBottomNavOuterHeight } from '../components/shell/ShellBottomNav';
@@ -26,6 +47,7 @@ import { useJobsListInvalidation } from '../context/JobsListInvalidationContext'
 import { useHasLiveSession, useLiveSession } from '../context/LiveSessionContext';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import {
+  CONTENT_MAX_WIDTH,
   TOP_HEADER_MAX_WIDTH,
   bg,
   cardShadowRn,
@@ -34,8 +56,42 @@ import {
   space,
 } from '../theme/nativeTokens';
 
+const OPEN_TAB_PAGE_SIZE = 20;
+const NEEDS_ATTENTION_PREVIEW_MAX = 3;
+
+const HOME_PILL_TO_MISSING: Record<string, string> = {
+  'NO SHORT DESCRIPTION': 'Description',
+  'NO REVENUE': 'Revenue',
+  'NO MATERIALS': 'Materials',
+  'NO SESSIONS': 'Sessions',
+};
+
+function incompletePillsFor(job: ListJobsForCurrentUserItem): string[] {
+  const pills: string[] = [];
+  const desc = job.shortDescription.trim();
+  if (desc === '' || desc === 'Untitled Job') pills.push('NO SHORT DESCRIPTION');
+  if (job.revenueCents == null || job.revenueCents === 0) pills.push('NO REVENUE');
+  if (!job.hasMaterials && !job.noMaterialsConfirmed) pills.push('NO MATERIALS');
+  if (!job.hasSessions) pills.push('NO SESSIONS');
+  return pills;
+}
+
+function missingFieldsLabelsForHome(job: ListJobsForCurrentUserItem): string[] {
+  return incompletePillsFor(job).map((p) => HOME_PILL_TO_MISSING[p] ?? p);
+}
+
+function formatWeeklyUsd(cents: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(cents / 100);
+}
+
 export type HomeScreenProps = {
   onOpenProfile: () => void;
+  onOpenJobDetail: (jobId?: string, options?: { initialEditOpen?: boolean }) => void;
 };
 
 function formatLiveSessionJobTitle(now: Date): string {
@@ -51,12 +107,12 @@ function formatLiveSessionJobTitle(now: Date): string {
   return `Live Session ${monthDay} at ${time}`;
 }
 
-export function HomeScreen({ onOpenProfile }: HomeScreenProps) {
+export function HomeScreen({ onOpenProfile, onOpenJobDetail }: HomeScreenProps) {
   const insets = useSafeAreaInsets();
   const scrollY = useMemo(() => new Animated.Value(0), []);
   const hasLiveSession = useHasLiveSession();
   const { startLiveSession, refresh: refreshLiveSession } = useLiveSession();
-  const { invalidateJobsList } = useJobsListInvalidation();
+  const { invalidateJobsList, version } = useJobsListInvalidation();
 
   const [quickActionsVisible, setQuickActionsVisible] = useState(false);
   const [recentJobs, setRecentJobs] = useState<RecentJobItem[]>([]);
@@ -64,6 +120,16 @@ export function HomeScreen({ onOpenProfile }: HomeScreenProps) {
   const [recentJobsError, setRecentJobsError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
+
+  const [homeLoading, setHomeLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [homeError, setHomeError] = useState<string | null>(null);
+  const [weeklyNetCents, setWeeklyNetCents] = useState(0);
+  const [incompleteJobs, setIncompleteJobs] = useState<ListJobsForCurrentUserItem[]>([]);
+  const [recentJobsDetail, setRecentJobsDetail] = useState<ListJobsForCurrentUserItem[]>([]);
+  const [needsAttentionExpanded, setNeedsAttentionExpanded] = useState(false);
+  /** Lined canvas height — same pattern as JobDetail (`CanvasTiledBackground` + `onContentSizeChange`). */
+  const [scrollContentHeight, setScrollContentHeight] = useState(0);
 
   const [fontsLoaded] = useFonts({
     PTSerif_700Bold,
@@ -82,6 +148,67 @@ export function HomeScreen({ onOpenProfile }: HomeScreenProps) {
       }),
     [],
   );
+
+  const runHomeFetch = useCallback(async (isCancelled: () => boolean) => {
+    if (!isSupabaseConfigured()) {
+      if (!isCancelled()) {
+        setHomeError('Supabase is not configured.');
+        setWeeklyNetCents(0);
+        setIncompleteJobs([]);
+        setRecentJobsDetail([]);
+      }
+      return;
+    }
+    if (!isCancelled()) setHomeError(null);
+    try {
+      const [weekly, openPage, recent] = await Promise.all([
+        getWeeklyNetEarningsCentsForCurrentUser(supabase),
+        listJobsForCurrentUserPage(supabase, {
+          limit: OPEN_TAB_PAGE_SIZE,
+          offset: 0,
+          tab: 'open',
+        }),
+        listRecentDetailedJobsForCurrentUser(supabase, { limit: 3 }),
+      ]);
+      if (!isCancelled()) {
+        setWeeklyNetCents(weekly.netEarningsCents);
+        setIncompleteJobs(openPage.items.filter((j) => !j.isFinanciallyComplete));
+        setRecentJobsDetail(recent);
+      }
+    } catch (err) {
+      if (!isCancelled()) {
+        setHomeError(err instanceof Error ? err.message : 'Failed to load home.');
+        setWeeklyNetCents(0);
+        setIncompleteJobs([]);
+        setRecentJobsDetail([]);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+    setHomeLoading(true);
+    void (async () => {
+      await runHomeFetch(() => !alive);
+      if (alive) setHomeLoading(false);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [version, runHomeFetch]);
+
+  useEffect(() => {
+    setNeedsAttentionExpanded(false);
+  }, [version]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await runHomeFetch(() => false);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [runHomeFetch]);
 
   useEffect(() => {
     if (!quickActionsVisible) return;
@@ -191,26 +318,27 @@ export function HomeScreen({ onOpenProfile }: HomeScreenProps) {
   }, [invalidateJobsList, refreshLiveSession, startLiveSession]);
 
   const headerTopPad = Math.max(insets.top - space('Spacing/12'), 0);
-  const bottomNavReservedHeight =
-    space('Spacing/8') + 1 + 64 + space('Spacing/8') + insets.bottom;
-  const fabBottomOffset =
-    space('Spacing/8') +
-    insets.bottom +
-    64 +
-    space('Spacing/12') -
-    shellBottomNavOuterHeight(insets.bottom);
+  /** Clear FAB (56px) from bottom of shell main + small gap; avoid stacking full nav-height padding in the inner scroll. */
+  const HOME_FAB_DIAMETER = 56;
+  const scrollBottomPad = fabBottomOffset(insets) + HOME_FAB_DIAMETER + space('Spacing/12');
+
+  const needNeedsAttentionExpand = incompleteJobs.length > NEEDS_ATTENTION_PREVIEW_MAX;
+  const shownIncompleteJobs =
+    !needNeedsAttentionExpand || needsAttentionExpanded
+      ? incompleteJobs
+      : incompleteJobs.slice(0, NEEDS_ATTENTION_PREVIEW_MAX);
 
   if (!fontsLoaded) {
     return (
       <View style={styles.root}>
-        <CanvasTiledBackground scrollY={scrollY} />
+        <CanvasTiledBackground scrollY={scrollY} contentHeight={scrollContentHeight} />
       </View>
     );
   }
 
   return (
     <View style={styles.root}>
-      <CanvasTiledBackground scrollY={scrollY} />
+      <CanvasTiledBackground scrollY={scrollY} contentHeight={scrollContentHeight} />
       <View
         pointerEvents="none"
         style={[styles.safeAreaTopAccentWrap, { top: 0, maxWidth: TOP_HEADER_MAX_WIDTH }]}
@@ -222,14 +350,17 @@ export function HomeScreen({ onOpenProfile }: HomeScreenProps) {
         contentContainerStyle={[
           styles.scrollContent,
           {
-            paddingBottom: bottomNavReservedHeight + space('Spacing/20') + 72,
-            flexGrow: 1,
+            paddingBottom: scrollBottomPad,
           },
         ]}
+        onContentSizeChange={(_w, h) => setScrollContentHeight(h)}
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
         })}
         scrollEventThrottle={16}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={color('Brand/Primary')} />
+        }
       >
         <View style={styles.headerBand}>
           <View style={[styles.topHeader, { maxWidth: TOP_HEADER_MAX_WIDTH }]}>
@@ -245,10 +376,100 @@ export function HomeScreen({ onOpenProfile }: HomeScreenProps) {
             </Pressable>
           </View>
         </View>
+
+        <View style={styles.modulesColumn}>
+          {homeLoading ? (
+            <ActivityIndicator
+              color={color('Brand/Primary')}
+              style={{ marginTop: space('Spacing/24'), marginBottom: space('Spacing/16') }}
+            />
+          ) : null}
+          {homeError != null && homeError !== '' ? (
+            <Text
+              style={[typography.bodySmall, styles.homeError, { color: color('Semantic/Status/Error/Text') }]}
+            >
+              {homeError}
+            </Text>
+          ) : null}
+
+          <SectionHeader
+            title="WEEKLY SNAPSHOT"
+            subtitle="Jobs worked in the 7 days"
+            tone="neutral"
+            typography={typography}
+          />
+          <MetricSnapshotCard
+            label="NET EARNINGS"
+            value={formatWeeklyUsd(weeklyNetCents)}
+            valueTone="success"
+            typography={typography}
+          />
+
+          {incompleteJobs.length > 0 ? (
+            <>
+              <SectionHeader
+                title="NEEDS ATTENTION"
+                tone="accent"
+                typography={typography}
+                leadingIcon={<HomeNeedsAttentionIcon color={color('Brand/Accent')} />}
+              />
+              <View style={styles.needsAttentionBlock}>
+                {shownIncompleteJobs.map((job) => (
+                  <View key={job.id} style={styles.needsAttentionRowWrap}>
+                    <IncompleteJobRowCard
+                      title={job.shortDescription.trim() || 'Untitled Job'}
+                      missingFields={missingFieldsLabelsForHome(job)}
+                      typography={typography}
+                      onPress={() => onOpenJobDetail(job.id)}
+                    />
+                  </View>
+                ))}
+                {needNeedsAttentionExpand ? (
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={needsAttentionExpanded ? 'Show fewer jobs' : 'Show all jobs'}
+                    onPress={() => setNeedsAttentionExpanded((e) => !e)}
+                    style={({ pressed }) => [styles.needsAttentionFooter, pressed && styles.pressed]}
+                  >
+                    <Text style={[typography.bodySmall, { color: fg.secondary }]}>
+                      {shownIncompleteJobs.length} of {incompleteJobs.length} jobs
+                    </Text>
+                    <View style={needsAttentionExpanded ? styles.chevronUp : undefined}>
+                      <JobDetailIconViewSessionChevron color={fg.secondary} />
+                    </View>
+                  </Pressable>
+                ) : null}
+              </View>
+            </>
+          ) : null}
+
+          {recentJobsDetail.length > 0 ? (
+            <>
+              <SectionHeader
+                title="JUMP BACK IN"
+                tone="neutral"
+                typography={typography}
+                leadingIcon={<HomeJumpBackInIcon color={fg.secondary} />}
+              />
+              <View style={styles.jumpBackList}>
+                {recentJobsDetail.map((job) => (
+                  <View key={job.id} style={styles.jumpBackRowWrap}>
+                    <JobCard
+                      job={job}
+                      typography={typography}
+                      recencyLabelMode="lastUpdated"
+                      onPress={() => onOpenJobDetail(job.id)}
+                    />
+                  </View>
+                ))}
+              </View>
+            </>
+          ) : null}
+        </View>
       </Animated.ScrollView>
 
       {hasLiveSession || quickActionsVisible ? null : (
-        <View style={[styles.fabWrap, { bottom: fabBottomOffset }]}>
+        <View style={[styles.fabWrap, { bottom: fabBottomOffset(insets) }]}>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Quick capture"
@@ -286,6 +507,16 @@ export function HomeScreen({ onOpenProfile }: HomeScreenProps) {
   );
 }
 
+function fabBottomOffset(insets: { bottom: number }): number {
+  return (
+    space('Spacing/8') +
+    insets.bottom +
+    64 +
+    space('Spacing/12') -
+    shellBottomNavOuterHeight(insets.bottom)
+  );
+}
+
 const styles = StyleSheet.create({
   root: { flex: 1, alignItems: 'center', backgroundColor: bg.canvasWarm },
   modalHost: { flex: 1 },
@@ -307,6 +538,41 @@ const styles = StyleSheet.create({
   headerBand: {
     width: '100%',
     alignItems: 'center',
+  },
+  modulesColumn: {
+    width: '100%',
+    maxWidth: TOP_HEADER_MAX_WIDTH,
+    alignItems: 'center',
+  },
+  homeError: {
+    textAlign: 'center',
+    marginBottom: space('Spacing/12'),
+    maxWidth: CONTENT_MAX_WIDTH,
+  },
+  needsAttentionBlock: {
+    width: '100%',
+    maxWidth: CONTENT_MAX_WIDTH,
+    gap: space('Spacing/8'),
+  },
+  needsAttentionRowWrap: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  needsAttentionFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: space('Spacing/8'),
+    paddingVertical: space('Spacing/8'),
+  },
+  chevronUp: { transform: [{ rotate: '180deg' }] },
+  jumpBackList: {
+    width: '100%',
+    maxWidth: CONTENT_MAX_WIDTH,
+    gap: space('Spacing/8'),
+  },
+  jumpBackRowWrap: {
+    width: '100%',
   },
   topHeader: {
     width: '100%',

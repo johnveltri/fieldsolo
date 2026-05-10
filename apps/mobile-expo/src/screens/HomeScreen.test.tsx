@@ -28,6 +28,11 @@ jest.mock('@fieldbook/api-client', () => ({
     mockCreateBlankJobForLiveSessionStart(...args),
   deleteJobById: (...args: unknown[]) => mockDeleteJobById(...args),
   listRecentJobsForCurrentUser: (...args: unknown[]) => mockListRecentJobsForCurrentUser(...args),
+  getWeeklyNetEarningsCentsForCurrentUser: jest.fn(() =>
+    Promise.resolve({ netEarningsCents: 0, jobCount: 0 }),
+  ),
+  listJobsForCurrentUserPage: jest.fn(() => Promise.resolve({ items: [], hasMore: false })),
+  listRecentDetailedJobsForCurrentUser: jest.fn(() => Promise.resolve([])),
   tryBumpJobToInProgressIfNotStarted: (...args: unknown[]) =>
     mockTryBumpJobToInProgressIfNotStarted(...args),
 }));
@@ -48,6 +53,7 @@ jest.mock('../context/LiveSessionContext', () => ({
 jest.mock('../context/JobsListInvalidationContext', () => ({
   useJobsListInvalidation: () => ({
     invalidateJobsList: mockInvalidateJobsList,
+    version: 0,
   }),
 }));
 
@@ -109,7 +115,9 @@ describe('HomeScreen quick session', () => {
     mockCreateBlankJobForLiveSessionStart.mockResolvedValue('job-temp-1');
     mockStartLiveSession.mockRejectedValue(new Error('duplicate active session'));
 
-    const screen = render(<HomeScreen onOpenProfile={() => undefined} />);
+    const screen = render(
+      <HomeScreen onOpenProfile={() => undefined} onOpenJobDetail={() => undefined} />,
+    );
 
     fireEvent.press(screen.getByLabelText('Quick capture'));
     fireEvent.press(await screen.findByText('Start New Session'));
@@ -136,7 +144,9 @@ describe('HomeScreen quick session', () => {
       jobShortDescription: 'Live Session May 9 at 12:00 PM',
     });
 
-    const screen = render(<HomeScreen onOpenProfile={() => undefined} />);
+    const screen = render(
+      <HomeScreen onOpenProfile={() => undefined} onOpenJobDetail={() => undefined} />,
+    );
 
     fireEvent.press(screen.getByLabelText('Quick capture'));
     fireEvent.press(await screen.findByText('Start New Session'));

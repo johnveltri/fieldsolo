@@ -27,6 +27,8 @@ export {
   EditSessionBottomSheet,
   type EditSessionBottomSheetValues,
 } from './EditSessionBottomSheet';
+export { IncompleteJobRowCard } from './IncompleteJobRowCard';
+export { JobCard } from './JobCard';
 export { LiveSessionBottomSheet } from './LiveSessionBottomSheet';
 export { LiveSessionCaptureCard } from './LiveSessionCaptureCard';
 export { MinimizedLiveSessionBar } from './MinimizedLiveSessionBar';
@@ -39,6 +41,7 @@ export { JobDetailJobHeader } from './JobDetailJobHeader';
 export { JobDetailMetricTertiary } from './JobDetailMetricTertiary';
 export { JobDetailStatusPill, JOB_DETAIL_WORK_STATUS_LABEL } from './JobDetailStatusPill';
 export { JobDetailSummaryCard } from './JobDetailSummaryCard';
+export { MetricSnapshotCard } from './MetricSnapshotCard';
 export { NewSessionBottomSheet } from './NewSessionBottomSheet';
 export {
   QuickActionsBottomSheet,
@@ -47,6 +50,7 @@ export {
 export { SessionAddToSessionTiles } from './SessionAddToSessionTiles';
 export { SessionAttachmentList } from './SessionAttachmentList';
 export { SessionCard } from './SessionCard';
+export { SectionHeader } from './SectionHeader';
 export { jobDetailCtaConfig, nextStatusAfterPrimaryAction } from './jobDetailCtaConfig';
 export {
   ProfileRowsCard,
