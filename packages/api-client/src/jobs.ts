@@ -496,39 +496,47 @@ export async function listRecentJobsForCurrentUser(
 
 export type WeeklyNetEarningsForCurrentUserResult = {
   netEarningsCents: number;
-  /** Distinct jobs that had at least one ended session in the rolling window. */
+  /** Distinct completed jobs whose `last_worked_at` falls in the rolling 7-day window. */
   jobCount: number;
 };
 
 const MS_PER_DAY = 86_400_000;
 
 /**
- * Net earnings (revenue minus materials) summed over distinct jobs that had at
- * least one **ended** session whose `ended_at` falls within the last 7 days.
- * Full job revenue and all material lines for those jobs are included.
+ * Net earnings (revenue minus materials) for jobs marked **work complete** in the DB
+ * (`job_work_status = completed`, including pending and paid payment states) whose
+ * `last_worked_at` is within the last 7 days. Materials include job-attributed and
+ * session-attributed lines for those jobs.
  */
 export async function getWeeklyNetEarningsCentsForCurrentUser(
   client: FieldbookSupabaseClient,
 ): Promise<WeeklyNetEarningsForCurrentUserResult> {
   const windowStartIso = new Date(Date.now() - 7 * MS_PER_DAY).toISOString();
 
-  const { data: sessionRows, error: sessionsError } = await client
-    .from('sessions')
-    .select('id, job_id')
-    .eq('session_status', 'ended')
-    .gte('ended_at', windowStartIso)
+  const { data: jobsRows, error: jobsQueryError } = await client
+    .from('jobs')
+    .select('id, revenue_cents')
+    .eq('job_work_status', 'completed')
+    .gte('last_worked_at', windowStartIso)
     .is('deleted_at', null);
 
-  if (sessionsError) throw sessionsError;
+  if (jobsQueryError) throw jobsQueryError;
 
   const jobIds = [
     ...new Set(
-      ((sessionRows ?? []) as { job_id: string }[]).map((r) => r.job_id).filter(Boolean),
+      ((jobsRows ?? []) as { id: string; revenue_cents: number | null }[])
+        .map((r) => r.id)
+        .filter(Boolean),
     ),
   ];
   if (jobIds.length === 0) {
     return { netEarningsCents: 0, jobCount: 0 };
   }
+
+  const revenueCents = ((jobsRows ?? []) as { id: string; revenue_cents: number | null }[]).reduce(
+    (acc, row) => acc + (row.revenue_cents ?? 0),
+    0,
+  );
 
   const { data: allSessionRows, error: allSessionsError } = await client
     .from('sessions')
@@ -543,19 +551,6 @@ export async function getWeeklyNetEarningsCentsForCurrentUser(
       ((allSessionRows ?? []) as { id: string }[]).map((r) => r.id).filter(Boolean),
     ),
   ];
-
-  const { data: jobsData, error: jobsError } = await client
-    .from('jobs')
-    .select('revenue_cents')
-    .in('id', jobIds)
-    .is('deleted_at', null);
-
-  if (jobsError) throw jobsError;
-
-  const revenueCents = ((jobsData ?? []) as { revenue_cents: number | null }[]).reduce(
-    (acc, row) => acc + (row.revenue_cents ?? 0),
-    0,
-  );
 
   const [materialsByJobRes, materialsBySessionRes] = await Promise.all([
     client

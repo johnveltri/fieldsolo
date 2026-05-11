@@ -140,9 +140,9 @@ describe('jobs api client', () => {
   });
 
   it('getWeeklyNetEarningsCentsForCurrentUser includes session-attached materials', async () => {
-    const weeklySessionsBuilder = makeBuilder({
+    const weeklyJobsBuilder = makeBuilder({
       awaitResult: {
-        data: [{ id: 'sess-weekly', job_id: 'job-weekly' }],
+        data: [{ id: 'job-weekly', revenue_cents: 10000 }],
         error: null,
       },
     });
@@ -167,15 +167,8 @@ describe('jobs api client', () => {
     const client = makeClient({
       authUserId: 'user-1',
       buildersByTable: {
-        sessions: [weeklySessionsBuilder, allJobSessionsBuilder],
-        jobs: [
-          makeBuilder({
-            awaitResult: {
-              data: [{ revenue_cents: 10000 }],
-              error: null,
-            },
-          }),
-        ],
+        jobs: [weeklyJobsBuilder],
+        sessions: [allJobSessionsBuilder],
         materials: [materialsByJobBuilder, materialsBySessionBuilder],
       },
     });
@@ -183,7 +176,11 @@ describe('jobs api client', () => {
     const result = await getWeeklyNetEarningsCentsForCurrentUser(client as never);
 
     expect(result).toEqual({ netEarningsCents: 6500, jobCount: 1 });
-    expect(weeklySessionsBuilder.select).toHaveBeenCalledWith('id, job_id');
+    expect(weeklyJobsBuilder.select).toHaveBeenCalledWith('id, revenue_cents');
+    expect(weeklyJobsBuilder.eq).toHaveBeenCalledWith('job_work_status', 'completed');
+    expect(weeklyJobsBuilder.gte).toHaveBeenCalledWith('last_worked_at', expect.any(String));
+    expect(weeklyJobsBuilder.is).toHaveBeenCalledWith('deleted_at', null);
+    expect(allJobSessionsBuilder.select).toHaveBeenCalledWith('id');
     expect(allJobSessionsBuilder.in).toHaveBeenCalledWith('job_id', ['job-weekly']);
     expect(materialsByJobBuilder.in).toHaveBeenCalledWith('job_id', ['job-weekly']);
     expect(materialsBySessionBuilder.in).toHaveBeenCalledWith('session_id', [

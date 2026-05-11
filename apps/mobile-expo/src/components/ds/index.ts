@@ -62,3 +62,4 @@ export {
   type UpdateProfileValues,
 } from './UpdateProfileBottomSheet';
 export { TradeMultiSelectBottomSheet } from './TradeMultiSelectBottomSheet';
+export { WorkedNotMarkedCompleteRowCard } from './WorkedNotMarkedCompleteRowCard';

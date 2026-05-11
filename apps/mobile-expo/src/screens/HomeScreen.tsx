@@ -37,6 +37,7 @@ import {
   MetricSnapshotCard,
   QuickActionsBottomSheet,
   SectionHeader,
+  WorkedNotMarkedCompleteRowCard,
 } from '../components/ds';
 import { HomeJumpBackInIcon, HomeNeedsAttentionIcon } from '../components/figma-icons/HomeSectionIcons';
 import { JobDetailIconViewSessionChevron } from '../components/figma-icons/JobDetailScreenIcons';
@@ -57,7 +58,7 @@ import {
 } from '../theme/nativeTokens';
 
 const OPEN_TAB_PAGE_SIZE = 20;
-const NEEDS_ATTENTION_PREVIEW_MAX = 3;
+const NEEDS_ATTENTION_PREVIEW_MAX = 10;
 
 const HOME_PILL_TO_MISSING: Record<string, string> = {
   'NO SHORT DESCRIPTION': 'Description',
@@ -78,6 +79,13 @@ function incompletePillsFor(job: ListJobsForCurrentUserItem): string[] {
 
 function missingFieldsLabelsForHome(job: ListJobsForCurrentUserItem): string[] {
   return incompletePillsFor(job).map((p) => HOME_PILL_TO_MISSING[p] ?? p);
+}
+
+/** Financially complete but sessions exist (`lastWorkedAt`) while work is not completed/paid/cancelled. */
+function needsReviewMarkComplete(job: ListJobsForCurrentUserItem): boolean {
+  if (!job.isFinanciallyComplete || job.lastWorkedAt == null) return false;
+  const s = job.workStatus;
+  return s === 'notStarted' || s === 'inProgress' || s === 'onHold';
 }
 
 function formatWeeklyUsd(cents: number): string {
@@ -125,7 +133,7 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail }: HomeScreenProps) 
   const [refreshing, setRefreshing] = useState(false);
   const [homeError, setHomeError] = useState<string | null>(null);
   const [weeklyNetCents, setWeeklyNetCents] = useState(0);
-  const [incompleteJobs, setIncompleteJobs] = useState<ListJobsForCurrentUserItem[]>([]);
+  const [openTabJobsPage, setOpenTabJobsPage] = useState<ListJobsForCurrentUserItem[]>([]);
   const [recentJobsDetail, setRecentJobsDetail] = useState<ListJobsForCurrentUserItem[]>([]);
   const [needsAttentionExpanded, setNeedsAttentionExpanded] = useState(false);
   /** Lined canvas height — same pattern as JobDetail (`CanvasTiledBackground` + `onContentSizeChange`). */
@@ -149,12 +157,22 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail }: HomeScreenProps) 
     [],
   );
 
+  const needsAttentionRows = useMemo(() => {
+    const incomplete = openTabJobsPage
+      .filter((j) => !j.isFinanciallyComplete)
+      .map((j) => ({ kind: 'incomplete' as const, job: j }));
+    const review = openTabJobsPage
+      .filter(needsReviewMarkComplete)
+      .map((j) => ({ kind: 'review' as const, job: j }));
+    return [...incomplete, ...review];
+  }, [openTabJobsPage]);
+
   const runHomeFetch = useCallback(async (isCancelled: () => boolean) => {
     if (!isSupabaseConfigured()) {
       if (!isCancelled()) {
         setHomeError('Supabase is not configured.');
         setWeeklyNetCents(0);
-        setIncompleteJobs([]);
+        setOpenTabJobsPage([]);
         setRecentJobsDetail([]);
       }
       return;
@@ -172,14 +190,14 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail }: HomeScreenProps) 
       ]);
       if (!isCancelled()) {
         setWeeklyNetCents(weekly.netEarningsCents);
-        setIncompleteJobs(openPage.items.filter((j) => !j.isFinanciallyComplete));
+        setOpenTabJobsPage(openPage.items);
         setRecentJobsDetail(recent);
       }
     } catch (err) {
       if (!isCancelled()) {
         setHomeError(err instanceof Error ? err.message : 'Failed to load home.');
         setWeeklyNetCents(0);
-        setIncompleteJobs([]);
+        setOpenTabJobsPage([]);
         setRecentJobsDetail([]);
       }
     }
@@ -322,11 +340,11 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail }: HomeScreenProps) 
   const HOME_FAB_DIAMETER = 56;
   const scrollBottomPad = fabBottomOffset(insets) + HOME_FAB_DIAMETER + space('Spacing/12');
 
-  const needNeedsAttentionExpand = incompleteJobs.length > NEEDS_ATTENTION_PREVIEW_MAX;
-  const shownIncompleteJobs =
+  const needNeedsAttentionExpand = needsAttentionRows.length > NEEDS_ATTENTION_PREVIEW_MAX;
+  const shownNeedsAttentionRows =
     !needNeedsAttentionExpand || needsAttentionExpanded
-      ? incompleteJobs
-      : incompleteJobs.slice(0, NEEDS_ATTENTION_PREVIEW_MAX);
+      ? needsAttentionRows
+      : needsAttentionRows.slice(0, NEEDS_ATTENTION_PREVIEW_MAX);
 
   if (!fontsLoaded) {
     return (
@@ -394,7 +412,7 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail }: HomeScreenProps) 
 
           <SectionHeader
             title="WEEKLY SNAPSHOT"
-            subtitle="Jobs worked in the 7 days"
+            subtitle="Completed jobs worked in the past 7 days"
             tone="neutral"
             typography={typography}
           />
@@ -405,7 +423,7 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail }: HomeScreenProps) 
             typography={typography}
           />
 
-          {incompleteJobs.length > 0 ? (
+          {needsAttentionRows.length > 0 ? (
             <>
               <SectionHeader
                 title="NEEDS ATTENTION"
@@ -414,14 +432,22 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail }: HomeScreenProps) 
                 leadingIcon={<HomeNeedsAttentionIcon color={color('Brand/Accent')} />}
               />
               <View style={styles.needsAttentionBlock}>
-                {shownIncompleteJobs.map((job) => (
-                  <View key={job.id} style={styles.needsAttentionRowWrap}>
-                    <IncompleteJobRowCard
-                      title={job.shortDescription.trim() || 'Untitled Job'}
-                      missingFields={missingFieldsLabelsForHome(job)}
-                      typography={typography}
-                      onPress={() => onOpenJobDetail(job.id)}
-                    />
+                {shownNeedsAttentionRows.map(({ kind, job }) => (
+                  <View key={`${kind}-${job.id}`} style={styles.needsAttentionRowWrap}>
+                    {kind === 'incomplete' ? (
+                      <IncompleteJobRowCard
+                        title={job.shortDescription.trim() || 'Untitled Job'}
+                        missingFields={missingFieldsLabelsForHome(job)}
+                        typography={typography}
+                        onPress={() => onOpenJobDetail(job.id)}
+                      />
+                    ) : (
+                      <WorkedNotMarkedCompleteRowCard
+                        title={job.shortDescription.trim() || 'Untitled Job'}
+                        typography={typography}
+                        onPress={() => onOpenJobDetail(job.id)}
+                      />
+                    )}
                   </View>
                 ))}
                 {needNeedsAttentionExpand ? (
@@ -432,7 +458,7 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail }: HomeScreenProps) 
                     style={({ pressed }) => [styles.needsAttentionFooter, pressed && styles.pressed]}
                   >
                     <Text style={[typography.bodySmall, { color: fg.secondary }]}>
-                      {shownIncompleteJobs.length} of {incompleteJobs.length} jobs
+                      {shownNeedsAttentionRows.length} of {needsAttentionRows.length} jobs
                     </Text>
                     <View style={needsAttentionExpanded ? styles.chevronUp : undefined}>
                       <JobDetailIconViewSessionChevron color={fg.secondary} />

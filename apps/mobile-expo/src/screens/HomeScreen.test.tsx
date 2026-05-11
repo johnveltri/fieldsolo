@@ -204,6 +204,15 @@ describe('HomeScreen quick session', () => {
       netEarningsCents: 123456,
       jobCount: 2,
     });
+    const middleIncompletes = Array.from({ length: 9 }, (_, i) =>
+      job({
+        id: `job-incomplete-${i + 2}`,
+        shortDescription: `Finish task ${i + 2}`,
+        isFinanciallyComplete: false,
+        hasMaterials: false,
+        noMaterialsConfirmed: false,
+      }),
+    );
     mockListJobsForCurrentUserPage.mockResolvedValue({
       items: [
         job({
@@ -214,21 +223,9 @@ describe('HomeScreen quick session', () => {
           hasMaterials: false,
           hasSessions: false,
         }),
+        ...middleIncompletes,
         job({
-          id: 'job-incomplete-2',
-          shortDescription: 'Finish trim',
-          isFinanciallyComplete: false,
-          hasMaterials: false,
-          noMaterialsConfirmed: false,
-        }),
-        job({
-          id: 'job-incomplete-3',
-          shortDescription: 'Paint entry',
-          isFinanciallyComplete: false,
-          revenueCents: 0,
-        }),
-        job({
-          id: 'job-incomplete-4',
+          id: 'job-incomplete-11',
           shortDescription: 'Wire outlet',
           isFinanciallyComplete: false,
           hasSessions: false,
@@ -265,21 +262,47 @@ describe('HomeScreen quick session', () => {
       { client: 'supabase' },
       { limit: 3 },
     );
+    expect(screen.getByText('Completed jobs worked in the past 7 days')).toBeTruthy();
     expect(screen.getByText('NEEDS ATTENTION')).toBeTruthy();
     expect(screen.getByText('Description, Revenue, Materials, Sessions')).toBeTruthy();
-    expect(screen.getByText('3 of 4 jobs')).toBeTruthy();
+    expect(screen.getByText('10 of 11 jobs')).toBeTruthy();
     expect(screen.queryByText('Wire outlet')).toBeNull();
     expect(screen.getByText('JUMP BACK IN')).toBeTruthy();
     expect(screen.getByText('Replace ceiling fan')).toBeTruthy();
 
-    fireEvent.press(screen.getByText('3 of 4 jobs'));
+    fireEvent.press(screen.getByText('10 of 11 jobs'));
     expect(screen.getByText('Wire outlet')).toBeTruthy();
-    expect(screen.getByText('4 of 4 jobs')).toBeTruthy();
+    expect(screen.getByText('11 of 11 jobs')).toBeTruthy();
 
     fireEvent.press(screen.getByText('Untitled Job'));
     expect(onOpenJobDetail).toHaveBeenCalledWith('job-incomplete-1');
 
     fireEvent.press(screen.getByText('Replace ceiling fan'));
     expect(onOpenJobDetail).toHaveBeenCalledWith('job-recent-1');
+  });
+
+  it('shows review rows for financially complete jobs with work but work not marked complete', async () => {
+    mockListJobsForCurrentUserPage.mockResolvedValue({
+      items: [
+        job({
+          id: 'job-review-1',
+          shortDescription: 'Patch drywall',
+          isFinanciallyComplete: true,
+          workStatus: 'inProgress',
+          lastWorkedAt: '2026-05-08T12:00:00.000Z',
+        }),
+      ],
+      hasMore: false,
+    });
+
+    const screen = render(
+      <HomeScreen onOpenProfile={() => undefined} onOpenJobDetail={() => undefined} />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Patch drywall')).toBeTruthy();
+    });
+    expect(screen.getByText('Worked: Not marked complete')).toBeTruthy();
+    expect(screen.getByText('Review →')).toBeTruthy();
   });
 });
