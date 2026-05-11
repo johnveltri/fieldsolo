@@ -43,6 +43,7 @@ export { JobDetailStatusPill, JOB_DETAIL_WORK_STATUS_LABEL } from './JobDetailSt
 export { JobDetailSummaryCard } from './JobDetailSummaryCard';
 export { MetricSnapshotCard } from './MetricSnapshotCard';
 export { NewSessionBottomSheet } from './NewSessionBottomSheet';
+export { PendingPaymentRowCard } from './PendingPaymentRowCard';
 export {
   QuickActionsBottomSheet,
   type QuickActionsRecentJob,
@@ -62,3 +63,4 @@ export {
   type UpdateProfileValues,
 } from './UpdateProfileBottomSheet';
 export { TradeMultiSelectBottomSheet } from './TradeMultiSelectBottomSheet';
+export { WorkedNotMarkedCompleteRowCard } from './WorkedNotMarkedCompleteRowCard';
