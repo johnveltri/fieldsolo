@@ -14,7 +14,7 @@ import {
 } from './src/context/LiveSessionContext';
 import type { ListJobsForCurrentUserTab } from '@fieldbook/api-client';
 import { isSupabaseConfigured } from './src/lib/supabase';
-import { EarningsScreen } from './src/screens/EarningsScreen';
+import { EarningsScreen, type EarningsWindow } from './src/screens/EarningsScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { JobsScreen } from './src/screens/JobsScreen';
 import { JobDetailScreen } from './src/screens/JobDetailScreen';
@@ -35,6 +35,8 @@ function AuthenticatedShell() {
   const [jobDetailLoadKey, setJobDetailLoadKey] = useState(0);
   /** Persisted while Job Detail is open so closing returns to the same Jobs tab. */
   const [jobsListTab, setJobsListTab] = useState<ListJobsForCurrentUserTab>('all');
+  /** Earnings page time window; lifted so Home can land on "Past Week". */
+  const [earningsWindow, setEarningsWindow] = useState<EarningsWindow>('week');
   const [mainTab, setMainTab] = useState<ShellMainTab>('jobs');
   /** Profile is stacked over Home while staying on the HOME bottom-nav tab. */
   const [profileOpen, setProfileOpen] = useState(false);
@@ -96,6 +98,10 @@ function AuthenticatedShell() {
             {mainTab === 'home' && !profileOpen ? (
               <HomeScreen
                 onOpenProfile={() => setProfileOpen(true)}
+                onOpenEarnings={() => {
+                  setEarningsWindow('week');
+                  setMainTab('earnings');
+                }}
                 onOpenJobDetail={(jobId, options) => {
                   setSelectedJobId(jobId ?? null);
                   setJobDetailInitialEditOpen(options?.initialEditOpen ?? false);
@@ -120,7 +126,22 @@ function AuthenticatedShell() {
                 }}
               />
             ) : null}
-            {mainTab === 'earnings' ? <EarningsScreen /> : null}
+            {mainTab === 'earnings' ? (
+              <EarningsScreen
+                window={earningsWindow}
+                onWindowChange={setEarningsWindow}
+                onOpenJobsOpenTab={() => {
+                  setJobsListTab('open');
+                  setMainTab('jobs');
+                }}
+                onOpenJobDetail={(jobId?: string) => {
+                  setSelectedJobId(jobId ?? null);
+                  setJobDetailInitialEditOpen(false);
+                  setJobDetailLoadKey((k) => k + 1);
+                  setJobDetailOpen(true);
+                }}
+              />
+            ) : null}
           </View>
           <ShellBottomNav selected={mainTab} onSelect={onShellTabSelect} />
         </View>

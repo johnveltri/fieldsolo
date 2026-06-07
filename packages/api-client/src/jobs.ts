@@ -587,6 +587,218 @@ export async function getWeeklyNetEarningsCentsForCurrentUser(
   return { netEarningsCents, jobCount: jobIds.length };
 }
 
+/** Per-job financial rollup for the Earnings snapshot window. */
+export type EarningsSnapshotJob = {
+  id: JobId;
+  shortDescription: string;
+  customerName: string | null;
+  revenueCents: number;
+  /** Negative spend (revenue minus this yields net). */
+  materialsCents: number;
+  netEarningsCents: number;
+  hours: number;
+  /** Net earnings per hour in cents; null when the job has no logged hours. */
+  netPerHrCents: number | null;
+};
+
+export type EarningsSnapshotAggregate = {
+  netEarningsCents: number;
+  revenueCents: number;
+  /** Negative spend total. */
+  materialsCents: number;
+  totalHours: number;
+  jobCount: number;
+  /** Aggregate net per hour in cents (total net / total hours); null when no hours. */
+  netPerHrCents: number | null;
+};
+
+export type EarningsSnapshotForCurrentUserResult = {
+  aggregate: EarningsSnapshotAggregate;
+  jobs: EarningsSnapshotJob[];
+};
+
+/**
+ * Earnings snapshot over a rolling window. Generalizes
+ * `getWeeklyNetEarningsCentsForCurrentUser`: completed jobs
+ * (`job_work_status = completed`, including pending and paid payment states)
+ * whose `last_worked_at` falls within the last `windowDays` days. Returns
+ * aggregate metrics plus per-job rollups (revenue, materials, hours, net,
+ * net/hr) for ranking on the Earnings page.
+ */
+export async function getEarningsSnapshotForCurrentUser(
+  client: FieldbookSupabaseClient,
+  options: { windowDays: number },
+): Promise<EarningsSnapshotForCurrentUserResult> {
+  const windowDays = Math.max(1, Math.floor(options.windowDays));
+  const windowStartIso = new Date(Date.now() - windowDays * MS_PER_DAY).toISOString();
+
+  const emptyAggregate: EarningsSnapshotAggregate = {
+    netEarningsCents: 0,
+    revenueCents: 0,
+    materialsCents: 0,
+    totalHours: 0,
+    jobCount: 0,
+    netPerHrCents: null,
+  };
+
+  const { data: jobsData, error: jobsQueryError } = await client
+    .from('jobs')
+    .select('id, short_description, customer_name, revenue_cents')
+    .eq('job_work_status', 'completed')
+    .gte('last_worked_at', windowStartIso)
+    .is('deleted_at', null);
+
+  if (jobsQueryError) throw jobsQueryError;
+
+  type SnapshotJobRow = {
+    id: string;
+    short_description: string;
+    customer_name: string | null;
+    revenue_cents: number | null;
+  };
+  const jobRows = (jobsData ?? []) as SnapshotJobRow[];
+  if (jobRows.length === 0) {
+    return { aggregate: emptyAggregate, jobs: [] };
+  }
+
+  const jobIds = [...new Set(jobRows.map((r) => r.id).filter(Boolean))];
+
+  const { data: sessionsData, error: sessionsError } = await client
+    .from('sessions')
+    .select('id, job_id, session_status, started_at, ended_at')
+    .in('job_id', jobIds)
+    .is('deleted_at', null);
+  if (sessionsError) throw sessionsError;
+
+  const sessions = ((sessionsData ?? []) as ListJobSessionRow[]).filter(
+    (s) => s.session_status !== 'deleted',
+  );
+  const sessionJobIdBySessionId = new Map<string, string>();
+  const totalHoursByJobId = new Map<string, number>();
+  for (const s of sessions) {
+    sessionJobIdBySessionId.set(s.id, s.job_id);
+    if (s.session_status === 'ended' || s.session_status === 'in_progress') {
+      const a = new Date(s.started_at).getTime();
+      const b = s.ended_at ? new Date(s.ended_at).getTime() : Date.now();
+      const hours = Math.max(0, (b - a) / 3_600_000);
+      totalHoursByJobId.set(s.job_id, (totalHoursByJobId.get(s.job_id) ?? 0) + hours);
+    }
+  }
+
+  const sessionIds = sessions.map((s) => s.id);
+  const [materialsByJobRes, materialsBySessionRes] = await Promise.all([
+    client
+      .from('materials')
+      .select('id, job_id, session_id, total_cost_cents')
+      .in('job_id', jobIds)
+      .is('deleted_at', null),
+    sessionIds.length > 0
+      ? client
+          .from('materials')
+          .select('id, job_id, session_id, total_cost_cents')
+          .in('session_id', sessionIds)
+          .is('deleted_at', null)
+      : Promise.resolve({ data: [] as ListJobMaterialRow[], error: null }),
+  ]);
+  if (materialsByJobRes.error) throw materialsByJobRes.error;
+  if (materialsBySessionRes.error) throw materialsBySessionRes.error;
+
+  const materialById = new Map<string, ListJobMaterialRow>();
+  for (const m of (materialsByJobRes.data ?? []) as ListJobMaterialRow[]) {
+    materialById.set(m.id, m);
+  }
+  for (const m of (materialsBySessionRes.data ?? []) as ListJobMaterialRow[]) {
+    materialById.set(m.id, m);
+  }
+
+  const materialsSpendByJobId = new Map<string, number>();
+  for (const m of materialById.values()) {
+    const materialJobId =
+      m.job_id ?? (m.session_id ? sessionJobIdBySessionId.get(m.session_id) ?? null : null);
+    if (!materialJobId) continue;
+    materialsSpendByJobId.set(
+      materialJobId,
+      (materialsSpendByJobId.get(materialJobId) ?? 0) + m.total_cost_cents,
+    );
+  }
+
+  const jobs: EarningsSnapshotJob[] = jobRows.map((row) => {
+    const revenueCents = row.revenue_cents ?? 0;
+    const materialsCents = -(materialsSpendByJobId.get(row.id) ?? 0);
+    const netEarningsCents = revenueCents + materialsCents;
+    const hours = totalHoursByJobId.get(row.id) ?? 0;
+    const netPerHrCents = hours > 0 ? netEarningsCents / hours : null;
+    return {
+      id: row.id,
+      shortDescription: row.short_description,
+      customerName: row.customer_name,
+      revenueCents,
+      materialsCents,
+      netEarningsCents,
+      hours,
+      netPerHrCents,
+    };
+  });
+
+  const aggregate = jobs.reduce<EarningsSnapshotAggregate>(
+    (acc, job) => {
+      acc.netEarningsCents += job.netEarningsCents;
+      acc.revenueCents += job.revenueCents;
+      acc.materialsCents += job.materialsCents;
+      acc.totalHours += job.hours;
+      acc.jobCount += 1;
+      return acc;
+    },
+    { ...emptyAggregate },
+  );
+  aggregate.netPerHrCents =
+    aggregate.totalHours > 0 ? aggregate.netEarningsCents / aggregate.totalHours : null;
+
+  return { aggregate, jobs };
+}
+
+export type OutstandingPaymentsForCurrentUserResult = {
+  /** Number of financially-complete, work-complete, not-yet-paid jobs. */
+  count: number;
+  /** Sum of `revenue_cents` (gross amount owed) across those jobs. */
+  revenueCents: number;
+};
+
+/**
+ * All-time outstanding payments: jobs that are financially complete, marked
+ * work complete, but not yet paid — the same set as the Jobs Open tab "unpaid"
+ * section (`job_work_status = completed` AND payment state null/pending AND
+ * `is_financially_complete`). Returns the count and total revenue owed.
+ */
+export async function getOutstandingPaymentsForCurrentUser(
+  client: FieldbookSupabaseClient,
+): Promise<OutstandingPaymentsForCurrentUserResult> {
+  type OutstandingRow = { revenue_cents: number | null };
+
+  const runQuery = (withFinancialFilter: boolean) => {
+    let query = client
+      .from('jobs')
+      .select('revenue_cents')
+      .eq('job_work_status', 'completed')
+      .or('job_payment_state.is.null,job_payment_state.eq.pending')
+      .is('deleted_at', null);
+    if (withFinancialFilter) {
+      query = query.eq('is_financially_complete', true);
+    }
+    return query;
+  };
+
+  let result = await runQuery(true);
+  if (result.error != null && isMissingFinancialCompletenessColumn(result.error)) {
+    result = await runQuery(false);
+  }
+  if (result.error) throw result.error;
+
+  const rows = (result.data ?? []) as OutstandingRow[];
+  const revenueCents = rows.reduce((acc, row) => acc + (row.revenue_cents ?? 0), 0);
+  return { count: rows.length, revenueCents };
+}
+
 /**
  * Recent jobs with full list rollups (time, materials, net), ordered by
  * `updated_at` then `id`. Use for Home “Jump back in”.

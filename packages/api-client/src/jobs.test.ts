@@ -5,6 +5,8 @@ import {
   createBlankJobForCurrentUser,
   createBlankJobForLiveSessionStart,
   deleteJobById,
+  getEarningsSnapshotForCurrentUser,
+  getOutstandingPaymentsForCurrentUser,
   getWeeklyNetEarningsCentsForCurrentUser,
   jobDetailWorkStatusToDbColumns,
   listJobsForCurrentUser,
@@ -187,6 +189,173 @@ describe('jobs api client', () => {
       'sess-weekly',
       'sess-old',
     ]);
+  });
+
+  it('getEarningsSnapshotForCurrentUser rolls up revenue, materials, hours, and net per hour', async () => {
+    const snapshotJobsBuilder = makeBuilder({
+      awaitResult: {
+        data: [
+          {
+            id: 'job-high',
+            short_description: 'Panel upgrade',
+            customer_name: 'Ada',
+            revenue_cents: 120000,
+          },
+          {
+            id: 'job-low',
+            short_description: 'Outlet repair',
+            customer_name: null,
+            revenue_cents: 20000,
+          },
+        ],
+        error: null,
+      },
+    });
+    const sessionsBuilder = makeBuilder({
+      awaitResult: {
+        data: [
+          {
+            id: 'sess-high',
+            job_id: 'job-high',
+            session_status: 'ended',
+            started_at: '2026-05-09T10:00:00.000Z',
+            ended_at: '2026-05-09T12:00:00.000Z',
+          },
+          {
+            id: 'sess-low',
+            job_id: 'job-low',
+            session_status: 'ended',
+            started_at: '2026-05-09T09:00:00.000Z',
+            ended_at: '2026-05-09T10:00:00.000Z',
+          },
+          {
+            id: 'sess-deleted',
+            job_id: 'job-high',
+            session_status: 'deleted',
+            started_at: '2026-05-09T13:00:00.000Z',
+            ended_at: '2026-05-09T14:00:00.000Z',
+          },
+        ],
+        error: null,
+      },
+    });
+    const materialsByJobBuilder = makeBuilder({
+      awaitResult: {
+        data: [
+          {
+            id: 'mat-shared',
+            job_id: 'job-high',
+            session_id: 'sess-high',
+            total_cost_cents: 30000,
+          },
+          {
+            id: 'mat-low',
+            job_id: 'job-low',
+            session_id: null,
+            total_cost_cents: 5000,
+          },
+        ],
+        error: null,
+      },
+    });
+    const materialsBySessionBuilder = makeBuilder({
+      awaitResult: {
+        data: [
+          {
+            id: 'mat-shared',
+            job_id: 'job-high',
+            session_id: 'sess-high',
+            total_cost_cents: 30000,
+          },
+          {
+            id: 'mat-session-only',
+            job_id: null,
+            session_id: 'sess-high',
+            total_cost_cents: 10000,
+          },
+        ],
+        error: null,
+      },
+    });
+    const client = makeClient({
+      authUserId: 'user-1',
+      buildersByTable: {
+        jobs: [snapshotJobsBuilder],
+        sessions: [sessionsBuilder],
+        materials: [materialsByJobBuilder, materialsBySessionBuilder],
+      },
+    });
+
+    const result = await getEarningsSnapshotForCurrentUser(client as never, { windowDays: 30 });
+
+    expect(result.aggregate).toEqual({
+      revenueCents: 140000,
+      materialsCents: -45000,
+      netEarningsCents: 95000,
+      totalHours: 3,
+      jobCount: 2,
+      netPerHrCents: 95000 / 3,
+    });
+    expect(result.jobs).toEqual([
+      {
+        id: 'job-high',
+        shortDescription: 'Panel upgrade',
+        customerName: 'Ada',
+        revenueCents: 120000,
+        materialsCents: -40000,
+        netEarningsCents: 80000,
+        hours: 2,
+        netPerHrCents: 40000,
+      },
+      {
+        id: 'job-low',
+        shortDescription: 'Outlet repair',
+        customerName: null,
+        revenueCents: 20000,
+        materialsCents: -5000,
+        netEarningsCents: 15000,
+        hours: 1,
+        netPerHrCents: 15000,
+      },
+    ]);
+    expect(snapshotJobsBuilder.select).toHaveBeenCalledWith(
+      'id, short_description, customer_name, revenue_cents',
+    );
+    expect(snapshotJobsBuilder.eq).toHaveBeenCalledWith('job_work_status', 'completed');
+    expect(snapshotJobsBuilder.gte).toHaveBeenCalledWith('last_worked_at', expect.any(String));
+    expect(snapshotJobsBuilder.is).toHaveBeenCalledWith('deleted_at', null);
+    expect(sessionsBuilder.in).toHaveBeenCalledWith('job_id', ['job-high', 'job-low']);
+    expect(materialsByJobBuilder.in).toHaveBeenCalledWith('job_id', ['job-high', 'job-low']);
+    expect(materialsBySessionBuilder.in).toHaveBeenCalledWith('session_id', [
+      'sess-high',
+      'sess-low',
+    ]);
+  });
+
+  it('getOutstandingPaymentsForCurrentUser counts financially complete unpaid jobs', async () => {
+    const outstandingBuilder = makeBuilder({
+      awaitResult: {
+        data: [{ revenue_cents: 50000 }, { revenue_cents: null }, { revenue_cents: 12500 }],
+        error: null,
+      },
+    });
+    const client = makeClient({
+      authUserId: 'user-1',
+      buildersByTable: {
+        jobs: [outstandingBuilder],
+      },
+    });
+
+    const result = await getOutstandingPaymentsForCurrentUser(client as never);
+
+    expect(result).toEqual({ count: 3, revenueCents: 62500 });
+    expect(outstandingBuilder.select).toHaveBeenCalledWith('revenue_cents');
+    expect(outstandingBuilder.eq).toHaveBeenCalledWith('job_work_status', 'completed');
+    expect(outstandingBuilder.eq).toHaveBeenCalledWith('is_financially_complete', true);
+    expect(outstandingBuilder.or).toHaveBeenCalledWith(
+      'job_payment_state.is.null,job_payment_state.eq.pending',
+    );
+    expect(outstandingBuilder.is).toHaveBeenCalledWith('deleted_at', null);
   });
 
   it('deleteJobById performs soft-delete and validates affected rows', async () => {
