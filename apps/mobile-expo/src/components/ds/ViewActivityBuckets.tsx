@@ -23,11 +23,17 @@ export function ViewMaterialsBuckets({
   buckets,
   typography,
   onMaterialPress,
+  hideBucketHeaders = false,
 }: {
   buckets: JobDetailMaterialBucket[];
   typography: TextStyles;
   /** Tap a row → open the Edit Material sheet / Add to Job sheet for this material. */
   onMaterialPress?: (materialId: string) => void;
+  /**
+   * Hide the per-bucket UNASSIGNED / session headers. The Inbox uses this so
+   * its own recency section headers (TODAY / PAST WEEK …) are the grouping.
+   */
+  hideBucketHeaders?: boolean;
 }) {
   if (buckets.length === 0) {
     return null;
@@ -41,15 +47,17 @@ export function ViewMaterialsBuckets({
             key={bucket.id}
             style={bi > 0 ? { borderTopWidth: 1, borderTopColor: color('Foundation/Border/Subtle') } : undefined}
           >
-            <View style={[styles.bucketHeader, bi === 0 && styles.bucketHeaderFirst]}>
-              {bucket.kind === 'unassigned' ? (
-                <Text style={typography.labelHeadingSecondary}>UNASSIGNED</Text>
-              ) : (
-                <Text style={typography.labelHeadingSecondary}>
-                  {bucketSessionHeaderTitle(bucket.sessionDateLabel)}
-                </Text>
-              )}
-            </View>
+            {hideBucketHeaders ? null : (
+              <View style={[styles.bucketHeader, bi === 0 && styles.bucketHeaderFirst]}>
+                {bucket.kind === 'unassigned' ? (
+                  <Text style={typography.labelHeadingSecondary}>UNASSIGNED</Text>
+                ) : (
+                  <Text style={typography.labelHeadingSecondary}>
+                    {bucketSessionHeaderTitle(bucket.sessionDateLabel)}
+                  </Text>
+                )}
+              </View>
+            )}
             {bucket.items.map((item, ii) => (
               <Pressable
                 key={`${bucket.id}-${item.id}`}
@@ -86,11 +94,17 @@ export function ViewNotesBuckets({
   buckets,
   typography,
   onNotePress,
+  hideBucketHeaders = false,
 }: {
   buckets: JobDetailNoteBucket[];
   typography: TextStyles;
   /** Tap a row → open the Edit Note sheet / Add to Job sheet for this note. */
   onNotePress?: (noteId: string) => void;
+  /**
+   * Hide the per-bucket UNASSIGNED / session headers. The Inbox uses this so
+   * its own recency section headers (TODAY / PAST WEEK …) are the grouping.
+   */
+  hideBucketHeaders?: boolean;
 }) {
   if (buckets.length === 0) {
     return null;
@@ -105,15 +119,17 @@ export function ViewNotesBuckets({
             key={bucket.id}
             style={bi > 0 ? { borderTopWidth: 1, borderTopColor: color('Foundation/Border/Subtle') } : undefined}
           >
-            <View style={[styles.bucketHeader, bi === 0 && styles.bucketHeaderFirst]}>
-              {bucket.kind === 'unassigned' ? (
-                <Text style={typography.labelHeadingSecondary}>UNASSIGNED</Text>
-              ) : (
-                <Text style={typography.labelHeadingSecondary}>
-                  {bucketSessionHeaderTitle(bucket.sessionDateLabel)}
-                </Text>
-              )}
-            </View>
+            {hideBucketHeaders ? null : (
+              <View style={[styles.bucketHeader, bi === 0 && styles.bucketHeaderFirst]}>
+                {bucket.kind === 'unassigned' ? (
+                  <Text style={typography.labelHeadingSecondary}>UNASSIGNED</Text>
+                ) : (
+                  <Text style={typography.labelHeadingSecondary}>
+                    {bucketSessionHeaderTitle(bucket.sessionDateLabel)}
+                  </Text>
+                )}
+              </View>
+            )}
             {bucket.notes.map((n, ni) => (
               <Pressable
                 key={`${bucket.id}-n-${n.id}`}

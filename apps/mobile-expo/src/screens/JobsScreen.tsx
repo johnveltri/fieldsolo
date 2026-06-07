@@ -19,6 +19,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
+  countInboxItems,
   createBlankJobForCurrentUser,
   listJobsForCurrentUserPage,
   type ListJobsForCurrentUserItem,
@@ -61,6 +62,8 @@ const PAGE_SIZE = 20;
 
 type JobsScreenProps = {
   onOpenJobDetail: (jobId?: string, options?: { initialEditOpen?: boolean }) => void;
+  /** Open the Inbox of unassigned quick captures (header icon). */
+  onOpenInbox?: () => void;
   /**
    * Hide the "New Job" floating action button. Used while a Live Session is
    * in progress — the floating MinimizedLiveSessionBar takes its slot.
@@ -205,6 +208,7 @@ function JobsLoadingSkeleton({ typography }: { typography: Typography }) {
 
 export function JobsScreen({
   onOpenJobDetail,
+  onOpenInbox,
   suppressFab = false,
   jobsListTab: jobsListTabProp,
   onJobsListTabChange,
@@ -235,6 +239,26 @@ export function JobsScreen({
   useEffect(() => {
     jobsRef.current = jobs;
   }, [jobs]);
+
+  // Live count of unassigned quick captures for the header Inbox badge.
+  // Refetched whenever the jobs list is invalidated (e.g. after a capture or
+  // an assign-to-job), so the badge stays in sync without its own channel.
+  const [inboxCount, setInboxCount] = useState(0);
+  useEffect(() => {
+    let alive = true;
+    void (async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const counts = await countInboxItems(supabase);
+        if (alive) setInboxCount(counts.total);
+      } catch {
+        // Best-effort badge; leave the prior count on failure.
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [version]);
 
   const [internalJobsTab, setInternalJobsTab] = useState<ListJobsForCurrentUserTab>('all');
   const jobsTabControlled =
@@ -455,12 +479,22 @@ export function JobsScreen({
       <View style={styles.listHeaderBand}>
         <View style={[styles.topHeader, { maxWidth: TOP_HEADER_MAX_WIDTH }]}>
           <Text style={typography.displayH1}>JOBS</Text>
-          <View style={styles.inboxWrap}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`Inbox${inboxCount > 0 ? `, ${inboxCount} unassigned` : ''}`}
+            onPress={onOpenInbox}
+            hitSlop={12}
+            style={({ pressed }) => [styles.inboxWrap, pressed && styles.pressed]}
+          >
             <JobsInboxIcon color={fg.primary} />
-            <View style={styles.inboxBadge}>
-              <Text style={[typography.bodySmall, { color: bg.canvasWarm }]}>10</Text>
-            </View>
-          </View>
+            {inboxCount > 0 ? (
+              <View style={styles.inboxBadge}>
+                <Text style={[typography.bodySmall, { color: bg.canvasWarm }]}>
+                  {inboxCount > 99 ? '99+' : inboxCount}
+                </Text>
+              </View>
+            ) : null}
+          </Pressable>
         </View>
 
         <View style={[styles.searchBarOuter, { maxWidth: CONTENT_MAX_WIDTH }]}>
@@ -577,6 +611,8 @@ export function JobsScreen({
       activeTab,
       debouncedSearch,
       exitSearch,
+      inboxCount,
+      onOpenInbox,
       onSearchBlur,
       onSearchFocus,
       searchFocused,

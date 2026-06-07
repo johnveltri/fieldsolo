@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "test": "npm run test:api-client",
-    "test:api-client": "vitest run packages/api-client/src/jobs.test.ts packages/api-client/src/sessions.test.ts packages/api-client/src/notes.test.ts packages/api-client/src/materials.test.ts packages/api-client/src/liveSessions.test.ts",
+    "test:api-client": "vitest run packages/api-client/src/jobs.test.ts packages/api-client/src/sessions.test.ts packages/api-client/src/notes.test.ts packages/api-client/src/materials.test.ts packages/api-client/src/liveSessions.test.ts packages/api-client/src/inbox.test.ts",
     "test:mobile": "npm run test -w mobile-expo",
     "test:db": "npm run test:db:materials-soft-delete",
     "test:db:materials-soft-delete": "PGPASSWORD=postgres psql -h 127.0.0.1 -p 54322 -U postgres -d postgres -v ON_ERROR_STOP=1 -f backend/supabase/tests/materials_soft_delete.test.sql",
