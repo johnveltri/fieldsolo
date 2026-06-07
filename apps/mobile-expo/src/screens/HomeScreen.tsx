@@ -107,6 +107,8 @@ function formatWeeklyUsd(cents: number): string {
 export type HomeScreenProps = {
   onOpenProfile: () => void;
   onOpenJobDetail: (jobId?: string, options?: { initialEditOpen?: boolean }) => void;
+  /** Navigate to the Earnings tab (Past Week) — fired by the weekly snapshot card. */
+  onOpenEarnings: () => void;
 };
 
 function formatLiveSessionJobTitle(now: Date): string {
@@ -122,7 +124,7 @@ function formatLiveSessionJobTitle(now: Date): string {
   return `Live Session ${monthDay} at ${time}`;
 }
 
-export function HomeScreen({ onOpenProfile, onOpenJobDetail }: HomeScreenProps) {
+export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: HomeScreenProps) {
   const insets = useSafeAreaInsets();
   const scrollY = useMemo(() => new Animated.Value(0), []);
   const hasLiveSession = useHasLiveSession();
@@ -431,6 +433,7 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail }: HomeScreenProps) 
             value={formatWeeklyUsd(weeklyNetCents)}
             valueTone="success"
             typography={typography}
+            onPress={onOpenEarnings}
           />
 
           {needsAttentionRows.length > 0 ? (

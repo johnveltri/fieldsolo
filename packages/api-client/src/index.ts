@@ -12,6 +12,8 @@ export {
   listRecentDetailedJobsForCurrentUser,
   listRecentJobsForCurrentUser,
   getWeeklyNetEarningsCentsForCurrentUser,
+  getEarningsSnapshotForCurrentUser,
+  getOutstandingPaymentsForCurrentUser,
   updateJobById,
   bumpJobToInProgressIfNotStarted,
   tryBumpJobToInProgressIfNotStarted,
@@ -23,6 +25,10 @@ export {
   type ListJobsForCurrentUserTab,
   type RecentJobItem,
   type WeeklyNetEarningsForCurrentUserResult,
+  type EarningsSnapshotJob,
+  type EarningsSnapshotAggregate,
+  type EarningsSnapshotForCurrentUserResult,
+  type OutstandingPaymentsForCurrentUserResult,
   type UpdateJobInput,
 } from './jobs';
 export {

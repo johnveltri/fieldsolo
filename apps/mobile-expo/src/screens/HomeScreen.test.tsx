@@ -156,7 +156,11 @@ describe('HomeScreen quick session', () => {
     mockStartLiveSession.mockRejectedValue(new Error('duplicate active session'));
 
     const screen = render(
-      <HomeScreen onOpenProfile={() => undefined} onOpenJobDetail={() => undefined} />,
+      <HomeScreen
+        onOpenProfile={() => undefined}
+        onOpenJobDetail={() => undefined}
+        onOpenEarnings={() => undefined}
+      />,
     );
 
     fireEvent.press(screen.getByLabelText('Quick capture'));
@@ -185,7 +189,11 @@ describe('HomeScreen quick session', () => {
     });
 
     const screen = render(
-      <HomeScreen onOpenProfile={() => undefined} onOpenJobDetail={() => undefined} />,
+      <HomeScreen
+        onOpenProfile={() => undefined}
+        onOpenJobDetail={() => undefined}
+        onOpenEarnings={() => undefined}
+      />,
     );
 
     fireEvent.press(screen.getByLabelText('Quick capture'));
@@ -244,7 +252,11 @@ describe('HomeScreen quick session', () => {
 
     const onOpenJobDetail = jest.fn();
     const screen = render(
-      <HomeScreen onOpenProfile={() => undefined} onOpenJobDetail={onOpenJobDetail} />,
+      <HomeScreen
+        onOpenProfile={() => undefined}
+        onOpenJobDetail={onOpenJobDetail}
+        onOpenEarnings={() => undefined}
+      />,
     );
 
     await waitFor(() => {
@@ -310,7 +322,11 @@ describe('HomeScreen quick session', () => {
     });
 
     const screen = render(
-      <HomeScreen onOpenProfile={() => undefined} onOpenJobDetail={() => undefined} />,
+      <HomeScreen
+        onOpenProfile={() => undefined}
+        onOpenJobDetail={() => undefined}
+        onOpenEarnings={() => undefined}
+      />,
     );
 
     await waitFor(() => {
@@ -347,7 +363,11 @@ describe('HomeScreen quick session', () => {
 
     const onOpenJobDetail = jest.fn();
     const screen = render(
-      <HomeScreen onOpenProfile={() => undefined} onOpenJobDetail={onOpenJobDetail} />,
+      <HomeScreen
+        onOpenProfile={() => undefined}
+        onOpenJobDetail={onOpenJobDetail}
+        onOpenEarnings={() => undefined}
+      />,
     );
 
     await waitFor(() => {
