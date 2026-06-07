@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -27,31 +27,50 @@ export type QuickActionsRecentJob = {
   customerName: string | null;
 };
 
+/** Which sub-action the chooser step is attaching to. */
+export type QuickCaptureKind = 'note' | 'material';
+
+export type QuickActionsStep =
+  | 'quickCapture'
+  | 'chooseJob'
+  | 'noteCapture'
+  | 'materialCapture';
+
 type QuickActionsBottomSheetProps = {
   typography: TextStyles;
   visible: boolean;
+  /** Controlled step — owned by the parent so it can return here after a sub-sheet's Back. */
+  step: QuickActionsStep;
+  onStepChange: (step: QuickActionsStep) => void;
   recentJobs: QuickActionsRecentJob[];
   recentJobsLoading: boolean;
   recentJobsError: string | null;
-  /** Mutation error (e.g. session start failed). */
+  /** Mutation error (e.g. session start failed). Only shown on the Start Session step. */
   actionError: string | null;
   /** Disabled while a startLiveSession call is in flight. */
   starting: boolean;
   onClose: () => void;
   onClosed?: () => void;
+  /** Start Session step: attach a live session to an existing job. */
   onSelectExistingJob: (job: QuickActionsRecentJob) => void;
   onStartNewSession: () => void;
+  /** Note / Material steps: attach the capture to an existing job. */
+  onSelectJobForCapture: (job: QuickActionsRecentJob, kind: QuickCaptureKind) => void;
+  /** Note / Material steps: save the capture to the Inbox (no job). */
+  onCreateQuickCapture: (kind: QuickCaptureKind) => void;
 };
 
-type Step = 'quickCapture' | 'chooseJob';
-
 /**
- * Home Quick Capture flow: action tiles, then Start Session job chooser.
- * Single BottomSheetShell; steps swap so height follows the active step (no fixed min-height).
+ * Home Quick Capture flow: action tiles, then a per-action chooser (Start
+ * Session / New Note / New Material). Single BottomSheetShell; steps swap so
+ * height follows the active step. The step is controlled by the parent so the
+ * capture sub-sheets (Edit Note / Material) can return to the matching chooser.
  */
 export function QuickActionsBottomSheet({
   typography,
   visible,
+  step,
+  onStepChange,
   recentJobs,
   recentJobsLoading,
   recentJobsError,
@@ -61,37 +80,33 @@ export function QuickActionsBottomSheet({
   onClosed,
   onSelectExistingJob,
   onStartNewSession,
+  onSelectJobForCapture,
+  onCreateQuickCapture,
 }: QuickActionsBottomSheetProps) {
-  const [step, setStep] = useState<Step>('quickCapture');
-  const prevVisible = useRef(false);
-
-  useEffect(() => {
-    const opening = visible && !prevVisible.current;
-    prevVisible.current = visible;
-    if (opening) {
-      setStep('quickCapture');
-    }
-  }, [visible]);
-
   return (
     <BottomSheetShell visible={visible} onClose={onClose} onClosed={onClosed}>
       <View style={styles.stack}>
         {step === 'quickCapture' ? (
           <QuickCaptureStepContent
             typography={typography}
-            onStartSessionPress={() => setStep('chooseJob')}
+            onStartSessionPress={() => onStepChange('chooseJob')}
+            onNewNotePress={() => onStepChange('noteCapture')}
+            onNewMaterialPress={() => onStepChange('materialCapture')}
           />
         ) : (
-          <ChooseJobStepContent
+          <AttachChooserStepContent
+            variant={step}
             typography={typography}
             recentJobs={recentJobs}
             recentJobsLoading={recentJobsLoading}
             recentJobsError={recentJobsError}
             actionError={actionError}
             starting={starting}
-            onBack={() => setStep('quickCapture')}
+            onBack={() => onStepChange('quickCapture')}
             onSelectExistingJob={onSelectExistingJob}
             onStartNewSession={onStartNewSession}
+            onSelectJobForCapture={onSelectJobForCapture}
+            onCreateQuickCapture={onCreateQuickCapture}
           />
         )}
       </View>
@@ -102,9 +117,13 @@ export function QuickActionsBottomSheet({
 function QuickCaptureStepContent({
   typography,
   onStartSessionPress,
+  onNewNotePress,
+  onNewMaterialPress,
 }: {
   typography: TextStyles;
   onStartSessionPress: () => void;
+  onNewNotePress: () => void;
+  onNewMaterialPress: () => void;
 }) {
   return (
     <View style={styles.quickBody}>
@@ -126,7 +145,7 @@ function QuickCaptureStepContent({
           icon={<QuickCaptureNewNoteIcon color={bg.surfaceWhite} size={20} />}
           line1="NEW"
           line2="NOTE"
-          disabled
+          onPress={onNewNotePress}
         />
         <QuickCaptureTile
           typography={typography}
@@ -134,7 +153,7 @@ function QuickCaptureStepContent({
           icon={<QuickCaptureNewMaterialIcon color={bg.surfaceWhite} size={20} />}
           line1="NEW"
           line2="MATERIAL"
-          disabled
+          onPress={onNewMaterialPress}
         />
       </View>
     </View>
@@ -192,7 +211,48 @@ function QuickCaptureTile({
   );
 }
 
-function ChooseJobStepContent({
+type ChooserVariant = Exclude<QuickActionsStep, 'quickCapture'>;
+
+type ChooserConfig = {
+  title: string;
+  primaryLabel: string;
+  primarySubtitle: string;
+  primaryColor: string;
+  icon: ReactNode;
+};
+
+function chooserConfig(variant: ChooserVariant): ChooserConfig {
+  switch (variant) {
+    case 'noteCapture':
+      return {
+        title: 'New Note',
+        primaryLabel: 'Create Quick Note',
+        primarySubtitle: 'Save to Inbox — assign to a job later',
+        primaryColor: color('Semantic/Activity/Note'),
+        icon: <QuickCaptureNewNoteIcon color={fg.muted} size={20} />,
+      };
+    case 'materialCapture':
+      return {
+        title: 'New Material',
+        primaryLabel: 'Add Quick Material',
+        primarySubtitle: 'Save to Inbox — assign to a job later',
+        primaryColor: color('Semantic/Activity/Material'),
+        icon: <QuickCaptureNewMaterialIcon color={fg.muted} size={20} />,
+      };
+    case 'chooseJob':
+    default:
+      return {
+        title: 'Start Session',
+        primaryLabel: 'Start New Session',
+        primarySubtitle: 'Begin tracking now — add job details later',
+        primaryColor: color('Brand/Primary'),
+        icon: <SessionChooserRowPlayIcon color={fg.muted} />,
+      };
+  }
+}
+
+function AttachChooserStepContent({
+  variant,
   typography,
   recentJobs,
   recentJobsLoading,
@@ -202,7 +262,10 @@ function ChooseJobStepContent({
   onBack,
   onSelectExistingJob,
   onStartNewSession,
+  onSelectJobForCapture,
+  onCreateQuickCapture,
 }: {
+  variant: ChooserVariant;
   typography: TextStyles;
   recentJobs: QuickActionsRecentJob[];
   recentJobsLoading: boolean;
@@ -212,9 +275,32 @@ function ChooseJobStepContent({
   onBack: () => void;
   onSelectExistingJob: (job: QuickActionsRecentJob) => void;
   onStartNewSession: () => void;
+  onSelectJobForCapture: (job: QuickActionsRecentJob, kind: QuickCaptureKind) => void;
+  onCreateQuickCapture: (kind: QuickCaptureKind) => void;
 }) {
+  const cfg = chooserConfig(variant);
+  const isSession = variant === 'chooseJob';
+  const kind: QuickCaptureKind = variant === 'materialCapture' ? 'material' : 'note';
+  // Only the Start Session path runs an inline mutation we must guard against.
+  const busy = isSession && starting;
+
+  const onPrimary = () => {
+    if (isSession) {
+      onStartNewSession();
+    } else {
+      onCreateQuickCapture(kind);
+    }
+  };
+  const onSelectJob = (job: QuickActionsRecentJob) => {
+    if (isSession) {
+      onSelectExistingJob(job);
+    } else {
+      onSelectJobForCapture(job, kind);
+    }
+  };
+
   const showFetchError = recentJobsError != null && recentJobsError.length > 0;
-  const showActionError = actionError != null && actionError.length > 0;
+  const showActionError = isSession && actionError != null && actionError.length > 0;
 
   return (
     <View style={styles.chooseBody}>
@@ -229,33 +315,31 @@ function ChooseJobStepContent({
       </Pressable>
 
       <Text style={[typography.titleH3, styles.chooseTitle, { color: fg.primary }]}>
-        Start Session
+        {cfg.title}
       </Text>
 
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Start New Session"
-        disabled={starting}
-        onPress={onStartNewSession}
+        accessibilityLabel={cfg.primaryLabel}
+        disabled={busy}
+        onPress={onPrimary}
         style={({ pressed }) => [
           styles.primaryRow,
           {
-            backgroundColor: color('Brand/Primary'),
+            backgroundColor: cfg.primaryColor,
             borderColor: border.subtle,
           },
-          pressed && !starting ? styles.pressed : null,
-          starting ? { opacity: 0.85 } : null,
+          pressed && !busy ? styles.pressed : null,
+          busy ? { opacity: 0.85 } : null,
         ]}
       >
-        <View style={styles.primaryRowLeading}>
-          <SessionChooserRowPlayIcon color={fg.muted} />
-        </View>
+        <View style={styles.primaryRowLeading}>{cfg.icon}</View>
         <View style={styles.primaryRowTextStack}>
           <Text style={[typography.bodyBold, { color: fg.muted }]} numberOfLines={1}>
-            Start New Session
+            {cfg.primaryLabel}
           </Text>
           <Text style={[typography.bodySmall, { color: fg.muted }]} numberOfLines={2}>
-            Begin tracking now — add job details later
+            {cfg.primarySubtitle}
           </Text>
         </View>
       </Pressable>
@@ -298,15 +382,15 @@ function ChooseJobStepContent({
               key={job.id}
               accessibilityRole="button"
               accessibilityLabel={`Attach to job ${job.shortDescription}`}
-              disabled={starting}
-              onPress={() => onSelectExistingJob(job)}
+              disabled={busy}
+              onPress={() => onSelectJob(job)}
               style={({ pressed }) => [
                 styles.jobRow,
                 {
                   borderColor: border.subtle,
                   backgroundColor: bg.surfaceWhite,
                 },
-                pressed && !starting ? styles.pressed : null,
+                pressed && !busy ? styles.pressed : null,
               ]}
             >
               <View style={styles.jobRowTextStack}>

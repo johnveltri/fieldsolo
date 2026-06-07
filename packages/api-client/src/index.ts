@@ -65,6 +65,14 @@ export {
   type UpdateMaterialInput,
 } from './materials';
 export {
+  countInboxItems,
+  listInboxMaterials,
+  listInboxNotes,
+  type InboxCounts,
+  type InboxMaterialItem,
+  type InboxNoteItem,
+} from './inbox';
+export {
   fetchCurrentUserProfile,
   updateCurrentUserProfile,
   type UpdateUserProfileInput,

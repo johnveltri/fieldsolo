@@ -258,6 +258,62 @@ jest.mock('../components/ds', () => ({
       </View>
     ) : null;
   },
+  ViewMaterialsBuckets: ({
+    buckets,
+    onMaterialPress,
+  }: {
+    buckets: Array<{
+      items: Array<{
+        id: string;
+        name: string;
+        quantityLabel: string;
+        priceLabel: string;
+      }>;
+    }>;
+    onMaterialPress?: (materialId: string) => void;
+  }) => {
+    const { Text, View } = require('react-native');
+    return (
+      <View>
+        {buckets
+          .flatMap((b) => b.items)
+          .map((m) => (
+            <View key={m.id}>
+              <Text onPress={() => onMaterialPress?.(m.id)}>{m.name}</Text>
+              <Text>{m.quantityLabel}</Text>
+              <Text>{m.priceLabel}</Text>
+            </View>
+          ))}
+      </View>
+    );
+  },
+  ViewNotesBuckets: ({
+    buckets,
+    onNotePress,
+  }: {
+    buckets: Array<{
+      notes: Array<{
+        id: string;
+        excerpt: string;
+        dateLabel: string;
+      }>;
+    }>;
+    onNotePress?: (noteId: string) => void;
+  }) => {
+    const { Text, View } = require('react-native');
+    return (
+      <View>
+        {buckets
+          .flatMap((b) => b.notes)
+          .map((n) => (
+            <View key={n.id}>
+              <Text onPress={() => onNotePress?.(n.id)}>{n.excerpt}</Text>
+              <Text>{n.dateLabel}</Text>
+            </View>
+          ))}
+      </View>
+    );
+  },
   SessionCard: ({
     session,
     onEditPress,

@@ -16,6 +16,7 @@ import type { ListJobsForCurrentUserTab } from '@fieldbook/api-client';
 import { isSupabaseConfigured } from './src/lib/supabase';
 import { EarningsScreen, type EarningsWindow } from './src/screens/EarningsScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
+import { InboxScreen } from './src/screens/InboxScreen';
 import { JobsScreen } from './src/screens/JobsScreen';
 import { JobDetailScreen } from './src/screens/JobDetailScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
@@ -40,6 +41,15 @@ function AuthenticatedShell() {
   const [mainTab, setMainTab] = useState<ShellMainTab>('jobs');
   /** Profile is stacked over Home while staying on the HOME bottom-nav tab. */
   const [profileOpen, setProfileOpen] = useState(false);
+  /** Inbox covers the shell (like Job Detail); opened from the Jobs header icon. */
+  const [inboxOpen, setInboxOpen] = useState(false);
+  /** Bump on each Inbox open so it refetches its unassigned captures. */
+  const [inboxLoadKey, setInboxLoadKey] = useState(0);
+
+  const openInbox = useCallback(() => {
+    setInboxLoadKey((k) => k + 1);
+    setInboxOpen(true);
+  }, []);
 
   useEffect(() => {
     if (mainTab !== 'home') setProfileOpen(false);
@@ -92,7 +102,30 @@ function AuthenticatedShell() {
 
   return (
     <View style={styles.root}>
-      {!jobDetailOpen ? (
+      {jobDetailOpen ? (
+        <JobDetailScreen
+          loadKey={jobDetailLoadKey}
+          jobId={selectedJobId}
+          initialEditOpen={jobDetailInitialEditOpen}
+          sessionUserId={session.user.id}
+          sessionEmail={session.user.email ?? null}
+          onRequestClose={() => {
+            setJobDetailOpen(false);
+            setJobDetailInitialEditOpen(false);
+          }}
+          onSelectShellTab={onJobDetailSelectShellTab}
+        />
+      ) : inboxOpen ? (
+        <InboxScreen
+          loadKey={inboxLoadKey}
+          onRequestClose={() => setInboxOpen(false)}
+          onSelectShellTab={(tab) => {
+            setInboxOpen(false);
+            setMainTab(tab);
+            if (tab === 'home') setProfileOpen(false);
+          }}
+        />
+      ) : (
         <View style={styles.shellColumn}>
           <View style={styles.shellMain}>
             {mainTab === 'home' && !profileOpen ? (
@@ -118,6 +151,7 @@ function AuthenticatedShell() {
                 jobsListTab={jobsListTab}
                 onJobsListTabChange={setJobsListTab}
                 suppressFab={liveSession.hasLiveSession}
+                onOpenInbox={openInbox}
                 onOpenJobDetail={(jobId?: string, options?: { initialEditOpen?: boolean }) => {
                   setSelectedJobId(jobId ?? null);
                   setJobDetailInitialEditOpen(options?.initialEditOpen ?? false);
@@ -145,19 +179,6 @@ function AuthenticatedShell() {
           </View>
           <ShellBottomNav selected={mainTab} onSelect={onShellTabSelect} />
         </View>
-      ) : (
-        <JobDetailScreen
-          loadKey={jobDetailLoadKey}
-          jobId={selectedJobId}
-          initialEditOpen={jobDetailInitialEditOpen}
-          sessionUserId={session.user.id}
-          sessionEmail={session.user.email ?? null}
-          onRequestClose={() => {
-            setJobDetailOpen(false);
-            setJobDetailInitialEditOpen(false);
-          }}
-          onSelectShellTab={onJobDetailSelectShellTab}
-        />
       )}
 
       <LiveSessionOverlay

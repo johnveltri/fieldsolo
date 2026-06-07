@@ -19,6 +19,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
+  countInboxItems,
   createBlankJobForCurrentUser,
   listJobsForCurrentUserPage,
   type ListJobsForCurrentUserItem,
@@ -42,6 +43,11 @@ import { shellBottomNavOuterHeight } from '../components/shell/ShellBottomNav';
 import { useJobsListInvalidation } from '../context/JobsListInvalidationContext';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import {
+  recencyBucket,
+  RECENCY_BUCKET_TITLE,
+  type RecencyBucket,
+} from '../lib/timeBuckets';
+import {
   CONTENT_MAX_WIDTH,
   TOP_HEADER_MAX_WIDTH,
   bg,
@@ -56,6 +62,8 @@ const PAGE_SIZE = 20;
 
 type JobsScreenProps = {
   onOpenJobDetail: (jobId?: string, options?: { initialEditOpen?: boolean }) => void;
+  /** Open the Inbox of unassigned quick captures (header icon). */
+  onOpenInbox?: () => void;
   /**
    * Hide the "New Job" floating action button. Used while a Live Session is
    * in progress — the floating MinimizedLiveSessionBar takes its slot.
@@ -70,39 +78,6 @@ type JobsScreenProps = {
 };
 
 type Typography = ReturnType<typeof createTextStyles>;
-
-type JobsBucket = 'today' | 'pastWeek' | 'pastMonth' | 'older';
-
-function isSameLocalCalendarDay(anchorMs: number, nowMs: number): boolean {
-  const a = new Date(anchorMs);
-  const n = new Date(nowMs);
-  return (
-    a.getFullYear() === n.getFullYear() &&
-    a.getMonth() === n.getMonth() &&
-    a.getDate() === n.getDate()
-  );
-}
-
-/** Section buckets use the same recency signal as DB list sort: last session activity, else job creation. Mutually exclusive: TODAY → PAST WEEK → PAST MONTH → OLDER. */
-function jobsBucket(lastWorkedAt: string | null, createdAt: string, nowMs: number): JobsBucket {
-  const anchor =
-    lastWorkedAt != null && lastWorkedAt !== '' ? lastWorkedAt : createdAt;
-  const t = new Date(anchor).getTime();
-  if (Number.isNaN(t)) return 'older';
-  const ms7 = 7 * 86_400_000;
-  const ms30 = 30 * 86_400_000;
-  if (isSameLocalCalendarDay(t, nowMs)) return 'today';
-  if (t >= nowMs - ms7) return 'pastWeek';
-  if (t >= nowMs - ms30) return 'pastMonth';
-  return 'older';
-}
-
-const BUCKET_TITLE: Record<JobsBucket, string> = {
-  today: 'TODAY',
-  pastWeek: 'PAST WEEK',
-  pastMonth: 'PAST MONTH',
-  older: 'OLDER',
-};
 
 function isJobIncomplete(job: ListJobsForCurrentUserItem): boolean {
   return !job.isFinanciallyComplete;
@@ -131,15 +106,15 @@ type JobsFlatRow =
 
 function buildFlatRows(jobs: ListJobsForCurrentUserItem[]): JobsFlatRow[] {
   const nowMs = Date.now();
-  let prev: JobsBucket | null = null;
+  let prev: RecencyBucket | null = null;
   const rows: JobsFlatRow[] = [];
   for (const job of jobs) {
-    const b = jobsBucket(job.lastWorkedAt, job.createdAt, nowMs);
+    const b = recencyBucket(job.lastWorkedAt, job.createdAt, nowMs);
     if (b !== prev) {
       rows.push({
         kind: 'section',
         mode: 'recency',
-        title: BUCKET_TITLE[b],
+        title: RECENCY_BUCKET_TITLE[b],
         key: `h-${b}-${rows.length}`,
       });
       prev = b;
@@ -233,6 +208,7 @@ function JobsLoadingSkeleton({ typography }: { typography: Typography }) {
 
 export function JobsScreen({
   onOpenJobDetail,
+  onOpenInbox,
   suppressFab = false,
   jobsListTab: jobsListTabProp,
   onJobsListTabChange,
@@ -263,6 +239,26 @@ export function JobsScreen({
   useEffect(() => {
     jobsRef.current = jobs;
   }, [jobs]);
+
+  // Live count of unassigned quick captures for the header Inbox badge.
+  // Refetched whenever the jobs list is invalidated (e.g. after a capture or
+  // an assign-to-job), so the badge stays in sync without its own channel.
+  const [inboxCount, setInboxCount] = useState(0);
+  useEffect(() => {
+    let alive = true;
+    void (async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const counts = await countInboxItems(supabase);
+        if (alive) setInboxCount(counts.total);
+      } catch {
+        // Best-effort badge; leave the prior count on failure.
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [version]);
 
   const [internalJobsTab, setInternalJobsTab] = useState<ListJobsForCurrentUserTab>('all');
   const jobsTabControlled =
@@ -483,12 +479,22 @@ export function JobsScreen({
       <View style={styles.listHeaderBand}>
         <View style={[styles.topHeader, { maxWidth: TOP_HEADER_MAX_WIDTH }]}>
           <Text style={typography.displayH1}>JOBS</Text>
-          <View style={styles.inboxWrap}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`Inbox${inboxCount > 0 ? `, ${inboxCount} unassigned` : ''}`}
+            onPress={onOpenInbox}
+            hitSlop={12}
+            style={({ pressed }) => [styles.inboxWrap, pressed && styles.pressed]}
+          >
             <JobsInboxIcon color={fg.primary} />
-            <View style={styles.inboxBadge}>
-              <Text style={[typography.bodySmall, { color: bg.canvasWarm }]}>10</Text>
-            </View>
-          </View>
+            {inboxCount > 0 ? (
+              <View style={styles.inboxBadge}>
+                <Text style={[typography.bodySmall, { color: bg.canvasWarm }]}>
+                  {inboxCount > 99 ? '99+' : inboxCount}
+                </Text>
+              </View>
+            ) : null}
+          </Pressable>
         </View>
 
         <View style={[styles.searchBarOuter, { maxWidth: CONTENT_MAX_WIDTH }]}>
@@ -605,6 +611,8 @@ export function JobsScreen({
       activeTab,
       debouncedSearch,
       exitSearch,
+      inboxCount,
+      onOpenInbox,
       onSearchBlur,
       onSearchFocus,
       searchFocused,

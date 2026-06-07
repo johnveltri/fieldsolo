@@ -50,11 +50,22 @@ export { PendingPaymentRowCard } from './PendingPaymentRowCard';
 export {
   QuickActionsBottomSheet,
   type QuickActionsRecentJob,
+  type QuickActionsStep,
+  type QuickCaptureKind,
 } from './QuickActionsBottomSheet';
 export { SessionAddToSessionTiles } from './SessionAddToSessionTiles';
 export { SessionAttachmentList } from './SessionAttachmentList';
 export { SessionCard } from './SessionCard';
 export { SectionHeader } from './SectionHeader';
+export {
+  ViewMaterialsBuckets,
+  ViewNotesBuckets,
+  bucketSessionHeaderTitle,
+} from './ViewActivityBuckets';
+export {
+  ChooseJobBottomSheet,
+  type ChooseJobBottomSheetJob,
+} from './ChooseJobBottomSheet';
 export { jobDetailCtaConfig, nextStatusAfterPrimaryAction } from './jobDetailCtaConfig';
 export {
   ProfileRowsCard,
