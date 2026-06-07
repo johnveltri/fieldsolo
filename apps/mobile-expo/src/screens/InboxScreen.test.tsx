@@ -38,7 +38,7 @@ jest.mock('../components/CanvasTiledBackground', () => ({
 }));
 
 jest.mock('../components/figma-icons/JobDetailScreenIcons', () => ({
-  JobDetailIconTopClose: () => null,
+  SessionSheetBackIcon: () => null,
 }));
 
 jest.mock('../components/shell/ShellBottomNav', () => ({
@@ -137,10 +137,15 @@ describe('InboxScreen', () => {
         createdAt: nowIso(),
       },
     ]);
-    mockListJobsForCurrentUserPage.mockResolvedValue({
-      items: [{ id: 'job-9', shortDescription: 'Kitchen remodel', customerName: 'Alice' }],
-      hasMore: false,
-    });
+    mockListJobsForCurrentUserPage
+      .mockResolvedValueOnce({
+        items: [{ id: 'job-1', shortDescription: 'First page job', customerName: 'Bob' }],
+        hasMore: true,
+      })
+      .mockResolvedValueOnce({
+        items: [{ id: 'job-9', shortDescription: 'Kitchen remodel', customerName: 'Alice' }],
+        hasMore: false,
+      });
 
     const onRequestClose = jest.fn();
     const screen = render(
@@ -151,13 +156,23 @@ describe('InboxScreen', () => {
       expect(screen.getByText('Buy a new gasket')).toBeTruthy();
     });
     expect(screen.getByText('TODAY')).toBeTruthy();
-    expect(screen.getByText('Notes (1)')).toBeTruthy();
+    expect(screen.getByText('Notes')).toBeTruthy();
 
     fireEvent.press(screen.getByText('Buy a new gasket'));
 
     await waitFor(() => {
       expect(screen.getByText('pick Kitchen remodel')).toBeTruthy();
     });
+    expect(mockListJobsForCurrentUserPage).toHaveBeenNthCalledWith(
+      1,
+      { client: 'supabase' },
+      { limit: 100, offset: 0, tab: 'all' },
+    );
+    expect(mockListJobsForCurrentUserPage).toHaveBeenNthCalledWith(
+      2,
+      { client: 'supabase' },
+      { limit: 100, offset: 1, tab: 'all' },
+    );
 
     fireEvent.press(screen.getByText('pick Kitchen remodel'));
 
@@ -183,12 +198,10 @@ describe('InboxScreen', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Notes (0)')).toBeTruthy();
+      expect(screen.getByText('All caught up! No unassigned notes.')).toBeTruthy();
     });
 
-    fireEvent.press(screen.getByText('Materials (0)'));
-    expect(
-      screen.getByText('No unassigned materials. Quick-capture a material from Home.'),
-    ).toBeTruthy();
+    fireEvent.press(screen.getByText('Materials'));
+    expect(screen.getByText('All caught up! No unassigned materials.')).toBeTruthy();
   });
 });

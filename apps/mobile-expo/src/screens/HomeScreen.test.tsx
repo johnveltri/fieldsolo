@@ -7,6 +7,8 @@ import { HomeScreen } from './HomeScreen';
 const mockCreateBlankJobForLiveSessionStart = jest.fn<
   (...args: unknown[]) => Promise<string>
 >();
+const mockCreateNote = jest.fn<(...args: unknown[]) => Promise<string>>();
+const mockCreateMaterial = jest.fn<(...args: unknown[]) => Promise<string>>();
 const mockDeleteJobById = jest.fn<(...args: unknown[]) => Promise<void>>();
 const mockListRecentJobsForCurrentUser = jest.fn<
   (...args: unknown[]) => Promise<unknown[]>
@@ -35,6 +37,8 @@ jest.mock('expo-font', () => ({
 jest.mock('@fieldbook/api-client', () => ({
   createBlankJobForLiveSessionStart: (...args: unknown[]) =>
     mockCreateBlankJobForLiveSessionStart(...args),
+  createNote: (...args: unknown[]) => mockCreateNote(...args),
+  createMaterial: (...args: unknown[]) => mockCreateMaterial(...args),
   deleteJobById: (...args: unknown[]) => mockDeleteJobById(...args),
   listRecentJobsForCurrentUser: (...args: unknown[]) => mockListRecentJobsForCurrentUser(...args),
   getWeeklyNetEarningsCentsForCurrentUser: (...args: unknown[]) =>
@@ -83,16 +87,19 @@ jest.mock('../components/ds/QuickActionsBottomSheet', () => ({
     visible,
     actionError,
     onStartNewSession,
+    onCreateQuickCapture,
   }: {
     visible: boolean;
     actionError: string | null;
     onStartNewSession: () => void;
+    onCreateQuickCapture: (kind: 'note' | 'material') => void;
   }) => {
     const { Text, View } = require('react-native');
     if (!visible) return null;
     return (
       <View>
         <Text onPress={onStartNewSession}>Start New Session</Text>
+        <Text onPress={() => onCreateQuickCapture('note')}>Create Quick Note</Text>
         {actionError ? <Text>{actionError}</Text> : null}
       </View>
     );
@@ -144,6 +151,8 @@ describe('HomeScreen quick session', () => {
     mockListRecentDetailedJobsForCurrentUser.mockResolvedValue([]);
     mockTryBumpJobToInProgressIfNotStarted.mockResolvedValue(undefined);
     mockDeleteJobById.mockResolvedValue(undefined);
+    mockCreateNote.mockResolvedValue('note-new-1');
+    mockCreateMaterial.mockResolvedValue('mat-new-1');
     mockRefreshLiveSession.mockResolvedValue(null);
   });
 
@@ -205,6 +214,70 @@ describe('HomeScreen quick session', () => {
     expect(mockDeleteJobById).not.toHaveBeenCalled();
     expect(mockInvalidateJobsList).toHaveBeenCalledTimes(1);
     expect(screen.queryByText('network after insert')).toBeNull();
+  });
+
+  it('loads later job pages when attaching an inbox note draft to a job', async () => {
+    mockListJobsForCurrentUserPage.mockImplementation(async (_client, options) => {
+      const opts = options as { tab?: string; offset?: number };
+      if (opts.tab !== 'all') {
+        return { items: [], hasMore: false };
+      }
+      if (opts.offset === 0) {
+        return {
+          items: [
+            { id: 'job-page-1', shortDescription: 'First page job', customerName: 'Bob' },
+          ],
+          hasMore: true,
+        };
+      }
+      return {
+        items: [
+          { id: 'job-page-2', shortDescription: 'Later page job', customerName: 'Alice' },
+        ],
+        hasMore: false,
+      };
+    });
+
+    const screen = render(
+      <HomeScreen
+        onOpenProfile={() => undefined}
+        onOpenJobDetail={() => undefined}
+        onOpenEarnings={() => undefined}
+      />,
+    );
+
+    fireEvent.press(screen.getByLabelText('Quick capture'));
+    fireEvent.press(await screen.findByText('Create Quick Note'));
+    fireEvent.changeText(
+      screen.getByPlaceholderText('What happened on site? Measurements, observations, next steps...'),
+      'Remember to order a gasket',
+    );
+    fireEvent.press(screen.getAllByLabelText('Attach to job')[0]);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Add to job Later page job')).toBeTruthy();
+    });
+    fireEvent.press(screen.getByLabelText('Add to job Later page job'));
+    fireEvent.press(screen.getByText('SAVE NEW NOTE'));
+
+    await waitFor(() => {
+      expect(mockCreateNote).toHaveBeenCalledWith(
+        { client: 'supabase' },
+        {
+          jobId: 'job-page-2',
+          sessionId: null,
+          body: 'Remember to order a gasket',
+        },
+      );
+    });
+    expect(mockListJobsForCurrentUserPage).toHaveBeenCalledWith(
+      { client: 'supabase' },
+      { limit: 100, offset: 0, tab: 'all' },
+    );
+    expect(mockListJobsForCurrentUserPage).toHaveBeenCalledWith(
+      { client: 'supabase' },
+      { limit: 100, offset: 1, tab: 'all' },
+    );
   });
 
   it('renders home modules from API data and opens job detail from module cards', async () => {

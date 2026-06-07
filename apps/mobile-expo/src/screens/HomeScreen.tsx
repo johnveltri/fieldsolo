@@ -77,6 +77,7 @@ import {
 
 const OPEN_TAB_PAGE_SIZE = 20;
 const NEEDS_ATTENTION_PREVIEW_MAX = 10;
+const CAPTURE_JOBS_PAGE_SIZE = 100;
 
 const HOME_PILL_TO_MISSING: Record<string, string> = {
   'NO SHORT DESCRIPTION': 'Description',
@@ -159,6 +160,31 @@ type CaptureJob = {
   shortDescription: string;
   customerName: string | null;
 };
+
+async function listAllJobsForCapture(): Promise<ChooseJobBottomSheetJob[]> {
+  const jobs: ChooseJobBottomSheetJob[] = [];
+  let offset = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const page = await listJobsForCurrentUserPage(supabase, {
+      limit: CAPTURE_JOBS_PAGE_SIZE,
+      offset,
+      tab: 'all',
+    });
+    jobs.push(
+      ...page.items.map((j) => ({
+        id: j.id,
+        shortDescription: j.shortDescription,
+        customerName: j.customerName,
+      })),
+    );
+    hasMore = page.hasMore && page.items.length > 0;
+    offset += page.items.length;
+  }
+
+  return jobs;
+}
 
 const CAPTURE_UNIT_OPTIONS: DropdownBottomSheetOption[] = (
   ['ea', 'ft', 'pcs', 'kit', 'lb', 'gal', 'lot'] as const
@@ -524,18 +550,7 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
         return;
       }
       try {
-        const page = await listJobsForCurrentUserPage(supabase, {
-          limit: 100,
-          offset: 0,
-          tab: 'all',
-        });
-        setChooseJobList(
-          page.items.map((j) => ({
-            id: j.id,
-            shortDescription: j.shortDescription,
-            customerName: j.customerName,
-          })),
-        );
+        setChooseJobList(await listAllJobsForCapture());
       } catch (err) {
         setChooseJobError(formatCaptureError(err) || 'Could not load jobs.');
       } finally {

@@ -5,7 +5,7 @@ import {
   UbuntuSansMono_600SemiBold,
   UbuntuSansMono_700Bold,
 } from '@expo-google-fonts/ubuntu-sans-mono';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -40,7 +40,7 @@ import {
   ViewNotesBuckets,
   type ChooseJobBottomSheetJob,
 } from '../components/ds';
-import { JobDetailIconTopClose } from '../components/figma-icons/JobDetailScreenIcons';
+import { SessionSheetBackIcon } from '../components/figma-icons/JobDetailScreenIcons';
 import {
   ShellBottomNav,
   shellBottomNavOuterHeight,
@@ -66,6 +66,8 @@ import {
 
 type InboxTab = 'notes' | 'materials';
 
+const ASSIGN_JOBS_PAGE_SIZE = 100;
+
 export type InboxScreenProps = {
   /** Bump to force a refetch when the screen is (re)opened. */
   loadKey?: number;
@@ -74,6 +76,31 @@ export type InboxScreenProps = {
 };
 
 type AssignTarget = { kind: InboxTab; id: string } | null;
+
+async function listAllJobsForAssign(): Promise<ChooseJobBottomSheetJob[]> {
+  const jobs: ChooseJobBottomSheetJob[] = [];
+  let offset = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const page = await listJobsForCurrentUserPage(supabase, {
+      limit: ASSIGN_JOBS_PAGE_SIZE,
+      offset,
+      tab: 'all',
+    });
+    jobs.push(
+      ...page.items.map((j) => ({
+        id: j.id,
+        shortDescription: j.shortDescription,
+        customerName: j.customerName,
+      })),
+    );
+    hasMore = page.hasMore && page.items.length > 0;
+    offset += page.items.length;
+  }
+
+  return jobs;
+}
 
 function groupByRecency<T extends { createdAt: string }>(
   items: T[],
@@ -122,6 +149,12 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
   );
 
   const [activeTab, setActiveTab] = useState<InboxTab>('notes');
+  // Once the user taps a tab we stop auto-selecting based on which inbox has items.
+  const userPickedTabRef = useRef(false);
+  const selectTab = useCallback((tab: InboxTab) => {
+    userPickedTabRef.current = true;
+    setActiveTab(tab);
+  }, []);
   const [notes, setNotes] = useState<InboxNoteItem[]>([]);
   const [materials, setMaterials] = useState<InboxMaterialItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -165,6 +198,7 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
   useEffect(() => {
     let alive = true;
     setLoading(true);
+    userPickedTabRef.current = false;
     void (async () => {
       await refetch(() => !alive);
       if (alive) setLoading(false);
@@ -173,6 +207,18 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
       alive = false;
     };
   }, [loadKey, refetch]);
+
+  // Open to whichever inbox has items: if Notes is empty but Materials has
+  // something, land on Materials (and vice versa). Skipped once the user has
+  // manually chosen a tab.
+  useEffect(() => {
+    if (loading || userPickedTabRef.current) return;
+    if (notes.length === 0 && materials.length > 0) {
+      setActiveTab('materials');
+    } else if (materials.length === 0 && notes.length > 0) {
+      setActiveTab('notes');
+    }
+  }, [loading, notes, materials]);
 
   const noteGroups = useMemo(() => groupByRecency(notes), [notes]);
   const materialGroups = useMemo(() => groupByRecency(materials), [materials]);
@@ -188,18 +234,7 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
         return;
       }
       try {
-        const page = await listJobsForCurrentUserPage(supabase, {
-          limit: 100,
-          offset: 0,
-          tab: 'all',
-        });
-        setAssignJobs(
-          page.items.map((j) => ({
-            id: j.id,
-            shortDescription: j.shortDescription,
-            customerName: j.customerName,
-          })),
-        );
+        setAssignJobs(await listAllJobsForAssign());
       } catch (err) {
         setAssignJobsError(err instanceof Error ? err.message : 'Could not load jobs.');
       } finally {
@@ -250,8 +285,6 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
     );
   }
 
-  const noteCount = notes.length;
-  const materialCount = materials.length;
   const activeEmpty =
     activeTab === 'notes' ? noteGroups.length === 0 : materialGroups.length === 0;
 
@@ -275,27 +308,21 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
         <View style={[styles.topHeader, { maxWidth: TOP_HEADER_MAX_WIDTH }]}>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Close inbox"
+            accessibilityLabel="Back"
             onPress={onRequestClose}
-            style={({ pressed }) => [styles.closeCircle, pressed && styles.pressed]}
+            hitSlop={12}
+            style={({ pressed }) => [styles.backButton, pressed && styles.pressed]}
           >
-            <JobDetailIconTopClose color={fg.primary} />
+            <SessionSheetBackIcon color={fg.primary} />
           </Pressable>
           <Text style={typography.displayH1}>INBOX</Text>
-          <View style={styles.closeCircle} />
-        </View>
-
-        <View style={[styles.headerCopyWrap, { maxWidth: CONTENT_MAX_WIDTH }]}>
-          <Text style={[typography.bodySmall, { color: fg.secondary, textAlign: 'center' }]}>
-            Quick captures waiting to be assigned to a job
-          </Text>
         </View>
 
         <View style={[styles.tabsWrap, { maxWidth: CONTENT_MAX_WIDTH }]}>
           <Pressable
             accessibilityRole="button"
             accessibilityState={{ selected: activeTab === 'notes' }}
-            onPress={() => setActiveTab('notes')}
+            onPress={() => selectTab('notes')}
             style={({ pressed }) => [
               activeTab === 'notes' ? styles.tabActive : styles.tabIdle,
               pressed && styles.pressed,
@@ -308,13 +335,13 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
                 { color: activeTab === 'notes' ? fg.primary : fg.secondary },
               ]}
             >
-              Notes ({noteCount})
+              Notes
             </Text>
           </Pressable>
           <Pressable
             accessibilityRole="button"
             accessibilityState={{ selected: activeTab === 'materials' }}
-            onPress={() => setActiveTab('materials')}
+            onPress={() => selectTab('materials')}
             style={({ pressed }) => [
               activeTab === 'materials' ? styles.tabActive : styles.tabIdle,
               pressed && styles.pressed,
@@ -327,7 +354,7 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
                 { color: activeTab === 'materials' ? fg.primary : fg.secondary },
               ]}
             >
-              Materials ({materialCount})
+              Materials
             </Text>
           </Pressable>
         </View>
@@ -351,8 +378,8 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
           <View style={[styles.emptyWrap, { maxWidth: CONTENT_MAX_WIDTH }]}>
             <Text style={[typography.body, { color: fg.secondary, textAlign: 'center' }]}>
               {activeTab === 'notes'
-                ? 'No unassigned notes. Quick-capture a note from Home.'
-                : 'No unassigned materials. Quick-capture a material from Home.'}
+                ? 'All caught up! No unassigned notes.'
+                : 'All caught up! No unassigned materials.'}
             </Text>
           </View>
         ) : activeTab === 'notes' ? (
@@ -366,13 +393,12 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
               <View key={group.bucket} style={styles.groupWrap}>
                 <SectionHeader
                   title={RECENCY_BUCKET_TITLE[group.bucket]}
-                  tone="neutral"
+                  tone="accent"
                   typography={typography}
                 />
                 <ViewNotesBuckets
                   buckets={[bucket]}
                   typography={typography}
-                  hideBucketHeaders
                   onNotePress={(id) => openAssign('notes', id)}
                 />
               </View>
@@ -389,13 +415,12 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
               <View key={group.bucket} style={styles.groupWrap}>
                 <SectionHeader
                   title={RECENCY_BUCKET_TITLE[group.bucket]}
-                  tone="neutral"
+                  tone="accent"
                   typography={typography}
                 />
                 <ViewMaterialsBuckets
                   buckets={[bucket]}
                   typography={typography}
-                  hideBucketHeaders
                   onMaterialPress={(id) => openAssign('materials', id)}
                 />
               </View>
@@ -433,18 +458,15 @@ const styles = StyleSheet.create({
     paddingBottom: space('Spacing/8'),
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
+    gap: space('Spacing/12'),
   },
-  closeCircle: {
+  backButton: {
     width: 40,
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  headerCopyWrap: {
-    width: '100%',
-    paddingHorizontal: space('Spacing/20'),
-    paddingBottom: space('Spacing/8'),
+    marginLeft: -space('Spacing/8'),
   },
   tabsWrap: {
     width: '100%',
