@@ -42,6 +42,18 @@ type EditNoteBottomSheetProps = {
   assignedSession: EditNoteBottomSheetAssignedSession | null;
   /** Hides the `+SESSION` pill entirely when the job has no completed sessions. */
   canAttachSession: boolean;
+  /**
+   * Overrides the subtitle line. Defaults to "Unassigned job note" (or the
+   * session label when `assignedSession` is set). Inbox quick capture passes
+   * "Unassigned quick capture note".
+   */
+  subtitle?: string;
+  /**
+   * When provided, the header renders a `+JOB` pill (instead of `+SESSION`)
+   * used by the Inbox quick-capture flow to attach this note to a job. Lifts
+   * the current body so the parent can cache it before swapping sheets.
+   */
+  onJobPillPress?: (currentValues: EditNoteBottomSheetValues) => void;
   onClose?: () => void;
   onClosed?: () => void;
   onBack?: () => void;
@@ -76,6 +88,8 @@ export function EditNoteBottomSheet({
   values,
   assignedSession,
   canAttachSession,
+  subtitle,
+  onJobPillPress,
   onClose,
   onClosed,
   onBack,
@@ -125,7 +139,21 @@ export function EditNoteBottomSheet({
           >
             {title}
           </Text>
-          {showSessionPill ? (
+          {onJobPillPress ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Attach to job"
+              onPress={() => onJobPillPress({ body })}
+              style={({ pressed }) => [
+                styles.sessionPill,
+                { backgroundColor: errorBg },
+                pressed && styles.pressed,
+              ]}
+            >
+              <JobDetailIconSectionAdd color={errorText} />
+              <Text style={[typography.bodySmall, { color: errorText }]}>JOB</Text>
+            </Pressable>
+          ) : showSessionPill ? (
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={assignedSession ? 'Edit session' : 'Attach to session'}
@@ -148,9 +176,10 @@ export function EditNoteBottomSheet({
         </View>
 
         <Text style={[typography.bodySmall, styles.subtitle]}>
-          {assignedSession
-            ? `Session: ${assignedSession.dateLabel} ${assignedSession.timeRangeLabel}`
-            : 'Unassigned job note'}
+          {subtitle ??
+            (assignedSession
+              ? `Session: ${assignedSession.dateLabel} ${assignedSession.timeRangeLabel}`
+              : 'Unassigned job note')}
         </Text>
 
         <View style={styles.textareaShell}>

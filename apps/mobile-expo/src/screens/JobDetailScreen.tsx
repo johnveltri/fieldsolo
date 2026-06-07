@@ -43,6 +43,8 @@ import {
   NewSessionBottomSheet,
   nextStatusAfterPrimaryAction,
   SessionCard,
+  ViewMaterialsBuckets,
+  ViewNotesBuckets,
   type ChooseSessionBottomSheetSession,
   type DropdownBottomSheetOption,
   type EditMaterialBottomSheetValues,
@@ -62,7 +64,6 @@ import {
   JobDetailIconSectionSessions,
   JobDetailIconTopClose,
   JobDetailIconTopEdit,
-  JobDetailIconViewNote,
 } from '../components/figma-icons/JobDetailScreenIcons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { color, colorWithAlpha, radius } from '@fieldbook/design-system/lib/tokens';
@@ -1729,141 +1730,9 @@ function SectionHeaderFigma({
   );
 }
 
-// --- View materials (multi-session) ---
-
-/** Session bucket header — `Typography/LABEL` + secondary via `labelHeadingSecondary` (materials + notes). */
-function bucketSessionHeaderTitle(sessionDateLabel: string | undefined): string {
-  const d = sessionDateLabel?.trim() ?? '';
-  return `${d} SESSION`.replace(/\s+/g, ' ').trim().toUpperCase();
-}
-
-/**
- * Single bordered card listing material buckets (unassigned vs per-session).
- * Each bucket: tinted header row (`bg.canvas`) then line items with optional top borders between buckets.
- */
-function ViewMaterialsBuckets({
-  buckets,
-  typography,
-  onMaterialPress,
-}: {
-  buckets: import('../mocks/jobDetail').JobDetailMaterialBucket[];
-  typography: TextStyles;
-  /** Tap a row → open the Edit Material sheet prefilled with this material's fields. */
-  onMaterialPress?: (materialId: string) => void;
-}) {
-  if (buckets.length === 0) {
-    return null;
-  }
-
-  return (
-    <View style={[styles.viewCardOuter, { maxWidth: CONTENT_MAX_WIDTH }]}>
-      <View style={styles.viewCardBorder}>
-        {buckets.map((bucket, bi) => (
-          <View
-            key={bucket.id}
-            style={bi > 0 ? { borderTopWidth: 1, borderTopColor: color('Foundation/Border/Subtle') } : undefined}
-          >
-            <View style={[styles.bucketHeader, bi === 0 && styles.bucketHeaderFirst]}>
-              {bucket.kind === 'unassigned' ? (
-                <Text style={typography.labelHeadingSecondary}>UNASSIGNED</Text>
-              ) : (
-                <Text style={typography.labelHeadingSecondary}>
-                  {bucketSessionHeaderTitle(bucket.sessionDateLabel)}
-                </Text>
-              )}
-            </View>
-            {bucket.items.map((item, ii) => (
-              <Pressable
-                key={`${bucket.id}-${item.id}`}
-                accessibilityRole="button"
-                accessibilityLabel="Edit material"
-                onPress={onMaterialPress ? () => onMaterialPress(item.id) : undefined}
-                style={({ pressed }) => [
-                  styles.materialRow,
-                  ii > 0 && { borderTopWidth: 1, borderTopColor: color('Foundation/Border/Subtle') },
-                  pressed && onMaterialPress ? styles.pressed : null,
-                ]}
-              >
-                <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={[typography.bodyBold, { color: fg.primary }]}>{item.name}</Text>
-                  <Text style={[typography.body, { color: fg.secondary, marginTop: space('Spacing/4') }]}>
-                    {item.quantityLabel}
-                  </Text>
-                </View>
-                <Text style={[typography.bodyBold, { color: fg.primary }]}>{item.priceLabel}</Text>
-              </Pressable>
-            ))}
-          </View>
-        ))}
-      </View>
-    </View>
-  );
-}
-
-// --- View notes (multi-session) ---
-
-/** Same outer structure as materials: buckets, header strip, rows with icon + excerpt + date. */
-function ViewNotesBuckets({
-  buckets,
-  typography,
-  onNotePress,
-}: {
-  buckets: import('../mocks/jobDetail').JobDetailNoteBucket[];
-  typography: TextStyles;
-  /** Tap a row → open the Edit Note sheet prefilled with this note's body + session. */
-  onNotePress?: (noteId: string) => void;
-}) {
-  if (buckets.length === 0) {
-    return null;
-  }
-
-  const noteIcon = color('Semantic/Activity/Note');
-  return (
-    <View style={[styles.viewCardOuter, { maxWidth: CONTENT_MAX_WIDTH }]}>
-      <View style={styles.viewCardBorder}>
-        {buckets.map((bucket, bi) => (
-          <View
-            key={bucket.id}
-            style={bi > 0 ? { borderTopWidth: 1, borderTopColor: color('Foundation/Border/Subtle') } : undefined}
-          >
-            <View style={[styles.bucketHeader, bi === 0 && styles.bucketHeaderFirst]}>
-              {bucket.kind === 'unassigned' ? (
-                <Text style={typography.labelHeadingSecondary}>UNASSIGNED</Text>
-              ) : (
-                <Text style={typography.labelHeadingSecondary}>
-                  {bucketSessionHeaderTitle(bucket.sessionDateLabel)}
-                </Text>
-              )}
-            </View>
-            {bucket.notes.map((n, ni) => (
-              <Pressable
-                key={`${bucket.id}-n-${n.id}`}
-                accessibilityRole="button"
-                accessibilityLabel="Edit note"
-                onPress={onNotePress ? () => onNotePress(n.id) : undefined}
-                style={({ pressed }) => [
-                  styles.noteRow,
-                  ni > 0 && { borderTopWidth: 1, borderTopColor: color('Foundation/Border/Subtle') },
-                  pressed && onNotePress ? styles.pressed : null,
-                ]}
-              >
-                <View style={{ marginTop: space('Spacing/2') }}>
-                  <JobDetailIconViewNote color={noteIcon} />
-                </View>
-                <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={[typography.body, { color: fg.primary }]}>{n.excerpt}</Text>
-                  <Text style={[typography.bodySmall, { color: fg.secondary, marginTop: space('Spacing/8') }]}>
-                    {n.dateLabel}
-                  </Text>
-                </View>
-              </Pressable>
-            ))}
-          </View>
-        ))}
-      </View>
-    </View>
-  );
-}
+// `ViewMaterialsBuckets` / `ViewNotesBuckets` and the `bucketSessionHeaderTitle`
+// helper now live in `components/ds/ViewActivityBuckets` so the Inbox can reuse
+// the same UNASSIGNED card + rows.
 
 // Bottom nav (Figma `225:12089`) is rendered via the shared
 // `ShellBottomNav` component (see imports above). The local
@@ -2008,30 +1877,4 @@ const styles = StyleSheet.create({
     backgroundColor: bg.surfaceWhite,
     overflow: 'hidden',
   },
-  /** Bucket title strip — same cream as page canvas so it reads as “inside” the card. */
-  bucketHeader: {
-    height: space('Spacing/32'),
-    justifyContent: 'center',
-    backgroundColor: bg.canvasWarm,
-    paddingHorizontal: space('Spacing/16'),
-  },
-  bucketHeaderFirst: {
-    borderTopLeftRadius: radius('Radius/16'),
-    borderTopRightRadius: radius('Radius/16'),
-  },
-  materialRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: space('Spacing/16'),
-    gap: space('Spacing/16'),
-  },
-  noteRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: space('Spacing/8'),
-    paddingHorizontal: space('Spacing/16'),
-    paddingVertical: space('Spacing/16'),
-  },
-
 });

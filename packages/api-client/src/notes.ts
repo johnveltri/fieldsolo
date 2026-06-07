@@ -6,12 +6,14 @@ import type { SessionId } from './sessions';
 export type NoteId = string;
 
 /**
- * Input for creating a new note. Exactly one of `jobId` / `sessionId` must be
- * non-null to satisfy `notes_exactly_one_parent`. When `sessionId` is set the
- * note is session-scoped; otherwise it is an unassigned (job-scoped) note.
+ * Input for creating a new note.
+ *
+ * - `sessionId` set → session-scoped note (`job_id` nulled out).
+ * - `sessionId` null + `jobId` set → unassigned (job-scoped) note.
+ * - `sessionId` null + `jobId` null → Inbox quick-capture note (no parent).
  */
 export type CreateNoteInput = {
-  jobId: JobId;
+  jobId: JobId | null;
   sessionId: SessionId | null;
   body: string;
 };
@@ -39,7 +41,7 @@ function assertBodyNotBlank(body: string): void {
   }
 }
 
-/** Inserts a new note scoped to either a job or a session (exactly one). */
+/** Inserts a new note scoped to a session, a job, or the Inbox (no parent). */
 export async function createNote(
   client: FieldbookSupabaseClient,
   input: CreateNoteInput,
@@ -56,9 +58,10 @@ export async function createNote(
   const row = {
     user_id: userId,
     body: input.body.trim(),
-    // Exactly one parent: when a session is chosen we null out job_id, and vice
-    // versa. This matches how fetchJobDetail buckets notes.
-    job_id: input.sessionId ? null : input.jobId,
+    // When a session is chosen we null out job_id. Otherwise the note is
+    // job-scoped, or — when jobId is also null — an Inbox quick capture with
+    // no parent. Matches how fetchJobDetail / inbox lists bucket notes.
+    job_id: input.sessionId ? null : (input.jobId ?? null),
     session_id: input.sessionId ?? null,
   };
 

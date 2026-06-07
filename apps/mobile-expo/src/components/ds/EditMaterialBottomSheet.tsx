@@ -49,6 +49,18 @@ type EditMaterialBottomSheetProps = {
   assignedSession: EditMaterialBottomSheetAssignedSession | null;
   /** Hides the `+SESSION` pill entirely when the job has no completed sessions. */
   canAttachSession: boolean;
+  /**
+   * Overrides the subtitle line. Defaults to "Unassigned job material" (or the
+   * session label when `assignedSession` is set). Inbox quick capture passes
+   * "Unassigned quick capture material".
+   */
+  subtitle?: string;
+  /**
+   * When provided, the header renders a `+JOB` pill (instead of `+SESSION`)
+   * used by the Inbox quick-capture flow to attach this material to a job.
+   * Lifts the current field values so the parent can cache them.
+   */
+  onJobPillPress?: (currentValues: EditMaterialBottomSheetValues) => void;
   onClose?: () => void;
   onClosed?: () => void;
   onBack?: () => void;
@@ -147,6 +159,8 @@ export function EditMaterialBottomSheet({
   values,
   assignedSession,
   canAttachSession,
+  subtitle,
+  onJobPillPress,
   onClose,
   onClosed,
   onBack,
@@ -232,7 +246,21 @@ export function EditMaterialBottomSheet({
           >
             {title}
           </Text>
-          {showSessionPill ? (
+          {onJobPillPress ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Attach to job"
+              onPress={() => onJobPillPress(currentDraft())}
+              style={({ pressed }) => [
+                styles.sessionPill,
+                { backgroundColor: errorBg },
+                pressed && styles.pressed,
+              ]}
+            >
+              <JobDetailIconSectionAdd color={errorText} />
+              <Text style={[typography.bodySmall, { color: errorText }]}>JOB</Text>
+            </Pressable>
+          ) : showSessionPill ? (
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={assignedSession ? 'Edit session' : 'Attach to session'}
@@ -255,9 +283,10 @@ export function EditMaterialBottomSheet({
         </View>
 
         <Text style={[typography.bodySmall, styles.subtitle]}>
-          {assignedSession
-            ? `Session: ${assignedSession.dateLabel} ${assignedSession.timeRangeLabel}`
-            : 'Unassigned job material'}
+          {subtitle ??
+            (assignedSession
+              ? `Session: ${assignedSession.dateLabel} ${assignedSession.timeRangeLabel}`
+              : 'Unassigned job material')}
         </Text>
 
         <View style={styles.inputShell}>

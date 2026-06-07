@@ -42,6 +42,11 @@ import { shellBottomNavOuterHeight } from '../components/shell/ShellBottomNav';
 import { useJobsListInvalidation } from '../context/JobsListInvalidationContext';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import {
+  recencyBucket,
+  RECENCY_BUCKET_TITLE,
+  type RecencyBucket,
+} from '../lib/timeBuckets';
+import {
   CONTENT_MAX_WIDTH,
   TOP_HEADER_MAX_WIDTH,
   bg,
@@ -71,39 +76,6 @@ type JobsScreenProps = {
 
 type Typography = ReturnType<typeof createTextStyles>;
 
-type JobsBucket = 'today' | 'pastWeek' | 'pastMonth' | 'older';
-
-function isSameLocalCalendarDay(anchorMs: number, nowMs: number): boolean {
-  const a = new Date(anchorMs);
-  const n = new Date(nowMs);
-  return (
-    a.getFullYear() === n.getFullYear() &&
-    a.getMonth() === n.getMonth() &&
-    a.getDate() === n.getDate()
-  );
-}
-
-/** Section buckets use the same recency signal as DB list sort: last session activity, else job creation. Mutually exclusive: TODAY → PAST WEEK → PAST MONTH → OLDER. */
-function jobsBucket(lastWorkedAt: string | null, createdAt: string, nowMs: number): JobsBucket {
-  const anchor =
-    lastWorkedAt != null && lastWorkedAt !== '' ? lastWorkedAt : createdAt;
-  const t = new Date(anchor).getTime();
-  if (Number.isNaN(t)) return 'older';
-  const ms7 = 7 * 86_400_000;
-  const ms30 = 30 * 86_400_000;
-  if (isSameLocalCalendarDay(t, nowMs)) return 'today';
-  if (t >= nowMs - ms7) return 'pastWeek';
-  if (t >= nowMs - ms30) return 'pastMonth';
-  return 'older';
-}
-
-const BUCKET_TITLE: Record<JobsBucket, string> = {
-  today: 'TODAY',
-  pastWeek: 'PAST WEEK',
-  pastMonth: 'PAST MONTH',
-  older: 'OLDER',
-};
-
 function isJobIncomplete(job: ListJobsForCurrentUserItem): boolean {
   return !job.isFinanciallyComplete;
 }
@@ -131,15 +103,15 @@ type JobsFlatRow =
 
 function buildFlatRows(jobs: ListJobsForCurrentUserItem[]): JobsFlatRow[] {
   const nowMs = Date.now();
-  let prev: JobsBucket | null = null;
+  let prev: RecencyBucket | null = null;
   const rows: JobsFlatRow[] = [];
   for (const job of jobs) {
-    const b = jobsBucket(job.lastWorkedAt, job.createdAt, nowMs);
+    const b = recencyBucket(job.lastWorkedAt, job.createdAt, nowMs);
     if (b !== prev) {
       rows.push({
         kind: 'section',
         mode: 'recency',
-        title: BUCKET_TITLE[b],
+        title: RECENCY_BUCKET_TITLE[b],
         key: `h-${b}-${rows.length}`,
       });
       prev = b;

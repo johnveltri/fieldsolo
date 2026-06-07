@@ -17,7 +17,11 @@ export type MaterialId = string;
  * per-job materials rollup in `fetchJobDetail` stays consistent.
  */
 export type CreateMaterialInput = {
-  jobId: JobId;
+  /**
+   * Parent job, or `null` for an Inbox quick capture with no parent. When
+   * `sessionId` is set, `job_id` is nulled out (session-scoped).
+   */
+  jobId: JobId | null;
   sessionId: SessionId | null;
   description: string;
   quantity: number;
@@ -93,9 +97,10 @@ export async function createMaterial(
     unit: input.unit.trim(),
     unit_cost_cents: input.unitCostCents,
     total_cost_cents: computeTotalCostCents(input.unitCostCents, input.quantity),
-    // Exactly one parent: when a session is chosen we null out job_id, and
-    // vice versa. Matches how fetchJobDetail buckets materials.
-    job_id: input.sessionId ? null : input.jobId,
+    // When a session is chosen we null out job_id. Otherwise job-scoped, or —
+    // when jobId is also null — an Inbox quick capture with no parent. Matches
+    // how fetchJobDetail / inbox lists bucket materials.
+    job_id: input.sessionId ? null : (input.jobId ?? null),
     session_id: input.sessionId ?? null,
   };
 
