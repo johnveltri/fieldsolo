@@ -793,7 +793,7 @@ const styles = StyleSheet.create({
    * inset — only this solid `canvasWarm` shows there.
    */
   root: { flex: 1, alignItems: 'center', backgroundColor: bg.canvasWarm },
-  scroll: { flex: 1, width: '100%', backgroundColor: 'transparent' },
+  scroll: { flex: 1, width: '100%', backgroundColor: 'transparent', zIndex: 1 },
   flatListContent: {
     // `center` collapses row width to min-content and breaks job cards; stretch
     // full width, then center capped blocks via `listRowBand` / `listHeaderBand`.

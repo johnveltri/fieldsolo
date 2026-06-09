@@ -15,6 +15,13 @@ import { bg } from '../theme/nativeTokens';
  * `expo-image` or a native tiled layer.
  */
 const ROW_HEIGHT = 28;
+const absoluteFill = {
+  position: 'absolute',
+  top: 0,
+  right: 0,
+  bottom: 0,
+  left: 0,
+} as const;
 
 type CanvasTiledBackgroundProps = {
   /**
@@ -77,6 +84,8 @@ export function CanvasTiledBackground({
 
 const styles = StyleSheet.create({
   layer: {
-    ...StyleSheet.absoluteFillObject,
+    ...absoluteFill,
+    zIndex: 0,
+    elevation: 0,
   },
 });

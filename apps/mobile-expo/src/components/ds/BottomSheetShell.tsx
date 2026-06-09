@@ -25,6 +25,14 @@ import { color, radius, space } from '@fieldbook/design-system/lib/tokens';
 import { useBottomSheetStackWriters } from '../../context/BottomSheetStackContext';
 import { bg, border } from '../../theme/nativeTokens';
 
+const absoluteFill = {
+  position: 'absolute',
+  top: 0,
+  right: 0,
+  bottom: 0,
+  left: 0,
+} as const;
+
 type BottomSheetShellVariant =
   | 'standard'
   | /**
@@ -264,7 +272,7 @@ export function BottomSheetShell({
         accessibilityRole="button"
         accessibilityLabel="Close bottom sheet"
         onPress={onClose}
-        style={StyleSheet.absoluteFillObject}
+        style={absoluteFill}
         pointerEvents={visible ? 'auto' : 'none'}
       >
         <Animated.View style={[styles.scrim, { opacity: scrimOpacity }]} />
@@ -327,7 +335,7 @@ export function BottomSheetShell({
 
 const styles = StyleSheet.create({
   overlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...absoluteFill,
     justifyContent: 'flex-end',
   },
   /**
@@ -337,11 +345,11 @@ const styles = StyleSheet.create({
    * iOS / shrinks `height` on Android when the keyboard appears.
    */
   kav: {
-    ...StyleSheet.absoluteFillObject,
+    ...absoluteFill,
     justifyContent: 'flex-end',
   },
   scrim: {
-    ...StyleSheet.absoluteFillObject,
+    ...absoluteFill,
     backgroundColor: color('Foundation/Text/Primary'),
     opacity: 0.3,
   },

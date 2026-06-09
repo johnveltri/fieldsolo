@@ -1756,7 +1756,7 @@ const styles = StyleSheet.create({
   /** Centered spinner over the same lined background as the loaded screen. */
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   /** Scroll fills root; flex lets the fixed bottom nav sit in the same column without overlapping scroll height math incorrectly. */
-  scroll: { flex: 1 },
+  scroll: { flex: 1, zIndex: 1 },
   /** Default scroll content background can read as white on iOS; keep lines visible. */
   scrollTransparent: { backgroundColor: 'transparent' },
   /** Shared pressed state for `Pressable` opacity feedback. */

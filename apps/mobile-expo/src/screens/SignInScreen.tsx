@@ -279,8 +279,8 @@ export function SignInScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  flex: { flex: 1 },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  flex: { flex: 1, zIndex: 1 },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', zIndex: 1 },
   scrollContent: { flexGrow: 1, justifyContent: 'center' },
   card: {
     padding: space('Spacing/24'),

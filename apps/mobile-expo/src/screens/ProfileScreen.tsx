@@ -497,7 +497,7 @@ function ProfileSectionHeader({
 
 const styles = StyleSheet.create({
   root: { flex: 1, alignItems: 'center', backgroundColor: bg.canvasWarm },
-  scroll: { flex: 1, width: '100%', backgroundColor: 'transparent' },
+  scroll: { flex: 1, width: '100%', backgroundColor: 'transparent', zIndex: 1 },
   scrollContent: {
     alignItems: 'stretch',
   },
