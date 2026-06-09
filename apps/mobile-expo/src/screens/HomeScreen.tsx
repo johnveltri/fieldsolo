@@ -64,6 +64,13 @@ import { TopHeaderProfileIcon } from '../components/figma-icons/TopHeaderIcons';
 import { shellBottomNavOuterHeight } from '../components/shell/ShellBottomNav';
 import { useJobsListInvalidation } from '../context/JobsListInvalidationContext';
 import { useHasLiveSession, useLiveSession } from '../context/LiveSessionContext';
+import {
+  analytics,
+  errorProperties,
+  moneyBucket,
+  quantityBucket,
+  textLengthBucket,
+} from '../lib/analytics';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import {
   CONTENT_MAX_WIDTH,
@@ -279,12 +286,17 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
   }, [openTabJobsPage]);
 
   const runHomeFetch = useCallback(async (isCancelled: () => boolean) => {
+    const startedAt = Date.now();
     if (!isSupabaseConfigured()) {
       if (!isCancelled()) {
         setHomeError('Supabase is not configured.');
         setWeeklyNetCents(0);
         setOpenTabJobsPage([]);
         setRecentJobsDetail([]);
+        analytics.capture('supabase_not_configured_seen', {
+          screen: 'home',
+          operation: 'home_loaded',
+        });
       }
       return;
     }
@@ -303,6 +315,14 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
         setWeeklyNetCents(weekly.netEarningsCents);
         setOpenTabJobsPage(openPage.items);
         setRecentJobsDetail(recent);
+        analytics.capture('home_loaded', {
+          weekly_net_bucket: moneyBucket(weekly.netEarningsCents),
+          weekly_earnings_available: true,
+          jump_back_in_count: recent.length,
+          needs_attention_count: openPage.items.length,
+          pending_payment_count: openPage.items.filter(needsReviewPayment).length,
+          load_duration_ms: Date.now() - startedAt,
+        });
       }
     } catch (err) {
       if (!isCancelled()) {
@@ -310,6 +330,11 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
         setWeeklyNetCents(0);
         setOpenTabJobsPage([]);
         setRecentJobsDetail([]);
+        analytics.capture('home_load_failed', {
+          failing_module: 'home',
+          load_duration_ms: Date.now() - startedAt,
+          ...errorProperties(err),
+        });
       }
     }
   }, []);
@@ -357,6 +382,10 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
         const items = await listRecentJobsForCurrentUser(supabase, { limit: 3 });
         if (!cancelled) {
           setRecentJobs(items);
+          analytics.capture('home_quick_actions_opened', {
+            recent_job_count: items.length,
+            has_live_session: hasLiveSession,
+          });
         }
       } catch (err) {
         if (!cancelled) {
@@ -381,24 +410,47 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
       }
       setActionError(null);
       setStarting(true);
+      analytics.capture('session_start_requested', {
+        source: 'quick_actions',
+        job_id: job.id,
+        placeholder_job: false,
+      });
+      analytics.capture('home_quick_action_selected', {
+        action: 'start_session_existing_job',
+        recent_job_count: recentJobs.length,
+      });
       try {
-        await startLiveSession({
+        const created = await startLiveSession({
           jobId: job.id,
           jobShortDescription: job.shortDescription,
         });
         await tryBumpJobToInProgressIfNotStarted(supabase, job.id);
+        analytics.capture('live_session_started', {
+          source: 'quick_actions',
+          session_id: created.id,
+          job_id: job.id,
+          job_short_description: job.shortDescription,
+          placeholder_job: false,
+        });
         setQuickActionsVisible(false);
         invalidateJobsList();
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error('[HomeScreen] startLiveSession (existing job)', err);
         void refreshLiveSession();
+        analytics.capture('live_session_start_failed', {
+          source: 'quick_actions',
+          job_id: job.id,
+          placeholder_job: false,
+          recovery_result: 'refresh_requested',
+          ...errorProperties(err),
+        });
         setActionError(err instanceof Error ? err.message : 'Could not start session.');
       } finally {
         setStarting(false);
       }
     },
-    [invalidateJobsList, refreshLiveSession, startLiveSession],
+    [invalidateJobsList, recentJobs.length, refreshLiveSession, startLiveSession],
   );
 
   const onStartNewSession = useCallback(async () => {
@@ -410,10 +462,31 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
     let createdJobId: string | null = null;
     setActionError(null);
     setStarting(true);
+    analytics.capture('session_start_requested', {
+      source: 'quick_actions',
+      placeholder_job: true,
+    });
+    analytics.capture('home_quick_action_selected', {
+      action: 'start_session_new_job',
+      recent_job_count: recentJobs.length,
+    });
     try {
       createdJobId = await createBlankJobForLiveSessionStart(supabase, { shortDescription });
-      await startLiveSession({ jobId: createdJobId, jobShortDescription: shortDescription });
+      const created = await startLiveSession({ jobId: createdJobId, jobShortDescription: shortDescription });
       await tryBumpJobToInProgressIfNotStarted(supabase, createdJobId);
+      analytics.capture('job_created', {
+        source: 'home_quick_session',
+        job_id: createdJobId,
+        placeholder: true,
+        job_short_description: shortDescription,
+      });
+      analytics.capture('live_session_started', {
+        source: 'quick_actions',
+        session_id: created.id,
+        job_id: createdJobId,
+        job_short_description: shortDescription,
+        placeholder_job: true,
+      });
       setQuickActionsVisible(false);
       invalidateJobsList();
     } catch (err) {
@@ -427,6 +500,13 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
         // Refresh is best-effort recovery; cleanup below still protects the quick job.
       }
       if (createdJobId && recoveredJobId === createdJobId) {
+        analytics.capture('live_session_start_failed', {
+          source: 'quick_actions',
+          job_id: createdJobId,
+          placeholder_job: true,
+          recovery_result: 'recovered_created_job_session',
+          ...errorProperties(err),
+        });
         setQuickActionsVisible(false);
         invalidateJobsList();
         return;
@@ -440,11 +520,18 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
           console.error('[HomeScreen] cleanup orphaned quick-session job failed', cleanupErr);
         }
       }
+      analytics.capture('live_session_start_failed', {
+        source: 'quick_actions',
+        job_id: createdJobId,
+        placeholder_job: true,
+        recovery_result: createdJobId ? 'placeholder_job_deleted' : 'no_job_created',
+        ...errorProperties(err),
+      });
       setActionError(err instanceof Error ? err.message : 'Could not start session.');
     } finally {
       setStarting(false);
     }
-  }, [invalidateJobsList, refreshLiveSession, startLiveSession]);
+  }, [invalidateJobsList, recentJobs.length, refreshLiveSession, startLiveSession]);
 
   const resetCapture = useCallback(() => {
     setCaptureStep('idle');
@@ -495,6 +582,14 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
   }, []);
 
   const beginInboxCapture = useCallback((kind: QuickCaptureKind) => {
+    analytics.capture('home_quick_action_selected', {
+      action: kind === 'note' ? 'new_note' : 'new_material',
+      recent_job_count: recentJobs.length,
+    });
+    analytics.capture(kind === 'note' ? 'note_create_opened' : 'material_create_opened', {
+      source: 'quick_actions',
+      parent: 'inbox',
+    });
     setCaptureKind(kind);
     setCaptureMode('inbox');
     setCaptureJob(null);
@@ -510,7 +605,7 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
       setMatDraftUnit('ea');
       setCaptureStep('materialEdit');
     }
-  }, []);
+  }, [recentJobs.length]);
 
   const beginJobCapture = useCallback(
     (job: QuickActionsRecentJob, kind: QuickCaptureKind) => {
@@ -524,6 +619,17 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
       setCaptureSessions([]);
       setDraftSessionId(null);
       void loadCaptureJobSessions(job.id);
+      analytics.capture('home_quick_action_selected', {
+        action: kind === 'note' ? 'new_note_existing_job' : 'new_material_existing_job',
+        recent_job_count: recentJobs.length,
+      });
+      analytics.capture(kind === 'note' ? 'note_create_opened' : 'material_create_opened', {
+        source: 'quick_actions',
+        parent: 'job',
+        job_id: job.id,
+        job_short_description: job.shortDescription,
+        customer_name: job.customerName,
+      });
       if (kind === 'note') {
         setDraftBody('');
         setCaptureStep('noteEdit');
@@ -535,7 +641,7 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
         setCaptureStep('materialEdit');
       }
     },
-    [loadCaptureJobSessions],
+    [loadCaptureJobSessions, recentJobs.length],
   );
 
   /** Inbox capture → "+JOB" pill: open the full job chooser. */
@@ -592,14 +698,27 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
       }
       setCaptureSaving(true);
       try {
-        await createNote(supabase, {
+        const noteId = await createNote(supabase, {
           jobId: captureMode === 'job' && captureJob ? captureJob.id : null,
           sessionId: captureMode === 'job' ? draftSessionId : null,
           body,
         });
+        analytics.capture('note_created', {
+          source: 'quick_actions',
+          note_id: noteId,
+          parent_type: captureMode === 'job' ? (draftSessionId ? 'session' : 'job') : 'inbox',
+          job_id: captureMode === 'job' && captureJob ? captureJob.id : null,
+          session_id: captureMode === 'job' ? draftSessionId : null,
+          text_length_bucket: textLengthBucket(body),
+        });
         closeQuickActions();
         invalidateJobsList();
       } catch (e) {
+        analytics.capture('note_create_failed', {
+          source: 'quick_actions',
+          parent_type: captureMode === 'job' ? (draftSessionId ? 'session' : 'job') : 'inbox',
+          ...errorProperties(e),
+        });
         Alert.alert('Save failed', formatCaptureError(e) || 'Could not save note.');
       } finally {
         setCaptureSaving(false);
@@ -617,7 +736,7 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
       }
       setCaptureSaving(true);
       try {
-        await createMaterial(supabase, {
+        const materialId = await createMaterial(supabase, {
           jobId: captureMode === 'job' && captureJob ? captureJob.id : null,
           sessionId: captureMode === 'job' ? draftSessionId : null,
           description: values.description,
@@ -625,9 +744,25 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
           unit: values.unit,
           unitCostCents: values.unitCostCents,
         });
+        analytics.capture('material_created', {
+          source: 'quick_actions',
+          material_id: materialId,
+          parent_type: captureMode === 'job' ? (draftSessionId ? 'session' : 'job') : 'inbox',
+          job_id: captureMode === 'job' && captureJob ? captureJob.id : null,
+          session_id: captureMode === 'job' ? draftSessionId : null,
+          unit: values.unit,
+          quantity_bucket: quantityBucket(values.quantity),
+          cost_bucket: moneyBucket(values.unitCostCents),
+          text_length_bucket: textLengthBucket(values.description),
+        });
         closeQuickActions();
         invalidateJobsList();
       } catch (e) {
+        analytics.capture('material_create_failed', {
+          source: 'quick_actions',
+          parent_type: captureMode === 'job' ? (draftSessionId ? 'session' : 'job') : 'inbox',
+          ...errorProperties(e),
+        });
         Alert.alert('Save failed', formatCaptureError(e) || 'Could not save material.');
       } finally {
         setCaptureSaving(false);
@@ -741,19 +876,46 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
                         title={job.shortDescription.trim() || 'Untitled Job'}
                         missingFields={missingFieldsLabelsForHome(job)}
                         typography={typography}
-                        onPress={() => onOpenJobDetail(job.id)}
+                        onPress={() => {
+                          analytics.capture('home_job_card_pressed', {
+                            module: 'needs_attention',
+                            needs_attention_kind: kind,
+                            job_id: job.id,
+                            job_status: job.workStatus,
+                            job_short_description: job.shortDescription,
+                          });
+                          onOpenJobDetail(job.id);
+                        }}
                       />
                     ) : kind === 'review' ? (
                       <WorkedNotMarkedCompleteRowCard
                         title={job.shortDescription.trim() || 'Untitled Job'}
                         typography={typography}
-                        onPress={() => onOpenJobDetail(job.id)}
+                        onPress={() => {
+                          analytics.capture('home_job_card_pressed', {
+                            module: 'needs_attention',
+                            needs_attention_kind: kind,
+                            job_id: job.id,
+                            job_status: job.workStatus,
+                            job_short_description: job.shortDescription,
+                          });
+                          onOpenJobDetail(job.id);
+                        }}
                       />
                     ) : (
                       <PendingPaymentRowCard
                         title={job.shortDescription.trim() || 'Untitled Job'}
                         typography={typography}
-                        onPress={() => onOpenJobDetail(job.id)}
+                        onPress={() => {
+                          analytics.capture('home_job_card_pressed', {
+                            module: 'pending_payment',
+                            needs_attention_kind: kind,
+                            job_id: job.id,
+                            job_status: job.workStatus,
+                            job_short_description: job.shortDescription,
+                          });
+                          onOpenJobDetail(job.id);
+                        }}
                       />
                     )}
                   </View>
@@ -762,7 +924,15 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
                   <Pressable
                     accessibilityRole="button"
                     accessibilityLabel={needsAttentionExpanded ? 'Show fewer jobs' : 'Show all jobs'}
-                    onPress={() => setNeedsAttentionExpanded((e) => !e)}
+                    onPress={() => {
+                      const nextExpanded = !needsAttentionExpanded;
+                      analytics.capture('home_needs_attention_expanded', {
+                        expanded: nextExpanded,
+                        visible_count: shownNeedsAttentionRows.length,
+                        total_count: needsAttentionRows.length,
+                      });
+                      setNeedsAttentionExpanded(nextExpanded);
+                    }}
                     style={({ pressed }) => [styles.needsAttentionFooter, pressed && styles.pressed]}
                   >
                     <Text style={[typography.bodySmall, { color: fg.secondary }]}>
@@ -792,7 +962,15 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
                       job={job}
                       typography={typography}
                       recencyLabelMode="lastUpdated"
-                      onPress={() => onOpenJobDetail(job.id)}
+                      onPress={() => {
+                        analytics.capture('home_job_card_pressed', {
+                          module: 'jump_back_in',
+                          job_id: job.id,
+                          job_status: job.workStatus,
+                          job_short_description: job.shortDescription,
+                        });
+                        onOpenJobDetail(job.id);
+                      }}
                     />
                   </View>
                 ))}

@@ -40,6 +40,7 @@ import {
 } from '../components/figma-icons/ProfileScreenIcons';
 import { TopHeaderBackIcon } from '../components/figma-icons/TopHeaderIcons';
 import { useAuth } from '../context/AuthContext';
+import { analytics, changedFields, emailProperties, errorProperties } from '../lib/analytics';
 import { supabase } from '../lib/supabase';
 import { TRADE_PRESETS, formatTradesForDisplay } from '../lib/trades';
 import {
@@ -122,6 +123,17 @@ export function ProfileScreen({ onBack }: ProfileScreenProps) {
         const p = await fetchCurrentUserProfile(supabase);
         if (cancelled) return;
         setProfile(p);
+        analytics.capture('profile_viewed', {
+          profile_complete:
+            p != null &&
+            [p.firstName, p.lastName].every((v) => (v ?? '').trim().length > 0) &&
+            (p.trades ?? []).length > 0,
+          trade_count: p?.trades.length ?? 0,
+          trades: p?.trades ?? [],
+          plan: 'free',
+          ...emailProperties(session?.user.email),
+          email: session?.user.email ?? null,
+        });
       } catch (e) {
         if (cancelled) return;
         // eslint-disable-next-line no-console
@@ -169,6 +181,11 @@ export function ProfileScreen({ onBack }: ProfileScreenProps) {
     });
     setEditProfileMounted(true);
     setFlow('editProfile');
+    analytics.capture('profile_edit_opened', {
+      first_name_present: (profile?.firstName ?? '').trim().length > 0,
+      last_name_present: (profile?.lastName ?? '').trim().length > 0,
+      trade_count: profile?.trades.length ?? 0,
+    });
   }, [profile]);
 
   const closeEditProfile = useCallback(() => {
@@ -178,6 +195,10 @@ export function ProfileScreen({ onBack }: ProfileScreenProps) {
   const openTradePicker = useCallback((current: UpdateProfileValues) => {
     setEditDraft(current);
     setFlow('editProfileTrades');
+    analytics.capture('profile_trade_picker_opened', {
+      current_trade_count: current.trades.length,
+      trades: current.trades,
+    });
   }, []);
 
   const returnFromTradePicker = useCallback(
@@ -193,6 +214,11 @@ export function ProfileScreen({ onBack }: ProfileScreenProps) {
       if (saving) return;
       setSaving(true);
       try {
+        const before = {
+          firstName: profile?.firstName ?? '',
+          lastName: profile?.lastName ?? '',
+          trades: (profile?.trades ?? []).join('|'),
+        };
         const updated = await updateCurrentUserProfile(supabase, {
           firstName: values.firstName,
           lastName: values.lastName,
@@ -200,13 +226,49 @@ export function ProfileScreen({ onBack }: ProfileScreenProps) {
         });
         setProfile(updated);
         setFlow('closed');
+        if (session?.user.id) {
+          analytics.identify(session.user.id, {
+            ...emailProperties(session.user.email),
+            email: session.user.email ?? null,
+            trade_count: updated.trades.length,
+            trades: updated.trades,
+            profile_complete:
+              [updated.firstName, updated.lastName].every((v) => (v ?? '').trim().length > 0) &&
+              updated.trades.length > 0,
+          });
+        }
+        analytics.capture('profile_saved', {
+          changed_fields: changedFields(before, {
+            firstName: values.firstName,
+            lastName: values.lastName,
+            trades: values.trades.join('|'),
+          }),
+          trade_count: updated.trades.length,
+          trades: updated.trades,
+        });
       } catch (e) {
+        analytics.capture('profile_save_failed', {
+          changed_fields: changedFields(
+            {
+              firstName: profile?.firstName ?? '',
+              lastName: profile?.lastName ?? '',
+              trades: (profile?.trades ?? []).join('|'),
+            },
+            {
+              firstName: values.firstName,
+              lastName: values.lastName,
+              trades: values.trades.join('|'),
+            },
+          ),
+          trade_count: values.trades.length,
+          ...errorProperties(e),
+        });
         Alert.alert('Save failed', extractErrorMessage(e, 'Could not save profile.'));
       } finally {
         setSaving(false);
       }
     },
-    [saving],
+    [profile, saving, session?.user.email, session?.user.id],
   );
 
   // Change password
@@ -222,12 +284,18 @@ export function ProfileScreen({ onBack }: ProfileScreenProps) {
       if (saving) return;
       setSaving(true);
       try {
+        analytics.capture('password_change_submitted', { source: 'profile' });
         const { error } = await updatePassword(newPassword);
         if (error) {
+          analytics.capture('password_change_failed', {
+            source: 'profile',
+            ...errorProperties(error),
+          });
           Alert.alert('Could not update password', error.message);
           return;
         }
         setFlow('closed');
+        analytics.capture('password_change_succeeded', { source: 'profile' });
         Alert.alert('Password updated');
       } finally {
         setSaving(false);
@@ -237,6 +305,7 @@ export function ProfileScreen({ onBack }: ProfileScreenProps) {
   );
 
   const onDeleteAccountPress = useCallback(() => {
+    analytics.capture('account_delete_requested', { source: 'profile' });
     Alert.alert(
       'Delete account?',
       'This permanently deletes your account and all associated jobs, sessions, notes, and materials. This cannot be undone.',
@@ -246,6 +315,7 @@ export function ProfileScreen({ onBack }: ProfileScreenProps) {
           text: 'Delete',
           style: 'destructive',
           onPress: async () => {
+            analytics.capture('account_delete_confirmed', { source: 'profile' });
             const { error } = await deleteAccount();
             if (error) {
               Alert.alert('Could not delete account', error.message);

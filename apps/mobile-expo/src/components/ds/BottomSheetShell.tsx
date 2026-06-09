@@ -337,6 +337,8 @@ const styles = StyleSheet.create({
   overlay: {
     ...absoluteFill,
     justifyContent: 'flex-end',
+    zIndex: 1000,
+    elevation: 1000,
   },
   /**
    * `KeyboardAvoidingView` host. Fills the overlay (so its `flex-end`

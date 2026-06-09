@@ -41,6 +41,7 @@ import {
 } from '../components/ds';
 import { shellBottomNavOuterHeight } from '../components/shell/ShellBottomNav';
 import { useJobsListInvalidation } from '../context/JobsListInvalidationContext';
+import { analytics, errorProperties } from '../lib/analytics';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import {
   recencyBucket,
@@ -266,10 +267,17 @@ export function JobsScreen({
   const activeTab = jobsTabControlled ? jobsListTabProp : internalJobsTab;
   const setActiveTab = useCallback(
     (t: ListJobsForCurrentUserTab) => {
+      if (t !== activeTab) {
+        analytics.capture('jobs_tab_changed', {
+          from_tab: activeTab,
+          to_tab: t,
+          current_count: jobsRef.current.length,
+        });
+      }
       if (jobsTabControlled) onJobsListTabChange(t);
       else setInternalJobsTab(t);
     },
-    [jobsTabControlled, onJobsListTabChange],
+    [activeTab, jobsTabControlled, onJobsListTabChange],
   );
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -301,6 +309,7 @@ export function JobsScreen({
   }, []);
 
   const loadFirstPage = useCallback(async () => {
+    const startedAt = Date.now();
     const requestId = firstPageRequestIdRef.current + 1;
     firstPageRequestIdRef.current = requestId;
     if (!isSupabaseConfigured()) {
@@ -308,6 +317,10 @@ export function JobsScreen({
       setJobs([]);
       setHasMore(false);
       setLoadError('Supabase is not configured.');
+      analytics.capture('supabase_not_configured_seen', {
+        screen: 'jobs',
+        operation: 'jobs_list_loaded',
+      });
       return;
     }
     if (searchFocused && debouncedSearch.trim() === '') {
@@ -330,17 +343,40 @@ export function JobsScreen({
       if (firstPageRequestIdRef.current !== requestId) return;
       setJobs(items);
       setHasMore(more);
+      analytics.capture('jobs_list_loaded', {
+        tab: activeTab,
+        search_present: debouncedSearch.trim().length > 0,
+        search_length: debouncedSearch.trim().length,
+        item_count: items.length,
+        has_more: more,
+        load_duration_ms: Date.now() - startedAt,
+        inbox_count: inboxCount,
+      });
+      if (searchFocused && debouncedSearch.trim().length > 0) {
+        analytics.capture('jobs_search_submitted', {
+          query_length: debouncedSearch.trim().length,
+          result_count: items.length,
+          tab: activeTab,
+        });
+      }
     } catch (error) {
       if (firstPageRequestIdRef.current !== requestId) return;
       setJobs([]);
       setHasMore(false);
       setLoadError(formatLoadError(error));
+      analytics.capture('jobs_list_load_failed', {
+        tab: activeTab,
+        search_present: debouncedSearch.trim().length > 0,
+        search_length: debouncedSearch.trim().length,
+        load_duration_ms: Date.now() - startedAt,
+        ...errorProperties(error),
+      });
     } finally {
       if (firstPageRequestIdRef.current === requestId) {
         setLoading(false);
       }
     }
-  }, [activeTab, debouncedSearch, formatLoadError, searchFocused]);
+  }, [activeTab, debouncedSearch, formatLoadError, inboxCount, searchFocused]);
 
   useEffect(() => {
     void loadFirstPage();
@@ -371,9 +407,22 @@ export function JobsScreen({
         return next;
       });
       setHasMore(more);
+      analytics.capture('jobs_pagination_loaded', {
+        tab: activeTab,
+        offset,
+        added_count: items.length,
+        has_more: more,
+        search_present: debouncedSearch.trim().length > 0,
+      });
     } catch (error) {
       if (firstPageRequestIdRef.current !== requestId) return;
       setLoadError(formatLoadError(error));
+      analytics.capture('jobs_pagination_failed', {
+        tab: activeTab,
+        offset: jobsRef.current.length,
+        search_present: debouncedSearch.trim().length > 0,
+        ...errorProperties(error),
+      });
     } finally {
       loadMoreInFlight.current = false;
       if (firstPageRequestIdRef.current === requestId) {
@@ -383,11 +432,18 @@ export function JobsScreen({
   }, [activeTab, debouncedSearch, formatLoadError, hasMore, loading, searchFocused]);
 
   const onSearchFocus = useCallback(() => {
+    analytics.capture('jobs_search_started', { source: 'jobs' });
     setSearchFocused(true);
     setDebouncedSearch(searchQuery);
   }, [searchQuery]);
 
   const exitSearch = useCallback(() => {
+    if (searchQuery.trim().length > 0) {
+      analytics.capture('jobs_search_cleared', {
+        query_length: searchQuery.trim().length,
+        result_count: jobsRef.current.length,
+      });
+    }
     searchInputRef.current?.blur();
     setSearchFocused(false);
     setSearchQuery('');
@@ -411,12 +467,22 @@ export function JobsScreen({
     if (creatingJob) return;
     if (!isSupabaseConfigured()) {
       setLoadError('Supabase is not configured.');
+      analytics.capture('supabase_not_configured_seen', {
+        screen: 'jobs',
+        operation: 'job_create_started',
+      });
       return;
     }
     setCreatingJob(true);
     setLoadError(null);
+    analytics.capture('job_create_started', { source: 'jobs_fab' });
     try {
       const jobId = await createBlankJobForCurrentUser(supabase);
+      analytics.capture('job_created', {
+        source: 'jobs_fab',
+        job_id: jobId,
+        placeholder: true,
+      });
       onOpenJobDetail(jobId, { initialEditOpen: true });
     } catch (error) {
       const message =
@@ -429,6 +495,10 @@ export function JobsScreen({
             ? (error as { message: string }).message
             : 'Failed to create job.';
       setLoadError(message);
+      analytics.capture('job_create_failed', {
+        source: 'jobs_fab',
+        ...errorProperties(error),
+      });
     } finally {
       setCreatingJob(false);
     }

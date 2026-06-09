@@ -23,6 +23,7 @@ import {
   SectionHeader,
 } from '../components/ds';
 import { useJobsListInvalidation } from '../context/JobsListInvalidationContext';
+import { analytics, errorProperties, moneyBucket } from '../lib/analytics';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import {
   CONTENT_MAX_WIDTH,
@@ -159,8 +160,22 @@ export function EarningsScreen({
 
   const config = WINDOW_CONFIG[window];
 
+  const onSelectWindow = useCallback(
+    (next: EarningsWindow) => {
+      if (next !== window) {
+        analytics.capture('earnings_window_changed', {
+          from_window: window,
+          to_window: next,
+        });
+      }
+      onWindowChange(next);
+    },
+    [onWindowChange, window],
+  );
+
   useEffect(() => {
     let alive = true;
+    const startedAt = Date.now();
     setLoading(true);
     setLoadError(null);
     if (!isSupabaseConfigured()) {
@@ -168,6 +183,10 @@ export function EarningsScreen({
       setLoadError('Supabase is not configured.');
       setSnapshot(EMPTY_SNAPSHOT);
       setOutstanding({ count: 0, revenueCents: 0 });
+      analytics.capture('supabase_not_configured_seen', {
+        screen: 'earnings',
+        operation: 'earnings_loaded',
+      });
       return;
     }
     void (async () => {
@@ -187,11 +206,36 @@ export function EarningsScreen({
           jobs: snap.jobs,
         });
         setOutstanding({ count: owed.count, revenueCents: owed.revenueCents });
+        analytics.capture('earnings_loaded', {
+          window,
+          window_days: config.windowDays,
+          net_bucket: moneyBucket(snap.aggregate.netEarningsCents),
+          revenue_bucket: moneyBucket(snap.aggregate.revenueCents),
+          materials_bucket: moneyBucket(snap.aggregate.materialsCents),
+          hours_bucket:
+            snap.aggregate.totalHours === 0
+              ? 'zero'
+              : snap.aggregate.totalHours < 5
+                ? 'under_5'
+                : snap.aggregate.totalHours < 20
+                  ? '5_19'
+                  : '20_plus',
+          job_count: snap.aggregate.jobCount,
+          outstanding_count: owed.count,
+          outstanding_value_bucket: moneyBucket(owed.revenueCents),
+          load_duration_ms: Date.now() - startedAt,
+        });
       } catch (err) {
         if (!alive) return;
         setLoadError(err instanceof Error ? err.message : 'Failed to load earnings.');
         setSnapshot(EMPTY_SNAPSHOT);
         setOutstanding({ count: 0, revenueCents: 0 });
+        analytics.capture('earnings_load_failed', {
+          window,
+          window_days: config.windowDays,
+          load_duration_ms: Date.now() - startedAt,
+          ...errorProperties(err),
+        });
       } finally {
         if (alive) setLoading(false);
       }
@@ -199,7 +243,7 @@ export function EarningsScreen({
     return () => {
       alive = false;
     };
-  }, [config.windowDays, version]);
+  }, [config.windowDays, version, window]);
 
   const rankedSections = useMemo<RankedSection[]>(() => {
     const jobs = snapshot.jobs;
@@ -277,7 +321,7 @@ export function EarningsScreen({
                   key={w}
                   accessibilityRole="button"
                   accessibilityState={{ selected }}
-                  onPress={() => onWindowChange(w)}
+                  onPress={() => onSelectWindow(w)}
                   style={({ pressed }) => [
                     selected ? styles.tabActive : styles.tabIdle,
                     pressed && styles.pressed,
@@ -336,7 +380,13 @@ export function EarningsScreen({
                 count={outstanding.count}
                 amount={formatUsd(outstanding.revenueCents)}
                 typography={typography}
-                onPress={onOpenJobsOpenTab}
+                onPress={() => {
+                  analytics.capture('outstanding_payment_card_pressed', {
+                    outstanding_count: outstanding.count,
+                    outstanding_value_bucket: moneyBucket(outstanding.revenueCents),
+                  });
+                  onOpenJobsOpenTab();
+                }}
               />
             </View>
 
@@ -358,7 +408,16 @@ export function EarningsScreen({
                         subtitle={job.customerName}
                         value={value}
                         typography={typography}
-                        onPress={() => onOpenJobDetail(job.id)}
+                        onPress={() => {
+                          analytics.capture('earnings_ranked_job_pressed', {
+                            section: section.key,
+                            rank: index + 1,
+                            job_id: job.id,
+                            job_short_description: job.shortDescription,
+                            customer_name: job.customerName,
+                          });
+                          onOpenJobDetail(job.id);
+                        }}
                       />
                     </View>
                   ))
