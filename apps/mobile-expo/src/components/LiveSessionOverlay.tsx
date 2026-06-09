@@ -43,6 +43,14 @@ import {
   useTopmostBottomSheet,
 } from '../context/BottomSheetStackContext';
 import { useLiveSession } from '../context/LiveSessionContext';
+import {
+  analytics,
+  durationMinutesBetween,
+  errorProperties,
+  moneyBucket,
+  quantityBucket,
+  textLengthBucket,
+} from '../lib/analytics';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { createTextStyles, space } from '../theme/nativeTokens';
 
@@ -158,6 +166,12 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
   }, [mode]);
 
   const jobId = liveSession?.jobId;
+  const elapsedSeconds = useCallback(() => {
+    if (!liveSession) return 0;
+    const started = Date.parse(liveSession.startedAt);
+    if (!Number.isFinite(started)) return 0;
+    return Math.max(0, Math.round((Date.now() - started) / 1000));
+  }, [liveSession]);
 
   const findNote = useCallback(
     (noteId: string): JobDetailNote | null => {
@@ -263,6 +277,12 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
 
   const openAddNoteFromLive = useCallback(() => {
     if (!liveSession) return;
+    analytics.capture('note_create_opened', {
+      source: 'live_session',
+      parent: 'session',
+      job_id: liveSession.jobId,
+      session_id: liveSession.id,
+    });
     setEditingNoteId(null);
     setDraftBody('');
     setDraftSessionId(liveSession.id);
@@ -307,14 +327,29 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
       if (!jobId) return;
       setNoteSaving(true);
       try {
-        await createNote(supabase, {
+        const noteId = await createNote(supabase, {
           jobId,
           sessionId: draftSessionId,
           body,
         });
         await refetchJobDetail();
         closeNoteFlow();
+        analytics.capture('note_created', {
+          source: 'live_session',
+          note_id: noteId,
+          parent_type: draftSessionId ? 'session' : 'job',
+          job_id: jobId,
+          session_id: draftSessionId,
+          text_length_bucket: textLengthBucket(body),
+        });
       } catch (e) {
+        analytics.capture('note_create_failed', {
+          source: 'live_session',
+          parent_type: draftSessionId ? 'session' : 'job',
+          job_id: jobId,
+          session_id: draftSessionId,
+          ...errorProperties(e),
+        });
         Alert.alert('Save failed', formatErrorMessage(e) || 'Could not save note.');
       } finally {
         setNoteSaving(false);
@@ -367,6 +402,12 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
 
   const openAddMaterialFromLive = useCallback(() => {
     if (!liveSession) return;
+    analytics.capture('material_create_opened', {
+      source: 'live_session',
+      parent: 'session',
+      job_id: liveSession.jobId,
+      session_id: liveSession.id,
+    });
     setEditingMaterialId(null);
     setMatDraftDescription('');
     setMatDraftUnitCostCents(0);
@@ -429,7 +470,7 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
       if (!jobId) return;
       setMaterialSaving(true);
       try {
-        await createMaterial(supabase, {
+        const materialId = await createMaterial(supabase, {
           jobId,
           sessionId: matDraftSessionId,
           description: values.description,
@@ -439,7 +480,25 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
         });
         await refetchJobDetail();
         closeMaterialFlow();
+        analytics.capture('material_created', {
+          source: 'live_session',
+          material_id: materialId,
+          parent_type: matDraftSessionId ? 'session' : 'job',
+          job_id: jobId,
+          session_id: matDraftSessionId,
+          unit: values.unit,
+          quantity_bucket: quantityBucket(values.quantity),
+          cost_bucket: moneyBucket(values.unitCostCents),
+          text_length_bucket: textLengthBucket(values.description),
+        });
       } catch (e) {
+        analytics.capture('material_create_failed', {
+          source: 'live_session',
+          parent_type: matDraftSessionId ? 'session' : 'job',
+          job_id: jobId,
+          session_id: matDraftSessionId,
+          ...errorProperties(e),
+        });
         Alert.alert('Save failed', formatErrorMessage(e) || 'Could not save material.');
       } finally {
         setMaterialSaving(false);
@@ -496,15 +555,40 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
   }, [closeMaterialFlow, editingMaterialId, formatErrorMessage, refetchJobDetail]);
 
   const handleEndSession = useCallback(async () => {
-    const ended = await endLiveSessionNow();
-    if (ended) onNavigateToJob({ jobId: ended.jobId });
-  }, [endLiveSessionNow, onNavigateToJob]);
+    try {
+      const ended = await endLiveSessionNow();
+      if (ended) {
+        analytics.capture('live_session_ended', {
+          session_id: ended.id,
+          job_id: ended.jobId,
+          duration_minutes: durationMinutesBetween(ended.startedAt, new Date().toISOString()),
+          source: 'end_button',
+        });
+        onNavigateToJob({ jobId: ended.jobId });
+      }
+    } catch (e) {
+      analytics.capture('live_session_end_failed', {
+        session_id: liveSession?.id ?? null,
+        job_id: liveSession?.jobId ?? null,
+        ...errorProperties(e),
+      });
+      Alert.alert('End failed', formatErrorMessage(e) || 'Could not end session.');
+    }
+  }, [endLiveSessionNow, formatErrorMessage, liveSession, onNavigateToJob]);
 
   const handleEditSave = useCallback(
     async (payload: EditLiveSessionSavePayload) => {
       if (payload.kind === 'updateStart') {
         try {
+          const previousStartedAt = liveSession?.startedAt ?? payload.startedAt;
           await updateLiveSessionStartedAt({ startedAt: payload.startedAt });
+          analytics.capture('live_session_start_time_changed', {
+            session_id: liveSession?.id ?? null,
+            job_id: liveSession?.jobId ?? null,
+            delta_minutes: Math.round(
+              (Date.parse(payload.startedAt) - Date.parse(previousStartedAt)) / 60000,
+            ),
+          });
         } finally {
           // Return to full sheet whether the network call succeeded or
           // rolled back — the user explicitly tapped Save Changes and the
@@ -517,27 +601,68 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
       if (liveSession && payload.startedAt !== liveSession.startedAt) {
         try {
           await updateLiveSessionStartedAt({ startedAt: payload.startedAt });
+          analytics.capture('live_session_start_time_changed', {
+            session_id: liveSession.id,
+            job_id: liveSession.jobId,
+            delta_minutes: Math.round(
+              (Date.parse(payload.startedAt) - Date.parse(liveSession.startedAt)) / 60000,
+            ),
+          });
         } catch {
           // Surface but don't block — the more important transition is
           // ending the session per the user's intent.
         }
       }
-      const ended = await endLiveSessionNow({ endedAt: payload.endedAt });
-      if (ended) onNavigateToJob({ jobId: ended.jobId });
+      try {
+        const ended = await endLiveSessionNow({ endedAt: payload.endedAt });
+        if (ended) {
+          analytics.capture('live_session_ended', {
+            session_id: ended.id,
+            job_id: ended.jobId,
+            duration_minutes: durationMinutesBetween(ended.startedAt, payload.endedAt),
+            source: 'edit_end_time',
+          });
+          onNavigateToJob({ jobId: ended.jobId });
+        }
+      } catch (e) {
+        analytics.capture('live_session_end_failed', {
+          session_id: liveSession?.id ?? null,
+          job_id: liveSession?.jobId ?? null,
+          ...errorProperties(e),
+        });
+        Alert.alert('End failed', formatErrorMessage(e) || 'Could not end session.');
+      }
     },
     [
       closeEditSheet,
       endLiveSessionNow,
       liveSession,
       onNavigateToJob,
+      formatErrorMessage,
       updateLiveSessionStartedAt,
     ],
   );
 
   const handleEditDelete = useCallback(async () => {
-    const deleted = await deleteLiveSessionNow();
-    if (deleted) onNavigateToJob({ jobId: deleted.jobId });
-  }, [deleteLiveSessionNow, onNavigateToJob]);
+    try {
+      const deleted = await deleteLiveSessionNow();
+      if (deleted) {
+        analytics.capture('live_session_deleted', {
+          session_id: deleted.id,
+          job_id: deleted.jobId,
+          elapsed_seconds: elapsedSeconds(),
+        });
+        onNavigateToJob({ jobId: deleted.jobId });
+      }
+    } catch (e) {
+      analytics.capture('live_session_delete_failed', {
+        session_id: liveSession?.id ?? null,
+        job_id: liveSession?.jobId ?? null,
+        ...errorProperties(e),
+      });
+      Alert.alert('Delete failed', formatErrorMessage(e) || 'Could not delete live session.');
+    }
+  }, [deleteLiveSessionNow, elapsedSeconds, formatErrorMessage, liveSession, onNavigateToJob]);
 
   // Tapping the minimized bar should:
   //   1. If a foreign bottom sheet (Edit Job, etc.) is currently presented,
@@ -547,11 +672,17 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
   //      (foreign sheet slides down, live sheet slides up) which reads as
   //      a swap rather than a queued stack.
   const handleBarPress = useCallback(() => {
+    analytics.capture('live_session_reopened', {
+      session_id: liveSession?.id ?? null,
+      job_id: liveSession?.jobId ?? null,
+      elapsed_seconds: elapsedSeconds(),
+      source: 'minimized_bar',
+    });
     if (topmostSheet) {
       sheetStackWriters?.requestCloseTopmost();
     }
     openSheet();
-  }, [openSheet, sheetStackWriters, topmostSheet]);
+  }, [elapsedSeconds, liveSession, openSheet, sheetStackWriters, topmostSheet]);
 
   // The bar's anchor stays pinned at `fabSlotBottom` (where it lives when
   // no foreign sheet is presented). When a foreign sheet IS presented we
@@ -588,6 +719,30 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
       useNativeDriver: true,
     }).start();
   }, [liftAnim, liftDelta]);
+
+  useEffect(() => {
+    if (!liveSession) return;
+    if (mode === 'sheet') {
+      analytics.capture('live_session_viewed', {
+        source: 'opened_sheet',
+        session_id: liveSession.id,
+        job_id: liveSession.jobId,
+        elapsed_seconds: elapsedSeconds(),
+      });
+    } else if (mode === 'minimized') {
+      analytics.capture('live_session_minimized', {
+        session_id: liveSession.id,
+        job_id: liveSession.jobId,
+        elapsed_seconds: elapsedSeconds(),
+      });
+    } else if (mode === 'editSheet') {
+      analytics.capture('live_session_edit_opened', {
+        session_id: liveSession.id,
+        job_id: liveSession.jobId,
+        elapsed_seconds: elapsedSeconds(),
+      });
+    }
+  }, [elapsedSeconds, liveSession, mode]);
 
   if (!fontsLoaded || !liveSession) return null;
 

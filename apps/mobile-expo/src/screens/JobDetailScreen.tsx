@@ -99,6 +99,15 @@ import {
   buildJobStatusSheetOptions,
   isJobDetailWorkStatus,
 } from '../lib/jobStatusSheet';
+import {
+  analytics,
+  changedFields,
+  durationMinutesBetween,
+  errorProperties,
+  moneyBucket,
+  quantityBucket,
+  textLengthBucket,
+} from '../lib/analytics';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import {
   CONTENT_MAX_WIDTH,
@@ -125,6 +134,15 @@ function supabaseApiHostLabel(): string {
   }
 }
 
+function jobDetailIsFinanciallyComplete(job: JobDetailViewModel): boolean {
+  const hasMaterials = job.materialBuckets.some((bucket) => bucket.items.length > 0);
+  return (
+    job.earnings.revenueCents > 0 &&
+    job.metrics.sessionCount > 0 &&
+    (hasMaterials || job.noMaterialsConfirmed)
+  );
+}
+
 export type JobDetailScreenProps = {
   /** Top-left close (X): return to the tab shell (HOME / JOBS / EARNINGS). */
   onRequestClose?: () => void;
@@ -140,6 +158,8 @@ export type JobDetailScreenProps = {
   sessionEmail?: string | null;
   /** Optional explicit job id to load (used by Jobs screen card taps / new job). */
   jobId?: string | null;
+  /** Analytics source for the navigation that opened this detail view. */
+  entrySource?: string;
   /** Parent increments when navigating to this screen (e.g. "View job") to force reload. */
   loadKey?: number;
   /** When true, open the edit job sheet once after the job finishes loading (e.g. new job FAB). */
@@ -152,6 +172,7 @@ export function JobDetailScreen({
   sessionUserId,
   sessionEmail,
   jobId,
+  entrySource = 'unknown',
   loadKey = 0,
   initialEditOpen = false,
 }: JobDetailScreenProps = {}) {
@@ -287,6 +308,17 @@ export function JobDetailScreen({
         if (cancelled) return;
         if (j) {
           setJob(j);
+          analytics.capture('job_detail_opened', {
+            source: entrySource,
+            job_id: j.id,
+            job_status: j.workStatus,
+            financially_complete: jobDetailIsFinanciallyComplete(j),
+            has_sessions: j.displaySessions.length > 0,
+            has_materials: j.materialBuckets.some((b) => b.items.length > 0),
+            has_notes: j.noteBuckets.some((b) => b.notes.length > 0),
+            job_short_description: j.shortDescription,
+            customer_name: j.customerName,
+          });
         } else {
           setJob(null);
           setJobLoadError('Could not load that job.');
@@ -295,6 +327,13 @@ export function JobDetailScreen({
         if (!cancelled) {
           setJob(null);
           setJobLoadError(e instanceof Error ? e.message : 'Could not load job.');
+          analytics.capture('api_request_failed', {
+            operation: 'fetch_job_detail',
+            screen: 'job_detail',
+            job_id: jobId ?? null,
+            retryable: true,
+            ...errorProperties(e),
+          });
         }
       } finally {
         if (!cancelled) setJobLoading(false);
@@ -306,15 +345,23 @@ export function JobDetailScreen({
     return () => {
       cancelled = true;
     };
-  }, [supabaseReady, sessionUserId, loadKey, jobId]);
+  }, [entrySource, initialEditOpen, supabaseReady, sessionUserId, loadKey, jobId]);
 
   const onClose = useCallback(() => {
     onRequestClose?.();
   }, [onRequestClose]);
   const onEdit = useCallback(() => {
+    if (job) {
+      analytics.capture('job_edit_opened', {
+        source: 'job_detail',
+        job_id: job.id,
+        existing_completeness: jobDetailIsFinanciallyComplete(job) ? 'complete' : 'incomplete',
+        job_status: job.workStatus,
+      });
+    }
     setEditSheetMounted(true);
     setEditSheetVisible(true);
-  }, []);
+  }, [job]);
   const onCloseEditSheet = useCallback(() => {
     setEditSheetVisible(false);
   }, []);
@@ -342,6 +389,7 @@ export function JobDetailScreen({
 
       setJobSaving(true);
       try {
+        const before = toEditValues(job);
         await updateJobById(supabase, job.id, {
           shortDescription: values.shortDescription,
           customerName: values.customerName.trim(),
@@ -352,6 +400,16 @@ export function JobDetailScreen({
         const refreshed = await fetchJobDetail(supabase, job.id);
         if (refreshed) setJob(refreshed);
         onCloseEditSheet();
+        analytics.capture('job_saved', {
+          job_id: job.id,
+          changed_fields: changedFields(before, values),
+          completeness_before: jobDetailIsFinanciallyComplete(job) ? 'complete' : 'incomplete',
+          completeness_after:
+            refreshed && jobDetailIsFinanciallyComplete(refreshed) ? 'complete' : 'incomplete',
+          revenue_bucket: moneyBucket(revenueCents),
+          job_short_description: values.shortDescription,
+          customer_name: values.customerName,
+        });
       } catch (e) {
         const msg =
           e instanceof Error
@@ -361,22 +419,28 @@ export function JobDetailScreen({
                 'message' in e &&
                 typeof (e as { message: unknown }).message === 'string'
               ? (e as { message: string }).message
-              : String(e);
+            : String(e);
+        analytics.capture('job_save_failed', {
+          job_id: job.id,
+          changed_fields: changedFields(toEditValues(job), values),
+          ...errorProperties(e),
+        });
         Alert.alert('Save failed', msg || 'Could not save job changes.');
       } finally {
         setJobSaving(false);
       }
     },
-    [job, onCloseEditSheet],
+    [job, onCloseEditSheet, toEditValues],
   );
 
   // --- Session add/edit flow ---
 
   const openSessionChooser = useCallback(() => {
+    if (job) analytics.capture('manual_session_create_opened', { job_id: job.id });
     setSessionSheetMounted(true);
     setSessionFlow('chooser');
     setEditingSessionId(null);
-  }, []);
+  }, [job]);
 
   const closeSessionFlow = useCallback(() => {
     setSessionFlow('closed');
@@ -425,6 +489,11 @@ export function JobDetailScreen({
   const onStartLiveSession = useCallback(async () => {
     if (!job) return;
     closeSessionFlow();
+    analytics.capture('session_start_requested', {
+      source: 'job_detail',
+      job_id: job.id,
+      placeholder_job: false,
+    });
     // eslint-disable-next-line no-console
     console.log('[LiveSession] startLiveSession requested', {
       jobId: job.id,
@@ -434,6 +503,14 @@ export function JobDetailScreen({
       const created = await liveSessionCtx.startLiveSession({
         jobId: job.id,
         jobShortDescription: job.shortDescription,
+      });
+      analytics.capture('live_session_started', {
+        source: 'job_detail',
+        session_id: created.id,
+        job_id: job.id,
+        job_status: job.workStatus,
+        job_short_description: job.shortDescription,
+        placeholder_job: false,
       });
       // eslint-disable-next-line no-console
       console.log('[LiveSession] startLiveSession success', created);
@@ -461,6 +538,10 @@ export function JobDetailScreen({
       // misleading "Could not start live session" alert and don't pollute
       // dev logs.
       if (isStaleJwtError(err)) {
+        analytics.capture('stale_auth_session_detected', {
+          source_operation: 'start_live_session',
+          recovery_action: 'refresh_live_session',
+        });
         void liveSessionCtx.refresh();
         return;
       }
@@ -478,7 +559,23 @@ export function JobDetailScreen({
       //     of going silent.
       if (code === '23505' || message.includes('23505')) {
         const recovered = await liveSessionCtx.refresh();
-        if (recovered) return; // bar / sheet will appear via context update
+        if (recovered) {
+          analytics.capture('live_session_start_failed', {
+            source: 'job_detail',
+            job_id: job.id,
+            placeholder_job: false,
+            recovery_result: 'recovered_existing_live_session',
+            ...errorProperties(err),
+          });
+          return; // bar / sheet will appear via context update
+        }
+        analytics.capture('live_session_start_failed', {
+          source: 'job_detail',
+          job_id: job.id,
+          placeholder_job: false,
+          recovery_result: 'stale_job_live_session',
+          ...errorProperties(err),
+        });
         Alert.alert(
           'Could not start live session',
           'A previous in-progress session for this job is still open in the database (likely a stale row). Open it and end it before starting a new one, or contact support.',
@@ -493,6 +590,13 @@ export function JobDetailScreen({
         'Could not start live session',
         detail.length > 0 ? detail : 'Unknown error.',
       );
+      analytics.capture('live_session_start_failed', {
+        source: 'job_detail',
+        job_id: job.id,
+        placeholder_job: false,
+        recovery_result: 'none',
+        ...errorProperties(err),
+      });
     }
   }, [closeSessionFlow, job, liveSessionCtx]);
 
@@ -571,7 +675,20 @@ export function JobDetailScreen({
     try {
       await updateJobStatusById(supabase, job.id, next);
       await refetchJob();
+      analytics.capture('job_status_changed', {
+        job_id: job.id,
+        from_status: job.workStatus,
+        to_status: next,
+        source: 'primary_cta',
+      });
     } catch (e) {
+      analytics.capture('job_status_change_failed', {
+        job_id: job.id,
+        from_status: job.workStatus,
+        attempted_status: next,
+        source: 'primary_cta',
+        ...errorProperties(e),
+      });
       Alert.alert(
         'Update failed',
         formatErrorMessage(e) || 'Could not update job status.',
@@ -591,7 +708,20 @@ export function JobDetailScreen({
         await updateJobStatusById(supabase, job.id, next);
         await refetchJob();
         closeStatusSheet();
+        analytics.capture('job_status_changed', {
+          job_id: job.id,
+          from_status: job.workStatus,
+          to_status: next,
+          source: 'status_sheet',
+        });
       } catch (e) {
+        analytics.capture('job_status_change_failed', {
+          job_id: job.id,
+          from_status: job.workStatus,
+          attempted_status: next,
+          source: 'status_sheet',
+          ...errorProperties(e),
+        });
         Alert.alert(
           'Update failed',
           formatErrorMessage(e) || 'Could not update job status.',
@@ -608,7 +738,7 @@ export function JobDetailScreen({
       if (!job) return;
       setSessionSaving(true);
       try {
-        await createManualSession(supabase, {
+        const sessionId = await createManualSession(supabase, {
           jobId: job.id,
           startedAt: values.startedAt,
           endedAt: values.endedAt,
@@ -616,7 +746,16 @@ export function JobDetailScreen({
         await refetchJob();
         invalidateJobsList();
         closeSessionFlow();
+        analytics.capture('manual_session_created', {
+          job_id: job.id,
+          session_id: sessionId,
+          duration_minutes: durationMinutesBetween(values.startedAt, values.endedAt),
+        });
       } catch (e) {
+        analytics.capture('manual_session_create_failed', {
+          job_id: job.id,
+          ...errorProperties(e),
+        });
         Alert.alert('Save failed', formatErrorMessage(e) || 'Could not save session.');
       } finally {
         setSessionSaving(false);
@@ -630,6 +769,7 @@ export function JobDetailScreen({
       if (!editingSessionId) return;
       setSessionSaving(true);
       try {
+        const previous = editingSession;
         await updateSessionTimes(supabase, editingSessionId, {
           startedAt: values.startedAt,
           endedAt: values.endedAt,
@@ -637,13 +777,42 @@ export function JobDetailScreen({
         await refetchJob();
         invalidateJobsList();
         closeSessionFlow();
+        analytics.capture('manual_session_updated', {
+          session_id: editingSessionId,
+          job_id: job?.id ?? null,
+          changed_fields: changedFields(
+            {
+              startedAt: previous?.startedAt,
+              endedAt: previous?.endedAt,
+            },
+            values,
+          ),
+          duration_delta_minutes:
+            previous?.startedAt && previous?.endedAt
+              ? durationMinutesBetween(values.startedAt, values.endedAt) -
+                durationMinutesBetween(previous.startedAt, previous.endedAt)
+              : null,
+        });
       } catch (e) {
+        analytics.capture('manual_session_update_failed', {
+          session_id: editingSessionId,
+          job_id: job?.id ?? null,
+          ...errorProperties(e),
+        });
         Alert.alert('Save failed', formatErrorMessage(e) || 'Could not save session.');
       } finally {
         setSessionSaving(false);
       }
     },
-    [closeSessionFlow, editingSessionId, formatErrorMessage, invalidateJobsList, refetchJob],
+    [
+      closeSessionFlow,
+      editingSession,
+      editingSessionId,
+      formatErrorMessage,
+      invalidateJobsList,
+      job?.id,
+      refetchJob,
+    ],
   );
 
   const onDeleteEditingSession = useCallback(async () => {
@@ -654,12 +823,21 @@ export function JobDetailScreen({
       await refetchJob();
       invalidateJobsList();
       closeSessionFlow();
+      analytics.capture('session_deleted', {
+        session_id: editingSessionId,
+        job_id: job?.id ?? null,
+      });
     } catch (e) {
+      analytics.capture('session_delete_failed', {
+        session_id: editingSessionId,
+        job_id: job?.id ?? null,
+        ...errorProperties(e),
+      });
       Alert.alert('Delete failed', formatErrorMessage(e) || 'Could not delete session.');
     } finally {
       setSessionSaving(false);
     }
-  }, [closeSessionFlow, editingSessionId, formatErrorMessage, invalidateJobsList, refetchJob]);
+  }, [closeSessionFlow, editingSessionId, formatErrorMessage, invalidateJobsList, job?.id, refetchJob]);
 
   // --- Note add/edit flow ---
 
@@ -681,20 +859,35 @@ export function JobDetailScreen({
   }, []);
 
   const openAddNote = useCallback(() => {
+    if (job) {
+      analytics.capture('note_create_opened', {
+        source: 'job_detail',
+        parent: 'job',
+        job_id: job.id,
+      });
+    }
     setEditingNoteId(null);
     setDraftBody('');
     setDraftSessionId(null);
     setNoteSheetMounted(true);
     setNoteFlow('addNote');
-  }, []);
+  }, [job]);
 
   const openAddNoteForSession = useCallback((sessionId: string) => {
+    if (job) {
+      analytics.capture('note_create_opened', {
+        source: 'job_detail',
+        parent: 'session',
+        job_id: job.id,
+        session_id: sessionId,
+      });
+    }
     setEditingNoteId(null);
     setDraftBody('');
     setDraftSessionId(sessionId);
     setNoteSheetMounted(true);
     setNoteFlow('addNote');
-  }, []);
+  }, [job]);
 
   const openEditNote = useCallback(
     (noteId: string) => {
@@ -737,14 +930,29 @@ export function JobDetailScreen({
       setNoteSaving(true);
       try {
         // Exactly one of jobId / sessionId is set (notes_exactly_one_parent).
-        await createNote(supabase, {
+        const noteId = await createNote(supabase, {
           jobId: job.id,
           sessionId: draftSessionId,
           body,
         });
         await refetchJob();
         closeNoteFlow();
+        analytics.capture('note_created', {
+          source: 'job_detail',
+          note_id: noteId,
+          parent_type: draftSessionId ? 'session' : 'job',
+          job_id: job.id,
+          session_id: draftSessionId,
+          text_length_bucket: textLengthBucket(body),
+        });
       } catch (e) {
+        analytics.capture('note_create_failed', {
+          source: 'job_detail',
+          parent_type: draftSessionId ? 'session' : 'job',
+          job_id: job.id,
+          session_id: draftSessionId,
+          ...errorProperties(e),
+        });
         Alert.alert('Save failed', formatErrorMessage(e) || 'Could not save note.');
       } finally {
         setNoteSaving(false);
@@ -758,6 +966,7 @@ export function JobDetailScreen({
       if (!editingNoteId || !job) return;
       setNoteSaving(true);
       try {
+        const previous = findNote(editingNoteId);
         // Pass sessionId unconditionally so the api-client re-parents to the
         // current draft assignment (including `null` → back to unassigned).
         await updateNote(supabase, editingNoteId, {
@@ -767,13 +976,36 @@ export function JobDetailScreen({
         });
         await refetchJob();
         closeNoteFlow();
+        analytics.capture('note_updated', {
+          note_id: editingNoteId,
+          job_id: job.id,
+          session_id: draftSessionId,
+          changed_fields: changedFields(
+            {
+              body: previous?.body ?? '',
+              sessionId: previous?.sessionId ?? null,
+            },
+            {
+              body,
+              sessionId: draftSessionId,
+            },
+          ),
+          parent_changed: (previous?.sessionId ?? null) !== draftSessionId,
+          text_length_bucket: textLengthBucket(body),
+        });
       } catch (e) {
+        analytics.capture('note_update_failed', {
+          note_id: editingNoteId,
+          job_id: job.id,
+          session_id: draftSessionId,
+          ...errorProperties(e),
+        });
         Alert.alert('Save failed', formatErrorMessage(e) || 'Could not save note.');
       } finally {
         setNoteSaving(false);
       }
     },
-    [closeNoteFlow, draftSessionId, editingNoteId, formatErrorMessage, job, refetchJob],
+    [closeNoteFlow, draftSessionId, editingNoteId, findNote, formatErrorMessage, job, refetchJob],
   );
 
   const onDeleteEditingNote = useCallback(async () => {
@@ -787,7 +1019,16 @@ export function JobDetailScreen({
       await deleteNote(supabase, editingNoteId);
       await refetchJob();
       closeNoteFlow();
+      analytics.capture('note_deleted', {
+        note_id: editingNoteId,
+        source: 'job_detail',
+      });
     } catch (e) {
+      analytics.capture('note_delete_failed', {
+        note_id: editingNoteId,
+        source: 'job_detail',
+        ...errorProperties(e),
+      });
       Alert.alert('Delete failed', formatErrorMessage(e) || 'Could not delete note.');
     } finally {
       setNoteSaving(false);
@@ -813,6 +1054,13 @@ export function JobDetailScreen({
   }, []);
 
   const openAddMaterial = useCallback(() => {
+    if (job) {
+      analytics.capture('material_create_opened', {
+        source: 'job_detail',
+        parent: 'job',
+        job_id: job.id,
+      });
+    }
     setEditingMaterialId(null);
     setMatDraftDescription('');
     setMatDraftUnitCostCents(0);
@@ -821,9 +1069,17 @@ export function JobDetailScreen({
     setMatDraftSessionId(null);
     setMaterialSheetMounted(true);
     setMaterialFlow('addMaterial');
-  }, []);
+  }, [job]);
 
   const openAddMaterialForSession = useCallback((sessionId: string) => {
+    if (job) {
+      analytics.capture('material_create_opened', {
+        source: 'job_detail',
+        parent: 'session',
+        job_id: job.id,
+        session_id: sessionId,
+      });
+    }
     setEditingMaterialId(null);
     setMatDraftDescription('');
     setMatDraftUnitCostCents(0);
@@ -832,7 +1088,7 @@ export function JobDetailScreen({
     setMatDraftSessionId(sessionId);
     setMaterialSheetMounted(true);
     setMaterialFlow('addMaterial');
-  }, []);
+  }, [job]);
 
   const openEditMaterial = useCallback(
     (materialId: string) => {
@@ -888,7 +1144,7 @@ export function JobDetailScreen({
       if (!job) return;
       setMaterialSaving(true);
       try {
-        await createMaterial(supabase, {
+        const materialId = await createMaterial(supabase, {
           jobId: job.id,
           sessionId: matDraftSessionId,
           description: values.description,
@@ -899,7 +1155,25 @@ export function JobDetailScreen({
         await refetchJob();
         invalidateJobsList();
         closeMaterialFlow();
+        analytics.capture('material_created', {
+          source: 'job_detail',
+          material_id: materialId,
+          parent_type: matDraftSessionId ? 'session' : 'job',
+          job_id: job.id,
+          session_id: matDraftSessionId,
+          unit: values.unit,
+          quantity_bucket: quantityBucket(values.quantity),
+          cost_bucket: moneyBucket(values.unitCostCents),
+          text_length_bucket: textLengthBucket(values.description),
+        });
       } catch (e) {
+        analytics.capture('material_create_failed', {
+          source: 'job_detail',
+          parent_type: matDraftSessionId ? 'session' : 'job',
+          job_id: job.id,
+          session_id: matDraftSessionId,
+          ...errorProperties(e),
+        });
         Alert.alert(
           'Save failed',
           formatErrorMessage(e) || 'Could not save material.',
@@ -916,6 +1190,7 @@ export function JobDetailScreen({
       if (!editingMaterialId || !job) return;
       setMaterialSaving(true);
       try {
+        const previous = findMaterial(editingMaterialId);
         // Pass sessionId unconditionally so the api-client re-parents the row
         // (including `null` → back to unassigned under the current job).
         await updateMaterial(supabase, editingMaterialId, {
@@ -929,7 +1204,38 @@ export function JobDetailScreen({
         await refetchJob();
         invalidateJobsList();
         closeMaterialFlow();
+        analytics.capture('material_updated', {
+          material_id: editingMaterialId,
+          job_id: job.id,
+          session_id: matDraftSessionId,
+          changed_fields: changedFields(
+            {
+              description: previous?.name ?? '',
+              quantity: previous?.quantity ?? null,
+              unit: previous?.unit ?? '',
+              unitCostCents: previous?.unitCostCents ?? null,
+              sessionId: previous?.sessionId ?? null,
+            },
+            {
+              description: values.description,
+              quantity: values.quantity,
+              unit: values.unit,
+              unitCostCents: values.unitCostCents,
+              sessionId: matDraftSessionId,
+            },
+          ),
+          parent_changed: (previous?.sessionId ?? null) !== matDraftSessionId,
+          unit: values.unit,
+          quantity_bucket: quantityBucket(values.quantity),
+          cost_bucket: moneyBucket(values.unitCostCents),
+        });
       } catch (e) {
+        analytics.capture('material_update_failed', {
+          material_id: editingMaterialId,
+          job_id: job.id,
+          session_id: matDraftSessionId,
+          ...errorProperties(e),
+        });
         Alert.alert(
           'Save failed',
           formatErrorMessage(e) || 'Could not save material.',
@@ -946,6 +1252,7 @@ export function JobDetailScreen({
       job,
       matDraftSessionId,
       refetchJob,
+      findMaterial,
     ],
   );
 
@@ -961,7 +1268,16 @@ export function JobDetailScreen({
       await refetchJob();
       invalidateJobsList();
       closeMaterialFlow();
+      analytics.capture('material_deleted', {
+        material_id: editingMaterialId,
+        source: 'job_detail',
+      });
     } catch (e) {
+      analytics.capture('material_delete_failed', {
+        material_id: editingMaterialId,
+        source: 'job_detail',
+        ...errorProperties(e),
+      });
       Alert.alert(
         'Delete failed',
         formatErrorMessage(e) || 'Could not delete material.',
@@ -978,7 +1294,16 @@ export function JobDetailScreen({
       await updateJobNoMaterialsConfirmed(supabase, job.id, true);
       await refetchJob();
       invalidateJobsList();
+      analytics.capture('no_materials_confirmed', {
+        job_id: job.id,
+        source: 'job_detail',
+      });
     } catch (e) {
+      analytics.capture('no_materials_confirmation_failed', {
+        job_id: job.id,
+        action: 'confirm',
+        ...errorProperties(e),
+      });
       if (isNoMaterialsConfirmedColumnMissingError(e)) {
         Alert.alert(
           'Database update required',
@@ -1009,7 +1334,16 @@ export function JobDetailScreen({
       await updateJobNoMaterialsConfirmed(supabase, job.id, false);
       await refetchJob();
       invalidateJobsList();
+      analytics.capture('no_materials_confirmation_undone', {
+        job_id: job.id,
+        source: 'job_detail',
+      });
     } catch (e) {
+      analytics.capture('no_materials_confirmation_failed', {
+        job_id: job.id,
+        action: 'undo',
+        ...errorProperties(e),
+      });
       if (isNoMaterialsConfirmedColumnMissingError(e)) {
         Alert.alert(
           'Database update required',
@@ -1092,6 +1426,10 @@ export function JobDetailScreen({
       await deleteJobById(supabase, job.id);
       onCloseEditSheet();
       onRequestClose?.();
+      analytics.capture('job_deleted', {
+        job_id: job.id,
+        source: 'job_detail',
+      });
     } catch (e) {
       const msg =
         e instanceof Error
@@ -1102,6 +1440,11 @@ export function JobDetailScreen({
               typeof (e as { message: unknown }).message === 'string'
             ? (e as { message: string }).message
             : String(e);
+      analytics.capture('job_delete_failed', {
+        job_id: job.id,
+        source: 'job_detail',
+        ...errorProperties(e),
+      });
       Alert.alert('Delete failed', msg || 'Could not delete this job.');
     } finally {
       setJobSaving(false);

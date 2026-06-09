@@ -47,6 +47,7 @@ import {
   type ShellMainTab,
 } from '../components/shell/ShellBottomNav';
 import { useJobsListInvalidation } from '../context/JobsListInvalidationContext';
+import { analytics, errorProperties } from '../lib/analytics';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import {
   recencyBucket,
@@ -149,14 +150,26 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
   );
 
   const [activeTab, setActiveTab] = useState<InboxTab>('notes');
+  const [notes, setNotes] = useState<InboxNoteItem[]>([]);
+  const [materials, setMaterials] = useState<InboxMaterialItem[]>([]);
+  const activeTabRef = useRef<InboxTab>('notes');
+  useEffect(() => {
+    activeTabRef.current = activeTab;
+  }, [activeTab]);
   // Once the user taps a tab we stop auto-selecting based on which inbox has items.
   const userPickedTabRef = useRef(false);
   const selectTab = useCallback((tab: InboxTab) => {
     userPickedTabRef.current = true;
+    if (tab !== activeTab) {
+      analytics.capture('inbox_tab_changed', {
+        from_tab: activeTab,
+        to_tab: tab,
+        notes_count: notes.length,
+        materials_count: materials.length,
+      });
+    }
     setActiveTab(tab);
-  }, []);
-  const [notes, setNotes] = useState<InboxNoteItem[]>([]);
-  const [materials, setMaterials] = useState<InboxMaterialItem[]>([]);
+  }, [activeTab, materials.length, notes.length]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [scrollContentHeight, setScrollContentHeight] = useState(0);
@@ -168,11 +181,16 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
   const [assigning, setAssigning] = useState(false);
 
   const refetch = useCallback(async (isCancelled: () => boolean) => {
+    const startedAt = Date.now();
     if (!isSupabaseConfigured()) {
       if (!isCancelled()) {
         setError('Supabase is not configured.');
         setNotes([]);
         setMaterials([]);
+        analytics.capture('supabase_not_configured_seen', {
+          screen: 'inbox',
+          operation: 'inbox_loaded',
+        });
       }
       return;
     }
@@ -185,12 +203,23 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
       if (!isCancelled()) {
         setNotes(n);
         setMaterials(m);
+        analytics.capture('inbox_loaded', {
+          notes_count: n.length,
+          materials_count: m.length,
+          active_tab: activeTabRef.current,
+          load_duration_ms: Date.now() - startedAt,
+        });
       }
     } catch (err) {
       if (!isCancelled()) {
         setError(err instanceof Error ? err.message : 'Failed to load inbox.');
         setNotes([]);
         setMaterials([]);
+        analytics.capture('inbox_load_failed', {
+          active_tab: activeTabRef.current,
+          load_duration_ms: Date.now() - startedAt,
+          ...errorProperties(err),
+        });
       }
     }
   }, []);
@@ -224,6 +253,16 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
   const materialGroups = useMemo(() => groupByRecency(materials), [materials]);
 
   const openAssign = useCallback((kind: InboxTab, id: string) => {
+    const startedAt = Date.now();
+    const item =
+      kind === 'notes'
+        ? notes.find((n) => n.id === id)
+        : materials.find((m) => m.id === id);
+    analytics.capture('inbox_item_selected', {
+      kind,
+      item_id: id,
+      age_bucket: item ? recencyBucket(null, item.createdAt, Date.now()) : null,
+    });
     setAssignTarget({ kind, id });
     setAssignJobsError(null);
     setAssignJobsLoading(true);
@@ -234,14 +273,25 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
         return;
       }
       try {
-        setAssignJobs(await listAllJobsForAssign());
+        const jobs = await listAllJobsForAssign();
+        setAssignJobs(jobs);
+        analytics.capture('inbox_assign_sheet_opened', {
+          kind,
+          available_job_count: jobs.length,
+          load_duration_ms: Date.now() - startedAt,
+        });
       } catch (err) {
         setAssignJobsError(err instanceof Error ? err.message : 'Could not load jobs.');
+        analytics.capture('inbox_assign_jobs_load_failed', {
+          kind,
+          load_duration_ms: Date.now() - startedAt,
+          ...errorProperties(err),
+        });
       } finally {
         setAssignJobsLoading(false);
       }
     })();
-  }, []);
+  }, [materials, notes]);
 
   const closeAssign = useCallback(() => {
     setAssignTarget(null);
@@ -264,9 +314,20 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
           await updateMaterial(supabase, target.id, { sessionId: null, jobId });
           setMaterials((prev) => prev.filter((m) => m.id !== target.id));
         }
+        analytics.capture('inbox_item_assigned_to_job', {
+          kind: target.kind,
+          item_id: target.id,
+          job_id: jobId,
+        });
         setAssignTarget(null);
         invalidateJobsList();
       } catch (e) {
+        analytics.capture('inbox_item_assign_failed', {
+          kind: target.kind,
+          item_id: target.id,
+          job_id: jobId,
+          ...errorProperties(e),
+        });
         Alert.alert('Assign failed', e instanceof Error ? e.message : 'Could not add to job.');
       } finally {
         setAssigning(false);

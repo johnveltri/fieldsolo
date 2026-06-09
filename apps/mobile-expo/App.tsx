@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ActivityIndicator, AppState, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { LiveSessionOverlay } from './src/components/LiveSessionOverlay';
@@ -13,6 +13,7 @@ import {
   useLiveSession,
 } from './src/context/LiveSessionContext';
 import type { ListJobsForCurrentUserTab } from '@fieldbook/api-client';
+import { analytics, emailProperties } from './src/lib/analytics';
 import { isSupabaseConfigured } from './src/lib/supabase';
 import { EarningsScreen, type EarningsWindow } from './src/screens/EarningsScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
@@ -30,6 +31,7 @@ function AuthenticatedShell() {
   /** When true, job detail covers tab shell (HOME / JOBS / EARNINGS); X returns here. */
   const [jobDetailOpen, setJobDetailOpen] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+  const [jobDetailEntrySource, setJobDetailEntrySource] = useState<string>('unknown');
   /** True when opening detail from "New job" FAB — JobDetailScreen auto-opens the edit sheet. */
   const [jobDetailInitialEditOpen, setJobDetailInitialEditOpen] = useState(false);
   /** Bump on each "View job" so Job Detail refetches (same user, fresh data). */
@@ -45,8 +47,11 @@ function AuthenticatedShell() {
   const [inboxOpen, setInboxOpen] = useState(false);
   /** Bump on each Inbox open so it refetches its unassigned captures. */
   const [inboxLoadKey, setInboxLoadKey] = useState(0);
+  // Hooks must be called unconditionally — bail-out renders below still execute these.
+  const liveSession = useLiveSession();
 
   const openInbox = useCallback(() => {
+    analytics.capture('inbox_opened', { source: 'jobs_header' });
     setInboxLoadKey((k) => k + 1);
     setInboxOpen(true);
   }, []);
@@ -55,17 +60,23 @@ function AuthenticatedShell() {
     if (mainTab !== 'home') setProfileOpen(false);
   }, [mainTab]);
 
-  const onShellTabSelect = useCallback((tab: ShellMainTab) => {
-    setMainTab(tab);
-    // HOME tab tap closes Profile overlay (same tab stays selected).
-    if (tab === 'home') setProfileOpen(false);
-  }, []);
-
-  // Hooks must be called unconditionally — bail-out renders below still execute these.
-  const liveSession = useLiveSession();
+  const onShellTabSelect = useCallback(
+    (tab: ShellMainTab) => {
+      analytics.capture('shell_tab_selected', {
+        from_tab: mainTab,
+        to_tab: tab,
+        has_live_session: liveSession.hasLiveSession,
+      });
+      setMainTab(tab);
+      // HOME tab tap closes Profile overlay (same tab stays selected).
+      if (tab === 'home') setProfileOpen(false);
+    },
+    [liveSession.hasLiveSession, mainTab],
+  );
 
   const navigateToJob = useCallback(
     (jobId: string) => {
+      setJobDetailEntrySource('live_session_overlay');
       setSelectedJobId(jobId);
       setJobDetailInitialEditOpen(false);
       setJobDetailLoadKey((k) => k + 1);
@@ -81,12 +92,79 @@ function AuthenticatedShell() {
    * it covers the shell — leaving it open would just hide the tab the user
    * just navigated to.
    */
-  const onJobDetailSelectShellTab = useCallback((tab: ShellMainTab) => {
-    setMainTab(tab);
-    if (tab === 'home') setProfileOpen(false);
-    setJobDetailOpen(false);
-    setJobDetailInitialEditOpen(false);
-  }, []);
+  const onJobDetailSelectShellTab = useCallback(
+    (tab: ShellMainTab) => {
+      analytics.capture('shell_tab_selected', {
+        from_tab: 'job_detail',
+        to_tab: tab,
+        has_live_session: liveSession.hasLiveSession,
+      });
+      analytics.capture('job_detail_closed', { destination: tab });
+      setMainTab(tab);
+      if (tab === 'home') setProfileOpen(false);
+      setJobDetailOpen(false);
+      setJobDetailInitialEditOpen(false);
+    },
+    [liveSession.hasLiveSession],
+  );
+
+  const currentScreen = useMemo(() => {
+    if (!session) return 'sign_in' as const;
+    if (jobDetailOpen) return 'job_detail' as const;
+    if (inboxOpen) return 'inbox' as const;
+    if (mainTab === 'home' && profileOpen) return 'profile' as const;
+    return mainTab;
+  }, [inboxOpen, jobDetailOpen, mainTab, profileOpen, session]);
+
+  useEffect(() => {
+    if (!session) return;
+    analytics.identify(session.user.id, {
+      ...emailProperties(session.user.email),
+      email: session.user.email ?? null,
+      auth_provider: 'supabase',
+    });
+  }, [session?.user.id, session?.user.email, session]);
+
+  useEffect(() => {
+    analytics.screen(currentScreen, {
+      auth_state: session ? 'authenticated' : 'anonymous',
+      main_tab: mainTab,
+      job_detail_open: jobDetailOpen,
+      inbox_open: inboxOpen,
+      profile_open: profileOpen,
+      has_live_session: liveSession.hasLiveSession,
+    });
+  }, [
+    currentScreen,
+    inboxOpen,
+    jobDetailOpen,
+    liveSession.hasLiveSession,
+    mainTab,
+    profileOpen,
+    session,
+  ]);
+
+  const openedTrackedRef = useRef(false);
+  useEffect(() => {
+    if (openedTrackedRef.current) return;
+    openedTrackedRef.current = true;
+    analytics.capture('app_opened', {
+      auth_state: session ? 'authenticated' : loading ? 'loading' : 'anonymous',
+      has_live_session: liveSession.hasLiveSession,
+    });
+  }, [liveSession.hasLiveSession, loading, session]);
+
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') {
+        analytics.capture('app_became_active', {
+          auth_state: session ? 'authenticated' : 'anonymous',
+          has_live_session: liveSession.hasLiveSession,
+        });
+      }
+    });
+    return () => sub.remove();
+  }, [liveSession.hasLiveSession, session]);
 
   if (loading) {
     return (
@@ -106,10 +184,12 @@ function AuthenticatedShell() {
         <JobDetailScreen
           loadKey={jobDetailLoadKey}
           jobId={selectedJobId}
+          entrySource={jobDetailEntrySource}
           initialEditOpen={jobDetailInitialEditOpen}
           sessionUserId={session.user.id}
           sessionEmail={session.user.email ?? null}
           onRequestClose={() => {
+            analytics.capture('job_detail_closed', { destination: mainTab });
             setJobDetailOpen(false);
             setJobDetailInitialEditOpen(false);
           }}
@@ -118,8 +198,17 @@ function AuthenticatedShell() {
       ) : inboxOpen ? (
         <InboxScreen
           loadKey={inboxLoadKey}
-          onRequestClose={() => setInboxOpen(false)}
+          onRequestClose={() => {
+            analytics.capture('inbox_closed', { destination: mainTab });
+            setInboxOpen(false);
+          }}
           onSelectShellTab={(tab) => {
+            analytics.capture('shell_tab_selected', {
+              from_tab: 'inbox',
+              to_tab: tab,
+              has_live_session: liveSession.hasLiveSession,
+            });
+            analytics.capture('inbox_closed', { destination: tab });
             setInboxOpen(false);
             setMainTab(tab);
             if (tab === 'home') setProfileOpen(false);
@@ -130,12 +219,21 @@ function AuthenticatedShell() {
           <View style={styles.shellMain}>
             {mainTab === 'home' && !profileOpen ? (
               <HomeScreen
-                onOpenProfile={() => setProfileOpen(true)}
+                onOpenProfile={() => {
+                  analytics.capture('profile_opened_from_home', {});
+                  setProfileOpen(true);
+                }}
                 onOpenEarnings={() => {
+                  analytics.capture('home_earnings_pressed', {});
+                  analytics.capture('earnings_opened', {
+                    source: 'home_weekly_snapshot',
+                    window: 'week',
+                  });
                   setEarningsWindow('week');
                   setMainTab('earnings');
                 }}
                 onOpenJobDetail={(jobId, options) => {
+                  setJobDetailEntrySource('home');
                   setSelectedJobId(jobId ?? null);
                   setJobDetailInitialEditOpen(options?.initialEditOpen ?? false);
                   setJobDetailLoadKey((k) => k + 1);
@@ -153,6 +251,7 @@ function AuthenticatedShell() {
                 suppressFab={liveSession.hasLiveSession}
                 onOpenInbox={openInbox}
                 onOpenJobDetail={(jobId?: string, options?: { initialEditOpen?: boolean }) => {
+                  setJobDetailEntrySource(options?.initialEditOpen ? 'jobs_new_job' : 'jobs_list');
                   setSelectedJobId(jobId ?? null);
                   setJobDetailInitialEditOpen(options?.initialEditOpen ?? false);
                   setJobDetailLoadKey((k) => k + 1);
@@ -169,6 +268,7 @@ function AuthenticatedShell() {
                   setMainTab('jobs');
                 }}
                 onOpenJobDetail={(jobId?: string) => {
+                  setJobDetailEntrySource('earnings');
                   setSelectedJobId(jobId ?? null);
                   setJobDetailInitialEditOpen(false);
                   setJobDetailLoadKey((k) => k + 1);

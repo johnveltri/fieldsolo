@@ -5,7 +5,7 @@ import {
   UbuntuSansMono_600SemiBold,
   UbuntuSansMono_700Bold,
 } from '@expo-google-fonts/ubuntu-sans-mono';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Animated,
@@ -21,6 +21,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAuth } from '../context/AuthContext';
 import { CanvasTiledBackground } from '../components/CanvasTiledBackground';
+import { analytics, emailProperties, errorProperties } from '../lib/analytics';
 import {
   CONTENT_MAX_WIDTH,
   createTextStyles,
@@ -40,6 +41,20 @@ export function SignInScreen() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<'signIn' | 'signUp'>('signIn');
+  const previousModeRef = useRef(mode);
+
+  useEffect(() => {
+    analytics.capture('auth_screen_viewed', { mode });
+  }, [mode]);
+
+  useEffect(() => {
+    if (previousModeRef.current === mode) return;
+    analytics.capture('auth_mode_changed', {
+      from_mode: previousModeRef.current,
+      to_mode: mode,
+    });
+    previousModeRef.current = mode;
+  }, [mode]);
 
   const [fontsLoaded] = useFonts({
     PTSerif_700Bold,
@@ -85,9 +100,32 @@ export function SignInScreen() {
     setBusy(true);
     try {
       if (mode === 'signIn') {
+        analytics.capture('sign_in_submitted', {
+          ...emailProperties(trimmed),
+          email: trimmed,
+          has_password: password.length > 0,
+        });
         const { error: err } = await signIn(trimmed, password);
-        if (err) setError(err.message);
+        if (err) {
+          analytics.capture('sign_in_failed', {
+            ...emailProperties(trimmed),
+            email: trimmed,
+            ...errorProperties(err),
+          });
+          setError(err.message);
+        } else {
+          analytics.capture('sign_in_succeeded', {
+            ...emailProperties(trimmed),
+            email: trimmed,
+          });
+        }
       } else {
+        analytics.capture('sign_up_submitted', {
+          ...emailProperties(trimmed),
+          email: trimmed,
+          first_name_present: firstName.trim().length > 0,
+          last_name_present: lastName.trim().length > 0,
+        });
         // First/last name go into raw_user_meta_data so the
         // public.handle_new_user trigger can seed the profiles row.
         const { error: signUpErr } = await signUp(trimmed, password, {
@@ -95,12 +133,28 @@ export function SignInScreen() {
           lastName: lastName.trim(),
         });
         if (signUpErr) {
+          analytics.capture('sign_up_failed', {
+            stage: 'sign_up',
+            ...emailProperties(trimmed),
+            email: trimmed,
+            ...errorProperties(signUpErr),
+          });
           setError(signUpErr.message);
           return;
         }
+        analytics.capture('sign_up_succeeded', {
+          ...emailProperties(trimmed),
+          email: trimmed,
+        });
         // In local/dev projects email confirmation may vary; attempt sign-in immediately.
         const { error: signInErr } = await signIn(trimmed, password);
         if (signInErr) {
+          analytics.capture('sign_up_failed', {
+            stage: 'immediate_sign_in',
+            ...emailProperties(trimmed),
+            email: trimmed,
+            ...errorProperties(signInErr),
+          });
           setError(
             `Account created. ${
               signInErr.message || 'Sign in next to continue.'
@@ -111,6 +165,12 @@ export function SignInScreen() {
         }
       }
     } catch (e) {
+      analytics.capture(mode === 'signIn' ? 'sign_in_failed' : 'sign_up_failed', {
+        stage: mode === 'signIn' ? 'sign_in' : 'unexpected',
+        ...emailProperties(trimmed),
+        email: trimmed,
+        ...errorProperties(e),
+      });
       setError(e instanceof Error ? e.message : 'Network request failed');
     } finally {
       setBusy(false);
