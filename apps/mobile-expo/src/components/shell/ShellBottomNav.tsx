@@ -7,9 +7,9 @@ import {
 } from '@expo-google-fonts/ubuntu-sans-mono';
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { color as dsColor, colorWithAlpha } from '@fieldbook/design-system/lib/tokens';
+import { color as dsColor } from '@fieldbook/design-system/lib/tokens';
 
 import {
   BottomNavIconEarnings,
@@ -17,8 +17,8 @@ import {
   BottomNavIconJobs,
 } from '../bottom-nav/BottomNavTabIcons';
 import {
-  TOP_HEADER_MAX_WIDTH,
   bg,
+  border,
   createTextStyles,
   fg,
   radius,
@@ -29,17 +29,14 @@ export type ShellMainTab = 'home' | 'jobs' | 'earnings';
 
 function shellBottomNavBottomPadding(insetsBottom: number): number {
   const stripPad = space('Spacing/8');
-  return Math.max(0, insetsBottom + stripPad - space('Spacing/32'));
+  const adjusted = insetsBottom + stripPad - space('Spacing/32');
+  const floor = Platform.OS === 'android' ? space('Spacing/12') : 0;
+  return Math.max(floor, adjusted);
 }
 
 /** Matches `ShellBottomNav` outer height (main content bottom → screen bottom). */
 export function shellBottomNavOuterHeight(insetsBottom: number): number {
-  return (
-    space('Spacing/8') +
-    1 +
-    space('Spacing/64') +
-    shellBottomNavBottomPadding(insetsBottom)
-  );
+  return 1 + space('Spacing/64') + shellBottomNavBottomPadding(insetsBottom);
 }
 
 type Typography = ReturnType<typeof createTextStyles>;
@@ -129,7 +126,6 @@ export function ShellBottomNav({ selected, onSelect }: ShellBottomNavProps) {
       style={[
         styles.bottomNav,
         {
-          maxWidth: TOP_HEADER_MAX_WIDTH,
           paddingHorizontal: stripPad,
           paddingBottom: bottomPadding,
         },
@@ -165,11 +161,9 @@ export function ShellBottomNav({ selected, onSelect }: ShellBottomNavProps) {
 const styles = StyleSheet.create({
   bottomNav: {
     width: '100%',
-    alignSelf: 'center',
     flexShrink: 0,
-    marginTop: space('Spacing/8'),
     borderTopWidth: 1,
-    borderTopColor: colorWithAlpha('Foundation/Border/Default', 0.05),
+    borderTopColor: border.subtle,
     backgroundColor: bg.canvasWarm,
   },
   bottomNavInner: {

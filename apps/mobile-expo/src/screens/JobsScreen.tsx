@@ -308,7 +308,9 @@ export function JobsScreen({
         : 'Failed to load jobs.';
   }, []);
 
-  const loadFirstPage = useCallback(async () => {
+  const jobsListFetchKeyRef = useRef('');
+
+  const loadFirstPage = useCallback(async (options?: { showLoading?: boolean }) => {
     const startedAt = Date.now();
     const requestId = firstPageRequestIdRef.current + 1;
     firstPageRequestIdRef.current = requestId;
@@ -330,7 +332,10 @@ export function JobsScreen({
       setLoadError(null);
       return;
     }
-    setLoading(true);
+    const showLoading = options?.showLoading ?? true;
+    if (showLoading) {
+      setLoading(true);
+    }
     setLoadError(null);
     setHasMore(true);
     try {
@@ -379,8 +384,12 @@ export function JobsScreen({
   }, [activeTab, debouncedSearch, formatLoadError, inboxCount, searchFocused]);
 
   useEffect(() => {
-    void loadFirstPage();
-  }, [version, loadFirstPage]);
+    const fetchKey = `${activeTab}|${debouncedSearch}|${searchFocused}`;
+    const filtersChanged = jobsListFetchKeyRef.current !== fetchKey;
+    jobsListFetchKeyRef.current = fetchKey;
+    const showLoading = filtersChanged || jobsRef.current.length === 0;
+    void loadFirstPage({ showLoading });
+  }, [version, loadFirstPage, activeTab, debouncedSearch, searchFocused]);
 
   const loadNextPage = useCallback(async () => {
     if (!isSupabaseConfigured() || loadMoreInFlight.current || loading || !hasMore) return;
@@ -692,7 +701,7 @@ export function JobsScreen({
   );
 
   const listEmpty = useMemo(() => {
-    if (loading) {
+    if (loading && jobs.length === 0) {
       return <JobsLoadingSkeleton typography={typography} />;
     }
     if (loadError) {
@@ -783,8 +792,7 @@ export function JobsScreen({
     );
   }
 
-  const bottomNavReservedHeight =
-    space('Spacing/8') + 1 + 64 + space('Spacing/8') + insets.bottom;
+  const bottomNavReservedHeight = shellBottomNavOuterHeight(insets.bottom);
   const headerTopPad = Math.max(insets.top - space('Spacing/12'), 0);
   const fabBottomOffset =
     space('Spacing/8') +
@@ -806,7 +814,7 @@ export function JobsScreen({
         <View style={styles.topAccent} />
       </View>
       <Animated.FlatList
-        data={loading ? [] : flatData}
+        data={loading && jobs.length === 0 ? [] : flatData}
         keyExtractor={(item) => item.key}
         renderItem={renderItem}
         ListHeaderComponent={listHeader}

@@ -1,6 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, AppState, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  AppState,
+  StyleSheet,
+  Text,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { LiveSessionOverlay } from './src/components/LiveSessionOverlay';
@@ -74,15 +82,27 @@ function AuthenticatedShell() {
     [liveSession.hasLiveSession, mainTab],
   );
 
-  const navigateToJob = useCallback(
+  /**
+   * After a live session ends or is deleted from the global overlay, only
+   * touch Job Detail when it is already open for that job (refresh in place).
+   * Ending from the tab shell should return the user to Home / Jobs / Earnings
+   * — not push a new Job Detail navigation that can fail or trap them on an
+   * error screen.
+   */
+  const onLiveSessionEnded = useCallback(
     (jobId: string) => {
-      setJobDetailEntrySource('live_session_overlay');
-      setSelectedJobId(jobId);
-      setJobDetailInitialEditOpen(false);
-      setJobDetailLoadKey((k) => k + 1);
-      setJobDetailOpen(true);
+      if (jobDetailOpen && selectedJobId === jobId) {
+        setJobDetailLoadKey((k) => k + 1);
+        return;
+      }
+      if (jobDetailOpen) {
+        setJobDetailEntrySource('live_session_overlay');
+        setSelectedJobId(jobId);
+        setJobDetailInitialEditOpen(false);
+        setJobDetailLoadKey((k) => k + 1);
+      }
     },
-    [],
+    [jobDetailOpen, selectedJobId],
   );
 
   /**
@@ -217,7 +237,7 @@ function AuthenticatedShell() {
       ) : (
         <View style={styles.shellColumn}>
           <View style={styles.shellMain}>
-            {mainTab === 'home' && !profileOpen ? (
+            <View style={tabPaneStyle(mainTab === 'home' && !profileOpen)}>
               <HomeScreen
                 onOpenProfile={() => {
                   analytics.capture('profile_opened_from_home', {});
@@ -240,11 +260,11 @@ function AuthenticatedShell() {
                   setJobDetailOpen(true);
                 }}
               />
-            ) : null}
-            {mainTab === 'home' && profileOpen ? (
+            </View>
+            <View style={tabPaneStyle(mainTab === 'home' && profileOpen)}>
               <ProfileScreen onBack={() => setProfileOpen(false)} />
-            ) : null}
-            {mainTab === 'jobs' ? (
+            </View>
+            <View style={tabPaneStyle(mainTab === 'jobs')}>
               <JobsScreen
                 jobsListTab={jobsListTab}
                 onJobsListTabChange={setJobsListTab}
@@ -258,8 +278,8 @@ function AuthenticatedShell() {
                   setJobDetailOpen(true);
                 }}
               />
-            ) : null}
-            {mainTab === 'earnings' ? (
+            </View>
+            <View style={tabPaneStyle(mainTab === 'earnings')}>
               <EarningsScreen
                 window={earningsWindow}
                 onWindowChange={setEarningsWindow}
@@ -275,15 +295,13 @@ function AuthenticatedShell() {
                   setJobDetailOpen(true);
                 }}
               />
-            ) : null}
+            </View>
           </View>
           <ShellBottomNav selected={mainTab} onSelect={onShellTabSelect} />
         </View>
       )}
 
-      <LiveSessionOverlay
-        onNavigateToJob={({ jobId }) => navigateToJob(jobId)}
-      />
+      <LiveSessionOverlay onSessionEnded={({ jobId }) => onLiveSessionEnded(jobId)} />
     </View>
   );
 }
@@ -317,6 +335,10 @@ export default function App() {
   );
 }
 
+function tabPaneStyle(visible: boolean): StyleProp<ViewStyle> {
+  return visible ? styles.tabPaneVisible : styles.tabPaneHidden;
+}
+
 const styles = StyleSheet.create({
   root: {
     flex: 1,
@@ -325,12 +347,18 @@ const styles = StyleSheet.create({
   shellColumn: {
     flex: 1,
     width: '100%',
-    /** Match tab screens + bottom nav — avoids a lighter strip (`Background/Default`) in the nav `marginTop` gutter. */
+    /** Match tab screens + bottom nav cream fill. */
     backgroundColor: bg.canvasWarm,
   },
   shellMain: {
     flex: 1,
     backgroundColor: bg.canvasWarm,
+  },
+  tabPaneVisible: {
+    flex: 1,
+  },
+  tabPaneHidden: {
+    display: 'none',
   },
   centered: {
     justifyContent: 'center',

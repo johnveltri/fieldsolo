@@ -23,6 +23,7 @@ import {
 import { color } from '@fieldbook/design-system/lib/tokens';
 
 import { CanvasTiledBackground } from '../components/CanvasTiledBackground';
+import { shellBottomNavOuterHeight } from '../components/shell/ShellBottomNav';
 import {
   ChangePasswordBottomSheet,
   ProfileRowsCard,
@@ -109,8 +110,7 @@ export function ProfileScreen({ onBack }: ProfileScreenProps) {
   );
 
   const headerTopPad = Math.max(insets.top - space('Spacing/12'), 0);
-  const bottomNavReservedHeight =
-    space('Spacing/8') + 1 + 64 + space('Spacing/8') + insets.bottom;
+  const bottomNavReservedHeight = shellBottomNavOuterHeight(insets.bottom);
 
   // --- Profile data ---
 
@@ -365,6 +365,7 @@ export function ProfileScreen({ onBack }: ProfileScreenProps) {
           color: color('Semantic/Status/Success/Text'),
           backgroundColor: color('Semantic/Status/Success/BG'),
         },
+        hideChevron: true,
       },
     ],
     [],

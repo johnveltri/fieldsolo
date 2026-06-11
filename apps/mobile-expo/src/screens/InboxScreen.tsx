@@ -490,9 +490,8 @@ export function InboxScreen({ loadKey = 0, onRequestClose, onSelectShellTab }: I
         )}
       </Animated.ScrollView>
 
-      <View style={styles.bottomNavWrap}>
-        <ShellBottomNav selected="jobs" onSelect={onSelectShellTab} />
-      </View>
+      {/* Fixed in the column (not overlaid) so tab taps reach the nav on Android. */}
+      <ShellBottomNav selected="jobs" onSelect={onSelectShellTab} />
 
       <ChooseJobBottomSheet
         typography={typography}
@@ -571,12 +570,6 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: space('Spacing/20'),
     paddingTop: space('Spacing/40'),
-  },
-  bottomNavWrap: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
   },
   pressed: { opacity: 0.75 },
 });

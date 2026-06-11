@@ -51,8 +51,6 @@ export function JobCard({
   incompletePills,
   recencyLabelMode = 'lastWorked',
 }: JobCardProps) {
-  const category = (job.jobType ?? '').trim().toUpperCase();
-  const showCategoryChip = category.length > 0;
   const timeValue = job.timeLabel || '0.0h';
   const revenue = formatUsd(job.revenueCents);
   const materials = formatUsd(job.materialsCents);
@@ -87,12 +85,6 @@ export function JobCard({
                   <Text style={[typography.labelCaps, styles.incompletePillLabel]}>{label}</Text>
                 </View>
               ))}
-            </View>
-          ) : null}
-
-          {showCategoryChip ? (
-            <View style={styles.categoryChip}>
-              <Text style={[typography.labelCaps, { color: bg.canvasWarm }]}>{category}</Text>
             </View>
           ) : null}
 
@@ -170,13 +162,6 @@ const styles = StyleSheet.create({
   },
   statusPillWrap: {
     alignSelf: 'flex-start',
-  },
-  categoryChip: {
-    alignSelf: 'flex-start',
-    backgroundColor: color('Foundation/Text/Primary'),
-    borderRadius: 6,
-    paddingHorizontal: space('Spacing/8'),
-    paddingVertical: space('Spacing/4'),
   },
   incompletePillsRow: {
     flexDirection: 'row',

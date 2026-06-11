@@ -5,7 +5,7 @@ import {
   UbuntuSansMono_600SemiBold,
   UbuntuSansMono_700Bold,
 } from '@expo-google-fonts/ubuntu-sans-mono';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
@@ -16,6 +16,7 @@ import {
 import { color, radius } from '@fieldbook/design-system/lib/tokens';
 
 import { CanvasTiledBackground } from '../components/CanvasTiledBackground';
+import { shellBottomNavOuterHeight } from '../components/shell/ShellBottomNav';
 import {
   EarningsSnapshotCard,
   OutstandingPaymentCard,
@@ -157,6 +158,7 @@ export function EarningsScreen({
   });
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const loadedWindowsRef = useRef<Set<EarningsWindow>>(new Set());
 
   const config = WINDOW_CONFIG[window];
 
@@ -176,7 +178,10 @@ export function EarningsScreen({
   useEffect(() => {
     let alive = true;
     const startedAt = Date.now();
-    setLoading(true);
+    const isFirstLoadForWindow = !loadedWindowsRef.current.has(window);
+    if (isFirstLoadForWindow) {
+      setLoading(true);
+    }
     setLoadError(null);
     if (!isSupabaseConfigured()) {
       setLoading(false);
@@ -237,7 +242,10 @@ export function EarningsScreen({
           ...errorProperties(err),
         });
       } finally {
-        if (alive) setLoading(false);
+        if (alive) {
+          loadedWindowsRef.current.add(window);
+          setLoading(false);
+        }
       }
     })();
     return () => {
@@ -271,8 +279,7 @@ export function EarningsScreen({
   }, [snapshot.jobs]);
 
   const headerTopPad = Math.max(insets.top - space('Spacing/12'), 0);
-  const bottomNavReservedHeight =
-    space('Spacing/8') + 1 + 64 + space('Spacing/8') + insets.bottom;
+  const bottomNavReservedHeight = shellBottomNavOuterHeight(insets.bottom);
 
   if (!fontsLoaded) {
     return (
@@ -375,20 +382,22 @@ export function EarningsScreen({
               />
             </View>
 
-            <View style={[styles.cardBand, styles.cardBandTopGap]}>
-              <OutstandingPaymentCard
-                count={outstanding.count}
-                amount={formatUsd(outstanding.revenueCents)}
-                typography={typography}
-                onPress={() => {
-                  analytics.capture('outstanding_payment_card_pressed', {
-                    outstanding_count: outstanding.count,
-                    outstanding_value_bucket: moneyBucket(outstanding.revenueCents),
-                  });
-                  onOpenJobsOpenTab();
-                }}
-              />
-            </View>
+            {outstanding.count > 0 ? (
+              <View style={[styles.cardBand, styles.cardBandTopGap]}>
+                <OutstandingPaymentCard
+                  count={outstanding.count}
+                  amount={formatUsd(outstanding.revenueCents)}
+                  typography={typography}
+                  onPress={() => {
+                    analytics.capture('outstanding_payment_card_pressed', {
+                      outstanding_count: outstanding.count,
+                      outstanding_value_bucket: moneyBucket(outstanding.revenueCents),
+                    });
+                    onOpenJobsOpenTab();
+                  }}
+                />
+              </View>
+            ) : null}
 
             {rankedSections.map((section) => (
               <View key={section.key} style={styles.sectionGroup}>

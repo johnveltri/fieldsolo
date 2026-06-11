@@ -41,6 +41,24 @@ For **Expo** (`apps/mobile-expo`), you typically need:
 
 See `apps/mobile-expo/.env.example` — copy to `.env` (not committed) and paste keys from `supabase status`.
 
+### Expo Go (iOS + Android)
+
+Start Metro from the repo root with:
+
+```bash
+npm run mobile
+```
+
+Then press `i` (iOS) or `a` (Android), or use `npm run mobile:ios` / `npm run mobile:android`.
+
+If you see **Missing Supabase env vars** on one emulator, stop Metro and restart with cache cleared:
+
+```bash
+cd apps/mobile-expo && npx expo start --clear
+```
+
+Env vars live in `apps/mobile-expo/.env` only — a Metro server started without loading that file will bundle empty `EXPO_PUBLIC_*` values on every platform.
+
 ### Local Docker is the default
 
 With **`EXPO_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321`**, the Expo app and **local Studio** (`http://127.0.0.1:54323`) talk to the **same** database. A row returned by SQL in Studio (e.g. `auth.users`) is the same project the app uses—as long as `.env` keys come from `supabase status` for that running stack.
