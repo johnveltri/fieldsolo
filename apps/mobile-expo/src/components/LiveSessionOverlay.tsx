@@ -6,7 +6,7 @@ import {
   UbuntuSansMono_700Bold,
 } from '@expo-google-fonts/ubuntu-sans-mono';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, Animated, Dimensions, Easing, StyleSheet } from 'react-native';
+import { Alert, Animated, Dimensions, Easing, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
@@ -56,11 +56,10 @@ import { createTextStyles, space } from '../theme/nativeTokens';
 
 type LiveSessionOverlayProps = {
   /**
-   * Called whenever a live session terminates and the parent should navigate
-   * to the corresponding job detail screen so the user lands on the
-   * now-completed session card.
+   * Called after a live session ends or is deleted. The parent decides whether
+   * to refresh an already-open Job Detail or stay on the tab shell.
    */
-  onNavigateToJob: (input: { jobId: string }) => void;
+  onSessionEnded: (input: { jobId: string }) => void;
 };
 
 /**
@@ -70,7 +69,7 @@ type LiveSessionOverlayProps = {
  *
  * Renders nothing when there is no active live session.
  */
-export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps) {
+export function LiveSessionOverlay({ onSessionEnded }: LiveSessionOverlayProps) {
   const insets = useSafeAreaInsets();
   const sheetStackWriters = useBottomSheetStackWriters();
   const topmostSheet = useTopmostBottomSheet();
@@ -564,7 +563,7 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
           duration_minutes: durationMinutesBetween(ended.startedAt, new Date().toISOString()),
           source: 'end_button',
         });
-        onNavigateToJob({ jobId: ended.jobId });
+        onSessionEnded({ jobId: ended.jobId });
       }
     } catch (e) {
       analytics.capture('live_session_end_failed', {
@@ -574,7 +573,7 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
       });
       Alert.alert('End failed', formatErrorMessage(e) || 'Could not end session.');
     }
-  }, [endLiveSessionNow, formatErrorMessage, liveSession, onNavigateToJob]);
+  }, [endLiveSessionNow, formatErrorMessage, liveSession, onSessionEnded]);
 
   const handleEditSave = useCallback(
     async (payload: EditLiveSessionSavePayload) => {
@@ -622,7 +621,7 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
             duration_minutes: durationMinutesBetween(ended.startedAt, payload.endedAt),
             source: 'edit_end_time',
           });
-          onNavigateToJob({ jobId: ended.jobId });
+          onSessionEnded({ jobId: ended.jobId });
         }
       } catch (e) {
         analytics.capture('live_session_end_failed', {
@@ -637,7 +636,7 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
       closeEditSheet,
       endLiveSessionNow,
       liveSession,
-      onNavigateToJob,
+      onSessionEnded,
       formatErrorMessage,
       updateLiveSessionStartedAt,
     ],
@@ -652,7 +651,7 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
           job_id: deleted.jobId,
           elapsed_seconds: elapsedSeconds(),
         });
-        onNavigateToJob({ jobId: deleted.jobId });
+        onSessionEnded({ jobId: deleted.jobId });
       }
     } catch (e) {
       analytics.capture('live_session_delete_failed', {
@@ -662,7 +661,7 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
       });
       Alert.alert('Delete failed', formatErrorMessage(e) || 'Could not delete live session.');
     }
-  }, [deleteLiveSessionNow, elapsedSeconds, formatErrorMessage, liveSession, onNavigateToJob]);
+  }, [deleteLiveSessionNow, elapsedSeconds, formatErrorMessage, liveSession, onSessionEnded]);
 
   // Tapping the minimized bar should:
   //   1. If a foreign bottom sheet (Edit Job, etc.) is currently presented,
@@ -688,29 +687,17 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
   // no foreign sheet is presented). When a foreign sheet IS presented we
   // SLIDE the bar up via an animated `translateY` so it lands just above
   // the sheet's top edge with a small gap.
-  //
-  // The translateY is animated (rather than the bar's `bottom`) so the
-  // animation can run on the native driver and so the bar visually moves
-  // in lockstep with the foreign sheet's open animation — instead of the
-  // previous behavior where the bar jumped to its lifted position the
-  // moment the sheet's onLayout fired (well before the slide-up was done).
   const fabSlotBottom = space('Spacing/8') + insets.bottom + 64 + space('Spacing/12');
   const stackTopY = topmostSheet?.topY ?? null;
   const liftDelta = useMemo(() => {
     if (stackTopY == null) return 0;
     const windowH = Dimensions.get('window').height;
-    // `windowH - topY` is the visible height of the foreign sheet (it's
-    // anchored to the bottom). The bar should sit `Spacing/12` above the
-    // sheet's top edge.
     const liftedBottom = Math.max(0, windowH - stackTopY) + space('Spacing/12');
     return Math.max(0, liftedBottom - fabSlotBottom);
   }, [stackTopY, fabSlotBottom]);
 
   const liftAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
-    // Match the BottomSheetShell open/close timing so the bar and the
-    // foreign sheet land at their final resting positions at the same
-    // moment. Open: ease-out cubic ≈ 280ms; Close: ease-in cubic ≈ 220ms.
     const isLifting = liftDelta > 0;
     Animated.timing(liftAnim, {
       toValue: -liftDelta,
@@ -747,6 +734,8 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
   if (!fontsLoaded || !liveSession) return null;
 
   const barVisible = mode === 'minimized';
+  /** Lift above foreign sheets (Edit Job, etc.) when they are on the global stack. */
+  const barAboveForeignSheet = barVisible && topmostSheet != null;
 
   return (
     <>
@@ -913,6 +902,8 @@ export function LiveSessionOverlay({ onNavigateToJob }: LiveSessionOverlayProps)
         pointerEvents="box-none"
         style={[
           styles.minimizedAnchor,
+          barVisible && styles.minimizedAnchorRaised,
+          barAboveForeignSheet && styles.minimizedAnchorAboveSheet,
           { bottom: fabSlotBottom, transform: [{ translateY: liftAnim }] },
         ]}
       >
@@ -935,5 +926,13 @@ const styles = StyleSheet.create({
     right: 0,
     alignItems: 'center',
     paddingHorizontal: space('Spacing/16'),
+  },
+  minimizedAnchorRaised: {
+    zIndex: 30,
+    elevation: 12,
+  },
+  minimizedAnchorAboveSheet: {
+    zIndex: 1100,
+    elevation: 1100,
   },
 });

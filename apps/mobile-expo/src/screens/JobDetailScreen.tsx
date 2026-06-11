@@ -54,6 +54,7 @@ import {
 import { CanvasTiledBackground } from '../components/CanvasTiledBackground';
 import {
   ShellBottomNav,
+  shellBottomNavOuterHeight,
   type ShellMainTab,
 } from '../components/shell/ShellBottomNav';
 import {
@@ -376,7 +377,6 @@ export function JobDetailScreen({
       customerName: j.customerName,
       serviceAddress: j.serviceAddress,
       revenue,
-      jobType: j.jobType,
     };
   }, []);
 
@@ -395,7 +395,6 @@ export function JobDetailScreen({
           customerName: values.customerName.trim(),
           serviceAddress: values.serviceAddress.trim(),
           revenueCents,
-          jobType: values.jobType.trim(),
         });
         const refreshed = await fetchJobDetail(supabase, job.id);
         if (refreshed) setJob(refreshed);
@@ -1464,32 +1463,54 @@ export function JobDetailScreen({
   }
 
   if (supabaseReady && !job) {
+    const headerTopPad = Math.max(insets.top - space('Spacing/12'), 0);
     return (
-      <View style={styles.loading}>
+      <View style={styles.root}>
         <CanvasTiledBackground scrollY={scrollY} />
-        {__DEV__ ? (
-          <Text
+        {onRequestClose ? (
+          <View
             style={[
-              typography.bodySmall,
-              {
-                color: fg.muted,
-                paddingHorizontal: space('Spacing/20'),
-                textAlign: 'center',
-                marginBottom: space('Spacing/12'),
-              },
+              styles.topHeader,
+              { maxWidth: TOP_HEADER_MAX_WIDTH, paddingTop: headerTopPad + space('Spacing/32') },
             ]}
           >
-            {sessionEmail ?? '(no email)'} · API {supabaseApiHostLabel()}
-          </Text>
+            <View style={styles.topHeaderRow}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Close"
+                onPress={onClose}
+                style={({ pressed }) => [styles.closeCircle, pressed && styles.pressed]}
+              >
+                <JobDetailIconTopClose color={fg.primary} />
+              </Pressable>
+            </View>
+          </View>
         ) : null}
-        <Text
-          style={[
-            typography.body,
-            { color: fg.primary, paddingHorizontal: space('Spacing/20'), textAlign: 'center' },
-          ]}
-        >
-          {jobLoadError ?? 'Unable to load job.'}
-        </Text>
+        <View style={styles.errorBody}>
+          {__DEV__ ? (
+            <Text
+              style={[
+                typography.bodySmall,
+                {
+                  color: fg.muted,
+                  paddingHorizontal: space('Spacing/20'),
+                  textAlign: 'center',
+                  marginBottom: space('Spacing/12'),
+                },
+              ]}
+            >
+              {sessionEmail ?? '(no email)'} · API {supabaseApiHostLabel()}
+            </Text>
+          ) : null}
+          <Text
+            style={[
+              typography.body,
+              { color: fg.primary, paddingHorizontal: space('Spacing/20'), textAlign: 'center' },
+            ]}
+          >
+            {jobLoadError ?? 'Unable to load job.'}
+          </Text>
+        </View>
       </View>
     );
   }
@@ -1498,13 +1519,8 @@ export function JobDetailScreen({
     return null;
   }
 
-  /**
-   * Space reserved under the scroll content so the last section clears the **fixed** bottom tab bar.
-   * Roughly: outer margin + top border + 64px tab row + bottom padding + home indicator (`insets.bottom`).
-   */
-  const stripPad = space('Spacing/8');
-  const bottomNavReservedHeight =
-    stripPad + 1 + 64 + stripPad + insets.bottom;
+  /** Space reserved under the scroll content so the last section clears the fixed bottom tab bar. */
+  const bottomNavReservedHeight = shellBottomNavOuterHeight(insets.bottom);
 
   return (
     <View style={styles.root}>
@@ -1582,7 +1598,6 @@ export function JobDetailScreen({
             customerName={job.customerName}
             serviceAddress={job.serviceAddress}
             lastWorkedLabel={job.lastWorkedLabel}
-            jobTypeLabelUppercase={job.jobType.toUpperCase()}
             workStatus={job.workStatus}
             typography={typography}
           />
@@ -2098,6 +2113,12 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: bg.canvasWarm },
   /** Centered spinner over the same lined background as the loaded screen. */
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  errorBody: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: space('Spacing/20'),
+  },
   /** Scroll fills root; flex lets the fixed bottom nav sit in the same column without overlapping scroll height math incorrectly. */
   scroll: { flex: 1, zIndex: 1 },
   /** Default scroll content background can read as white on iOS; keep lines visible. */

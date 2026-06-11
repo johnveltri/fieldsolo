@@ -128,9 +128,17 @@ export function BottomSheetShell({
    * the primary CTA when typing.
    */
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  /**
+   * Keep the overlay in the elevated stacking band while a sheet is open or
+   * playing its close animation. Drop back to flat once fully hidden so
+   * invisible full-screen overlays do not occlude the shell FAB / minimized
+   * live-session bar on Android (elevation-based compositing).
+   */
+  const [stackingElevated, setStackingElevated] = useState(visible);
 
   useEffect(() => {
     if (visible) {
+      setStackingElevated(true);
       Animated.parallel([
         Animated.timing(translateY, {
           toValue: 0,
@@ -162,7 +170,10 @@ export function BottomSheetShell({
         useNativeDriver: true,
       }),
     ]).start(({ finished }) => {
-      if (finished) onClosed?.();
+      if (finished) {
+        setStackingElevated(false);
+        onClosed?.();
+      }
     });
   }, [hiddenOffset, onClosed, scrimOpacity, translateY, visible]);
 
@@ -262,7 +273,10 @@ export function BottomSheetShell({
   // taps via the inactive sheet's scrim Pressable.
   return (
     <View
-      style={styles.overlay}
+      style={[
+        styles.overlay,
+        stackingElevated ? styles.overlayElevated : styles.overlayFlat,
+      ]}
       pointerEvents={visible ? 'box-none' : 'none'}
     >
       {/* Scrim sits in its OWN absolutely-positioned layer so it covers
@@ -337,8 +351,14 @@ const styles = StyleSheet.create({
   overlay: {
     ...absoluteFill,
     justifyContent: 'flex-end',
+  },
+  overlayElevated: {
     zIndex: 1000,
     elevation: 1000,
+  },
+  overlayFlat: {
+    zIndex: 0,
+    elevation: 0,
   },
   /**
    * `KeyboardAvoidingView` host. Fills the overlay (so its `flex-end`

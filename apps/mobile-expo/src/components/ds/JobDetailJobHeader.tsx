@@ -4,7 +4,6 @@ import type { JobDetailWorkStatus } from '@fieldbook/shared-types';
 
 import { CONTENT_MAX_WIDTH } from '../../theme/nativeTokens';
 import type { TextStyles } from '../../theme/nativeTokens';
-import { JobDetailCategoryChip } from './JobDetailCategoryChip';
 import { JobDetailStatusPill } from './JobDetailStatusPill';
 
 export function JobDetailJobHeader({
@@ -12,7 +11,6 @@ export function JobDetailJobHeader({
   customerName,
   serviceAddress,
   lastWorkedLabel,
-  jobTypeLabelUppercase,
   workStatus,
   typography,
 }: {
@@ -20,13 +18,11 @@ export function JobDetailJobHeader({
   customerName: string;
   serviceAddress: string;
   lastWorkedLabel: string;
-  jobTypeLabelUppercase: string;
   workStatus: JobDetailWorkStatus;
   typography: TextStyles;
 }) {
   const customerLabel = customerName.trim().length > 0 ? customerName.trim() : 'No Customer';
   const serviceAddressLabel = serviceAddress.trim();
-  const showJobTypeChip = jobTypeLabelUppercase.trim().length > 0;
 
   return (
     <View style={styles.jobCardShell}>
@@ -46,12 +42,6 @@ export function JobDetailJobHeader({
         </Text>
         {serviceAddressLabel.length > 0 ? (
           <Text style={typography.jobDetailSubtitle}>{serviceAddressLabel}</Text>
-        ) : null}
-        {showJobTypeChip ? (
-          <JobDetailCategoryChip
-            labelUppercase={jobTypeLabelUppercase}
-            typography={typography}
-          />
         ) : null}
       </View>
     </View>

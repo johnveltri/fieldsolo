@@ -8,7 +8,7 @@ import {
 } from 'react';
 
 type JobsListInvalidationContextValue = {
-  /** Incremented when consumers should reload the jobs list from the first page. */
+  /** Bumped after mutations so shell screens refresh cached data (jobs, home, earnings). */
   version: number;
   invalidateJobsList: () => void;
 };

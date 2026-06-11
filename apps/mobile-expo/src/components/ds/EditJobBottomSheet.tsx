@@ -20,7 +20,6 @@ export type EditJobBottomSheetValues = {
   customerName: string;
   serviceAddress: string;
   revenue: string;
-  jobType: string;
 };
 
 type EditJobBottomSheetProps = {
@@ -38,7 +37,6 @@ const DEFAULT_VALUES: EditJobBottomSheetValues = {
   customerName: 'Andrew G',
   serviceAddress: '123 Main Street, Perrysburg, OH 43551',
   revenue: '5,678.87',
-  jobType: 'Plumbing',
 };
 
 function BackIcon() {
@@ -81,27 +79,17 @@ export function EditJobBottomSheet({
   const [customerName, setCustomerName] = useState(v.customerName);
   const [serviceAddress, setServiceAddress] = useState(v.serviceAddress);
   const [revenue, setRevenue] = useState(v.revenue);
-  const [jobType, setJobType] = useState<string>(v.jobType);
   const shortDescriptionRef = useRef<TextInput>(null);
   const customerNameRef = useRef<TextInput>(null);
   const serviceAddressRef = useRef<TextInput>(null);
   const revenueRef = useRef<TextInput>(null);
-  const jobTypeRef = useRef<TextInput>(null);
 
   useEffect(() => {
     setShortDescription(v.shortDescription);
     setCustomerName(v.customerName);
     setServiceAddress(v.serviceAddress);
     setRevenue(v.revenue);
-    setJobType(v.jobType);
-  }, [
-    v.customerName,
-    v.shortDescription,
-    v.jobType,
-    v.revenue,
-    v.serviceAddress,
-    visible,
-  ]);
+  }, [v.customerName, v.shortDescription, v.revenue, v.serviceAddress, visible]);
 
   return (
     <BottomSheetShell visible={visible} onClose={onClose} onClosed={onClosed}>
@@ -174,18 +162,6 @@ export function EditJobBottomSheet({
               />
             </View>
           </InputShell>
-          <InputShell>
-            <TextInput
-              ref={jobTypeRef}
-              value={jobType}
-              onChangeText={setJobType}
-              placeholder="Job type"
-              placeholderTextColor={fg.secondary}
-              editable
-              showSoftInputOnFocus
-              style={[typography.body, styles.inputText]}
-            />
-          </InputShell>
         </View>
 
         <SheetPrimaryDeleteActions
@@ -197,7 +173,6 @@ export function EditJobBottomSheet({
               customerName,
               serviceAddress,
               revenue,
-              jobType,
             })
           }
           onDeletePress={onDeletePress}

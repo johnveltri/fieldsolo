@@ -20,7 +20,7 @@ import {
   type RecentJobItem,
 } from '@fieldbook/api-client';
 import { color, radius } from '@fieldbook/design-system/lib/tokens';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -245,6 +245,7 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
   const [chooseJobError, setChooseJobError] = useState<string | null>(null);
 
   const [homeLoading, setHomeLoading] = useState(true);
+  const hasLoadedHomeRef = useRef(false);
   const [refreshing, setRefreshing] = useState(false);
   const [homeError, setHomeError] = useState<string | null>(null);
   const [weeklyNetCents, setWeeklyNetCents] = useState(0);
@@ -341,10 +342,15 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
 
   useEffect(() => {
     let alive = true;
-    setHomeLoading(true);
+    if (!hasLoadedHomeRef.current) {
+      setHomeLoading(true);
+    }
     void (async () => {
       await runHomeFetch(() => !alive);
-      if (alive) setHomeLoading(false);
+      if (alive) {
+        setHomeLoading(false);
+        hasLoadedHomeRef.current = true;
+      }
     })();
     return () => {
       alive = false;
@@ -817,7 +823,7 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
         }
       >
         <View style={styles.headerBand}>
-          <View style={[styles.topHeader, { maxWidth: TOP_HEADER_MAX_WIDTH }]}>
+          <View style={styles.topHeader}>
             <Text style={typography.displayH1}>FIELD BOOK</Text>
             <Pressable
               accessibilityRole="button"
@@ -846,19 +852,23 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
             </Text>
           ) : null}
 
-          <SectionHeader
-            title="WEEKLY SNAPSHOT"
-            subtitle="Completed jobs worked in the past 7 days"
-            tone="neutral"
-            typography={typography}
-          />
-          <MetricSnapshotCard
-            label="NET EARNINGS"
-            value={formatWeeklyUsd(weeklyNetCents)}
-            valueTone="success"
-            typography={typography}
-            onPress={onOpenEarnings}
-          />
+          {!homeLoading ? (
+            <>
+              <SectionHeader
+                title="WEEKLY SNAPSHOT"
+                subtitle="Completed jobs worked in the past 7 days"
+                tone="neutral"
+                typography={typography}
+              />
+              <MetricSnapshotCard
+                label="NET EARNINGS"
+                value={formatWeeklyUsd(weeklyNetCents)}
+                valueTone="success"
+                typography={typography}
+                onPress={onOpenEarnings}
+              />
+            </>
+          ) : null}
 
           {needsAttentionRows.length > 0 ? (
             <>
@@ -1186,6 +1196,8 @@ const styles = StyleSheet.create({
   modalHost: { flex: 1 },
   scroll: { flex: 1, width: '100%', backgroundColor: 'transparent', zIndex: 1 },
   scrollContent: {
+    // Stretch lets capped-width bands use full width; `alignSelf: 'center'` on
+    // those bands keeps cards centered on wider Android screens.
     alignItems: 'stretch',
   },
   safeAreaTopAccentWrap: {
@@ -1206,6 +1218,7 @@ const styles = StyleSheet.create({
   modulesColumn: {
     width: '100%',
     maxWidth: TOP_HEADER_MAX_WIDTH,
+    alignSelf: 'center',
     alignItems: 'center',
   },
   homeError: {
@@ -1240,6 +1253,8 @@ const styles = StyleSheet.create({
   },
   topHeader: {
     width: '100%',
+    maxWidth: TOP_HEADER_MAX_WIDTH,
+    alignSelf: 'center',
     paddingHorizontal: space('Spacing/20'),
     paddingTop: space('Spacing/32'),
     paddingBottom: space('Spacing/16'),

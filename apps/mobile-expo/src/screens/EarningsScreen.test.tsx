@@ -152,6 +152,22 @@ describe('EarningsScreen', () => {
     expect(onOpenJobDetail).toHaveBeenCalledWith('job-high');
   });
 
+  it('hides the outstanding payments card when there are no pending jobs', async () => {
+    mockGetOutstandingPaymentsForCurrentUser.mockResolvedValue({
+      count: 0,
+      revenueCents: 0,
+    });
+
+    const { screen } = renderHarness();
+
+    await waitFor(() => {
+      expect(screen.getByText('WEEKLY SNAPSHOT')).toBeTruthy();
+    });
+
+    expect(screen.queryByText('Outstanding')).toBeNull();
+    expect(screen.queryByText('Jobs pending payment')).toBeNull();
+  });
+
   it('reloads the snapshot when the selected earnings window changes', async () => {
     const { screen } = renderHarness();
 

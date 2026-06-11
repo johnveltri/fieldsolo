@@ -78,9 +78,6 @@ export function MinimizedLiveSessionBar({
   const opacity = progress;
   const translateY = progress.interpolate({
     inputRange: [0, 1],
-    // Sit ~14px below its rest position when hidden — small enough to feel
-    // like a quick morph, large enough to read as motion against a static
-    // backdrop.
     outputRange: [14, 0],
   });
   const scale = progress.interpolate({
