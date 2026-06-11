@@ -79,7 +79,6 @@ export type UpdateJobInput = {
   customerName: string;
   serviceAddress: string;
   revenueCents: number | null;
-  jobType: string;
 };
 
 export type ListJobsForCurrentUserItem = {
@@ -903,7 +902,6 @@ function normalizeEditableJobInput(input: UpdateJobInput): UpdateJobInput {
     customerName: input.customerName.trim(),
     serviceAddress: input.serviceAddress.trim(),
     revenueCents: input.revenueCents,
-    jobType: input.jobType.trim(),
   };
 }
 
@@ -991,7 +989,6 @@ export async function updateJobById(
     customer_name: normalized.customerName,
     service_address: normalized.serviceAddress,
     revenue_cents: normalized.revenueCents,
-    job_type: normalized.jobType,
   };
 
   const { data, error } = await client

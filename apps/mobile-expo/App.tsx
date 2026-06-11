@@ -261,9 +261,11 @@ function AuthenticatedShell() {
                 }}
               />
             </View>
-            <View style={tabPaneStyle(mainTab === 'home' && profileOpen)}>
-              <ProfileScreen onBack={() => setProfileOpen(false)} />
-            </View>
+            {profileOpen ? (
+              <View style={tabPaneStyle(mainTab === 'home')}>
+                <ProfileScreen onBack={() => setProfileOpen(false)} />
+              </View>
+            ) : null}
             <View style={tabPaneStyle(mainTab === 'jobs')}>
               <JobsScreen
                 jobsListTab={jobsListTab}

@@ -20,7 +20,6 @@ export type EditJobBottomSheetValues = {
   customerName: string;
   serviceAddress: string;
   revenue: string;
-  jobType: string;
 };
 
 type EditJobBottomSheetProps = {
@@ -38,7 +37,6 @@ const DEFAULT_VALUES: EditJobBottomSheetValues = {
   customerName: 'Andrew G',
   serviceAddress: '123 Main Street, Perrysburg, OH 43551',
   revenue: '5,678.87',
-  jobType: 'Plumbing',
 };
 
 function BackIcon() {
@@ -175,7 +173,6 @@ export function EditJobBottomSheet({
               customerName,
               serviceAddress,
               revenue,
-              jobType: v.jobType,
             })
           }
           onDeletePress={onDeletePress}

@@ -377,7 +377,6 @@ export function JobDetailScreen({
       customerName: j.customerName,
       serviceAddress: j.serviceAddress,
       revenue,
-      jobType: j.jobType,
     };
   }, []);
 
@@ -396,7 +395,6 @@ export function JobDetailScreen({
           customerName: values.customerName.trim(),
           serviceAddress: values.serviceAddress.trim(),
           revenueCents,
-          jobType: values.jobType.trim(),
         });
         const refreshed = await fetchJobDetail(supabase, job.id);
         if (refreshed) setJob(refreshed);

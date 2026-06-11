@@ -418,7 +418,6 @@ describe('jobs api client', () => {
       customerName: '  Jane Doe ',
       serviceAddress: '  101 Main St ',
       revenueCents: 125000,
-      jobType: '  Electrical ',
     });
 
     expect(patch).toEqual({
@@ -426,7 +425,6 @@ describe('jobs api client', () => {
       customer_name: 'Jane Doe',
       service_address: '101 Main St',
       revenue_cents: 125000,
-      job_type: 'Electrical',
     });
   });
 
@@ -557,7 +555,6 @@ describe('jobs api client', () => {
         customerName: '',
         serviceAddress: '',
         revenueCents: 0,
-        jobType: '',
       }),
     ).rejects.toThrow('Short description is required.');
 
@@ -567,7 +564,6 @@ describe('jobs api client', () => {
         customerName: '',
         serviceAddress: '',
         revenueCents: -1,
-        jobType: '',
       }),
     ).rejects.toThrow('Revenue must be a non-negative dollar amount.');
 
@@ -577,7 +573,6 @@ describe('jobs api client', () => {
         customerName: '',
         serviceAddress: '',
         revenueCents: 99.5,
-        jobType: '',
       }),
     ).rejects.toThrow('Revenue must be a non-negative dollar amount.');
   });
