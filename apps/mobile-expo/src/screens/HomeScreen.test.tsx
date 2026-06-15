@@ -34,7 +34,7 @@ jest.mock('expo-font', () => ({
   useFonts: () => [true],
 }));
 
-jest.mock('@fieldbook/api-client', () => ({
+jest.mock('@fieldsolo/api-client', () => ({
   createBlankJobForLiveSessionStart: (...args: unknown[]) =>
     mockCreateBlankJobForLiveSessionStart(...args),
   createNote: (...args: unknown[]) => mockCreateNote(...args),
@@ -158,6 +158,18 @@ describe('HomeScreen quick session', () => {
 
   afterEach(() => {
     consoleErrorSpy.mockRestore();
+  });
+
+  it('renders the FieldSolo home header', () => {
+    const screen = render(
+      <HomeScreen
+        onOpenProfile={() => undefined}
+        onOpenJobDetail={() => undefined}
+        onOpenEarnings={() => undefined}
+      />,
+    );
+
+    expect(screen.getByText('FIELDSOLO')).toBeTruthy();
   });
 
   it('cleans up the temporary quick-session job when starting the live session fails', async () => {

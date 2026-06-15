@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { color, radius, space } from '@fieldbook/design-system/lib/tokens';
+import { color, radius, space } from '@fieldsolo/design-system/lib/tokens';
 
 import { cardShadowRn, fg, type TextStyles } from '../../theme/nativeTokens';
 

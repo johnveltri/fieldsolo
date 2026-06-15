@@ -16,7 +16,7 @@ const mockIsSupabaseConfigured = jest.fn<() => boolean>(() => true);
 
 jest.mock('expo-font', () => ({ useFonts: () => [true] }));
 
-jest.mock('@fieldbook/api-client', () => ({
+jest.mock('@fieldsolo/api-client', () => ({
   listInboxNotes: (...args: unknown[]) => mockListInboxNotes(...args),
   listInboxMaterials: (...args: unknown[]) => mockListInboxMaterials(...args),
   listJobsForCurrentUserPage: (...args: unknown[]) => mockListJobsForCurrentUserPage(...args),

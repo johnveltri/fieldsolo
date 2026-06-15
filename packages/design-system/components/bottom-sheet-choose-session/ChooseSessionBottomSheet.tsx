@@ -140,7 +140,7 @@ export function ChooseSessionBottomSheet({
   const errorText = color('Semantic/Status/Error/Text');
   const neutralBg = color('Semantic/Status/Neutral/BG');
   const secondaryWell = color('Foundation/Text/Secondary');
-  const sheetTitleId = 'fieldbook-choose-session-title';
+  const sheetTitleId = 'fieldsolo-choose-session-title';
   const wellBg = colorWithAlpha('Foundation/Background/Default', 0.2);
 
   const showList =

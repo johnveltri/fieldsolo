@@ -4,7 +4,7 @@
     "figmaNodeId": "1284:789",
     "kind": "componentSet",
     "variantProperty": "Property 1",
-    "description": "Handle, Back, session header (16px Brand/Accent clock + Title-H3 “Edit Session”) with Start/End Time labels and four body inputs — or job header (“Edit Job”) with stacked fields; footer: **Button** (`1287:1563`) **Primary+Delete Job/Session** (`1808:1161`) — **Brand/Accent** save + trash (`FieldBookCtaButton` `jobSessionPrimaryWithDelete`).",
+    "description": "Handle, Back, session header (16px Brand/Accent clock + Title-H3 “Edit Session”) with Start/End Time labels and four body inputs — or job header (“Edit Job”) with stacked fields; footer: **Button** (`1287:1563`) **Primary+Delete Job/Session** (`1808:1161`) — **Brand/Accent** save + trash (`FieldSoloCtaButton` `jobSessionPrimaryWithDelete`).",
     "dimensions": {
       "width": 391,
       "heights": {
@@ -43,11 +43,11 @@
       "endTimeLabel": "edit-job-session-end-time-label",
       "endDateInput": "edit-job-session-end-date-input",
       "endTimeInput": "edit-job-session-end-time-input",
-      "footer": "edit-job-session-footer (wraps INSTANCE of Button Primary+Delete Job/Session `1808:1161`; nested `field-book-cta-*` layers from `1287:1563`)",
-      "primaryAction": "field-book-cta-primary (inside Button instance)",
-      "primaryActionLabel": "field-book-cta-label (inside Button instance)",
-      "deleteButton": "field-book-cta-delete (inside Button instance)",
-      "deleteIcon": "field-book-cta-delete-icon (inside Button instance)"
+      "footer": "edit-job-session-footer (wraps INSTANCE of Button Primary+Delete Job/Session `1808:1161`; nested `fieldsolo-cta-*` layers from `1287:1563`)",
+      "primaryAction": "fieldsolo-cta-primary (inside Button instance)",
+      "primaryActionLabel": "fieldsolo-cta-label (inside Button instance)",
+      "deleteButton": "fieldsolo-cta-delete (inside Button instance)",
+      "deleteIcon": "fieldsolo-cta-delete-icon (inside Button instance)"
     }
   },
   "codeVariantMap": {
@@ -77,8 +77,8 @@
     "radius": ["Radius/8", "Radius/12", "Radius/32"]
   },
   "primaryCta": {
-    "component": "Shared **Button** set `1287:1563` (`FieldBookCtaButton`, variant `jobSessionPrimaryWithDelete`)",
-    "fill": "Brand/Accent on primary; shadow from Brand/Primary per `field-book-cta/spec.json`"
+    "component": "Shared **Button** set `1287:1563` (`FieldSoloCtaButton`, variant `jobSessionPrimaryWithDelete`)",
+    "fill": "Brand/Accent on primary; shadow from Brand/Primary per `fieldsolo-cta/spec.json`"
   },
   "deleteControl": {
     "border": "1px solid rgba(212, 87, 42, 0.2) on delete frame",
@@ -102,7 +102,7 @@
     ],
     "findings": [
       "2026-04-08: Component set `1284:789` — `VERTICAL` + `NO_WRAP`, 16px `itemSpacing`; `clipsContent` false on set and variant masters. Structural frames renamed to `edit-job-session-*` (surface, handle, body, session fields, job slot, footer, back, header, title icon/text, session inputs, primary/delete). `Edit Session` nests date/time fields under `edit-job-session-body`; job variants use `edit-job-session-job-fields` (`SLOT` in Figma) between body and footer. React uses `data-name` on the same hooks; `edit-job-session-content` wraps padded stack. No `flatten()` in automation.",
-      "2026-04-08: Footer rebuilt: `edit-job-session-footer` contains an INSTANCE of **Button** **Primary+Delete Job/Session** (`1808:1161`) from set `1287:1563` (child named `edit-job-session-footer-cta`). React: `FieldBookCtaButton` `jobSessionPrimaryWithDelete`."
+      "2026-04-08: Footer rebuilt: `edit-job-session-footer` contains an INSTANCE of **Button** **Primary+Delete Job/Session** (`1808:1161`) from set `1287:1563` (child named `edit-job-session-footer-cta`). React: `FieldSoloCtaButton` `jobSessionPrimaryWithDelete`."
     ]
   }
 }

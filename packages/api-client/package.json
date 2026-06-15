@@ -1,5 +1,5 @@
 {
-  "name": "@fieldbook/api-client",
+  "name": "@fieldsolo/api-client",
   "private": true,
   "version": "0.0.0",
   "sideEffects": false,
@@ -9,7 +9,7 @@
     "src"
   ],
   "dependencies": {
-    "@fieldbook/shared-types": "*",
+    "@fieldsolo/shared-types": "*",
     "@supabase/supabase-js": "^2.49.4"
   }
 }

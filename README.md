@@ -1,22 +1,22 @@
-# Field Book
+# FieldSolo
 
 ### Was this job worth it?
 
-**Field Book** is a mobile-first job record and earnings intelligence app for independent tradespeople.
+**FieldSolo** is a mobile-first job record and earnings intelligence app for independent tradespeople.
 
 Not invoicing software.  
 Not field service management.  
 Not accounting software.
 
-**Field Book is a job receipt layer.**
+**FieldSolo is a job receipt layer.**
 
 It helps solo operators turn every job into a trusted financial record so they can understand what they earned, what they’re owed, and which jobs are actually worth doing.
 
 ---
 
-## What is Field Book?
+## What is FieldSolo?
 
-Think of Field Book as a **digital field notebook** built around the economic unit that matters most:
+Think of FieldSolo as a **digital field notebook** built around the economic unit that matters most:
 
 **The Job.**
 
@@ -57,7 +57,7 @@ Many can tell you what they billed.
 
 Far fewer can tell you what they netted.
 
-Field Book exists to solve that.
+FieldSolo exists to solve that.
 
 ---
 
@@ -71,11 +71,11 @@ Most software starts with:
 - Invoicing  
 - Team operations  
 
-Field Book starts somewhere else:
+FieldSolo starts somewhere else:
 
 **the job itself.**
 
-| Most Tools Start With | Field Book Starts With |
+| Most Tools Start With | FieldSolo Starts With |
 |-----------------------|------------------------|
 | Scheduling            | The Job                |
 | Invoicing             | Job Economics          |
@@ -140,7 +140,7 @@ Built for:
 
 # Product Principles
 
-Field Book is built around a few principles:
+FieldSolo is built around a few principles:
 
 ## Logging should be faster than remembering later
 Capture in seconds.
@@ -170,7 +170,7 @@ The bar is:
 
 # Free First Philosophy
 
-Field Book is designed with a strong free foundation.
+FieldSolo is designed with a strong free foundation.
 
 ## Free includes
 Core “capture truth” workflows:
@@ -221,9 +221,9 @@ Especially people running one-person businesses in the field.
 
 ---
 
-# What Field Book Is Not
+# What FieldSolo Is Not
 
-Field Book is not:
+FieldSolo is not:
 
 - Heavy field service software
 - Dispatch software
@@ -239,7 +239,7 @@ It starts with one thing:
 
 # Long-Term Vision
 
-Field Book starts as:
+FieldSolo starts as:
 
 ## 1. Job Receipt Layer
 Capture a reliable financial record for every job.
@@ -293,11 +293,18 @@ Current progress:
 # Getting Started
 
 ```bash
-git clone https://github.com/yourusername/field-book.git
-cd field-book
+git clone https://github.com/johnveltri/fieldsolo.git
+cd fieldsolo
 npm install
-npm run dev
+npm run mobile
 ```
+
+## Rename Checklist
+
+Before release, confirm the FieldSolo name is also updated outside the repo: Expo/EAS project,
+Supabase dashboard display name and `fieldsolo` storage bucket, PostHog project labels, Figma
+file/library names, GitHub repo/project, store listings, domains, support email, and legal or
+marketing copy.
 
 ---
 

@@ -17,12 +17,12 @@ import {
   fetchJobDetail,
   updateMaterial,
   updateNote,
-} from '@fieldbook/api-client';
+} from '@fieldsolo/api-client';
 import type {
   JobDetailMaterialLine,
   JobDetailNote,
   JobDetailViewModel,
-} from '@fieldbook/shared-types';
+} from '@fieldsolo/shared-types';
 
 import {
   ChooseSessionBottomSheet,

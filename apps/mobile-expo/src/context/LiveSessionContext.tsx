@@ -14,8 +14,8 @@ import {
   endLiveSession,
   fetchActiveLiveSessionForCurrentUser,
   updateLiveSessionStart,
-} from '@fieldbook/api-client';
-import type { ActiveLiveSession } from '@fieldbook/shared-types';
+} from '@fieldsolo/api-client';
+import type { ActiveLiveSession } from '@fieldsolo/shared-types';
 
 import { analytics, errorProperties } from '../lib/analytics';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';

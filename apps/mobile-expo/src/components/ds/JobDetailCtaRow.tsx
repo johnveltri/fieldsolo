@@ -1,8 +1,8 @@
 import type { ReactElement } from 'react';
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
-import { radius, space } from '@fieldbook/design-system/lib/tokens';
-import type { JobDetailWorkStatus } from '@fieldbook/shared-types';
+import { radius, space } from '@fieldsolo/design-system/lib/tokens';
+import type { JobDetailWorkStatus } from '@fieldsolo/shared-types';
 
 import { bg, border, CONTENT_MAX_WIDTH } from '../../theme/nativeTokens';
 import type { TextStyles } from '../../theme/nativeTokens';

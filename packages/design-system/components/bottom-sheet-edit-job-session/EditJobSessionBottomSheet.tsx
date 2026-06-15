@@ -9,7 +9,7 @@ import {
   typographyBodyStyle,
   typographyTitleH3Style,
 } from '../../lib/tokens';
-import { FieldBookCtaButton } from '../field-book-cta';
+import { FieldSoloCtaButton } from '../fieldsolo-cta';
 
 const sheetShadow: CSSProperties = {
   boxShadow: shadow('Shadow/Overlay/Default'),
@@ -156,7 +156,7 @@ function mergeSession(session: Partial<EditSessionTimes> | undefined): EditSessi
 
 /**
  * Edit job details or session times with save + delete actions
- * (Figma **Edit Job, Session** `1284:789`; footer **Button** Job/Session colorway `1287:1563` via `FieldBookCtaButton`).
+ * (Figma **Edit Job, Session** `1284:789`; footer **Button** Job/Session colorway `1287:1563` via `FieldSoloCtaButton`).
  */
 export function EditJobSessionBottomSheet({
   variant,
@@ -180,7 +180,7 @@ export function EditJobSessionBottomSheet({
   const accent = color('Brand/Accent');
   const surface = color('Foundation/Surface/Default');
 
-  const titleId = 'fieldbook-edit-job-session-title';
+  const titleId = 'fieldsolo-edit-job-session-title';
   const isSession = variant === 'editSession';
   const isPlaceholderJob = variant === 'editJobPlaceholder';
 
@@ -631,7 +631,7 @@ export function EditJobSessionBottomSheet({
         {!isSession ? jobFields : null}
 
         <div data-name="edit-job-session-footer" style={{ width: '100%', maxWidth: 343 }}>
-          <FieldBookCtaButton
+          <FieldSoloCtaButton
             variant="jobSessionPrimaryWithDelete"
             primaryLabel="SAVE CHANGES"
             onPrimaryClick={onSaveChanges}

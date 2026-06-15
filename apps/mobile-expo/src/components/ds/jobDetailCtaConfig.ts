@@ -1,5 +1,5 @@
-import { color } from '@fieldbook/design-system/lib/tokens';
-import type { JobDetailWorkStatus } from '@fieldbook/shared-types';
+import { color } from '@fieldsolo/design-system/lib/tokens';
+import type { JobDetailWorkStatus } from '@fieldsolo/shared-types';
 
 export type JobCtaResolved = {
   label: string;

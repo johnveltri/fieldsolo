@@ -1,6 +1,6 @@
 import { Animated, StyleSheet, useWindowDimensions, View } from 'react-native';
 
-import { colorWithAlpha } from '@fieldbook/design-system/lib/tokens';
+import { colorWithAlpha } from '@fieldsolo/design-system/lib/tokens';
 
 import { bg } from '../theme/nativeTokens';
 

@@ -2,8 +2,8 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type {
   JobDetailMaterialBucket,
   JobDetailNoteBucket,
-} from '@fieldbook/shared-types';
-import { color, radius, space } from '@fieldbook/design-system/lib/tokens';
+} from '@fieldsolo/shared-types';
+import { color, radius, space } from '@fieldsolo/design-system/lib/tokens';
 
 import { bg, border, fg, CONTENT_MAX_WIDTH } from '../../theme/nativeTokens';
 import type { TextStyles } from '../../theme/nativeTokens';

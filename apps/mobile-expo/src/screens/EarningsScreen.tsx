@@ -12,8 +12,8 @@ import {
   getEarningsSnapshotForCurrentUser,
   getOutstandingPaymentsForCurrentUser,
   type EarningsSnapshotJob,
-} from '@fieldbook/api-client';
-import { color, radius } from '@fieldbook/design-system/lib/tokens';
+} from '@fieldsolo/api-client';
+import { color, radius } from '@fieldsolo/design-system/lib/tokens';
 
 import { CanvasTiledBackground } from '../components/CanvasTiledBackground';
 import { shellBottomNavOuterHeight } from '../components/shell/ShellBottomNav';

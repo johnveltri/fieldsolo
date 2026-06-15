@@ -2,6 +2,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 import type { SupportedStorage } from '@supabase/auth-js';
 
+import { createKeyMigratingStorage } from './storageMigration';
+import {
+  FIELD_SOLO_AUTH_STORAGE_KEY,
+  LEGACY_FIELD_BOOK_AUTH_STORAGE_KEY,
+} from './storageKeys';
+
 /**
  * Session persistence for Supabase Auth.
  * - **Web (Expo):** `AsyncStorage` has no native module → use `localStorage`.
@@ -33,5 +39,12 @@ const webStorage: SupportedStorage = {
   },
 };
 
-export const authStorage: SupportedStorage =
+const platformStorage: SupportedStorage =
   Platform.OS === 'web' ? webStorage : AsyncStorage;
+
+export const authStorage: SupportedStorage = createKeyMigratingStorage(platformStorage, [
+  {
+    oldKey: LEGACY_FIELD_BOOK_AUTH_STORAGE_KEY,
+    newKey: FIELD_SOLO_AUTH_STORAGE_KEY,
+  },
+]);

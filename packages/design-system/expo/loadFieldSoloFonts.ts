@@ -5,7 +5,7 @@
  * In your Expo app:
  *   npx expo install expo-font @expo-google-fonts/ubuntu-sans-mono @expo-google-fonts/pt-serif
  *
- * Call `loadFieldbookFonts()` once before rendering (e.g. root layout); await splash screen until resolved.
+ * Call `loadFieldSoloFonts()` once before rendering (e.g. root layout); await splash screen until resolved.
  * React Native `fontFamily` must use the Expo-registered names below, not the raw Google names.
  */
 import * as Font from 'expo-font';
@@ -16,8 +16,8 @@ import {
 } from '@expo-google-fonts/ubuntu-sans-mono';
 import { PTSerif_700Bold } from '@expo-google-fonts/pt-serif';
 
-/** Registered keys for `fontFamily` after `loadFieldbookFonts()` resolves. */
-export const fieldbookExpoFontFamily = {
+/** Registered keys for `fontFamily` after `loadFieldSoloFonts()` resolves. */
+export const fieldsoloExpoFontFamily = {
   /** Typography/Body, Typography/Body-Small (Regular 400) */
   ubuntuSansMonoRegular: 'UbuntuSansMono_400Regular',
   /** Typography/Body-Bold, Metric-S (SemiBold 600) */
@@ -28,11 +28,11 @@ export const fieldbookExpoFontFamily = {
   ptSerifBold: 'PTSerif_700Bold',
 } as const;
 
-export async function loadFieldbookFonts(): Promise<void> {
+export async function loadFieldSoloFonts(): Promise<void> {
   await Font.loadAsync({
-    [fieldbookExpoFontFamily.ubuntuSansMonoRegular]: UbuntuSansMono_400Regular,
-    [fieldbookExpoFontFamily.ubuntuSansMonoSemiBold]: UbuntuSansMono_600SemiBold,
-    [fieldbookExpoFontFamily.ubuntuSansMonoBold]: UbuntuSansMono_700Bold,
-    [fieldbookExpoFontFamily.ptSerifBold]: PTSerif_700Bold,
+    [fieldsoloExpoFontFamily.ubuntuSansMonoRegular]: UbuntuSansMono_400Regular,
+    [fieldsoloExpoFontFamily.ubuntuSansMonoSemiBold]: UbuntuSansMono_600SemiBold,
+    [fieldsoloExpoFontFamily.ubuntuSansMonoBold]: UbuntuSansMono_700Bold,
+    [fieldsoloExpoFontFamily.ptSerifBold]: PTSerif_700Bold,
   });
 }

@@ -2,7 +2,7 @@
  * Demo mock for Job Detail — optional fallback; primary path is `fetchJobDetail` + Supabase.
  */
 
-import type { JobDetailViewModel } from '@fieldbook/shared-types';
+import type { JobDetailViewModel } from '@fieldsolo/shared-types';
 
 export type {
   JobDetailMaterialBucket,
@@ -13,7 +13,7 @@ export type {
   JobDetailSession,
   JobDetailViewModel,
   JobDetailWorkStatus,
-} from '@fieldbook/shared-types';
+} from '@fieldsolo/shared-types';
 
 export const mockJobDetail: JobDetailViewModel = {
   id: '00000000-0000-0000-0000-000000000001',

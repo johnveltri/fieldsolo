@@ -26,7 +26,7 @@ jest.mock('expo-font', () => ({
   useFonts: () => [true],
 }));
 
-jest.mock('@fieldbook/api-client', () => ({
+jest.mock('@fieldsolo/api-client', () => ({
   getEarningsSnapshotForCurrentUser: (...args: unknown[]) =>
     mockGetEarningsSnapshotForCurrentUser(...args),
   getOutstandingPaymentsForCurrentUser: (...args: unknown[]) =>

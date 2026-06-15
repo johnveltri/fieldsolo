@@ -1,6 +1,6 @@
-import type { ActiveLiveSession, JobId } from '@fieldbook/shared-types';
+import type { ActiveLiveSession, JobId } from '@fieldsolo/shared-types';
 
-import type { FieldbookSupabaseClient } from './client';
+import type { FieldSoloSupabaseClient } from './client';
 import { tryBumpJobToInProgressIfNotStarted } from './jobs';
 import type { SessionId } from './sessions';
 
@@ -67,7 +67,7 @@ function pickJobShortDescription(
  * back-fills the next time the migration runs.
  */
 export async function createLiveSession(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   input: CreateLiveSessionInput,
 ): Promise<ActiveLiveSession> {
   const { data: authData, error: authError } = await client.auth.getUser();
@@ -147,7 +147,7 @@ export async function createLiveSession(
  * falls back to the device timezone in that case.
  */
 export async function fetchActiveLiveSessionForCurrentUser(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
 ): Promise<ActiveLiveSession | null> {
   const { data: authData, error: authError } = await client.auth.getUser();
   if (authError) throw authError;
@@ -208,7 +208,7 @@ export type EndLiveSessionInput = {
  * server-side midnight job may have ended it first).
  */
 export async function endLiveSession(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   sessionId: SessionId,
   input: EndLiveSessionInput = {},
 ): Promise<void> {
@@ -246,7 +246,7 @@ export type UpdateLiveSessionStartInput = {
  * still null).
  */
 export async function updateLiveSessionStart(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   sessionId: SessionId,
   input: UpdateLiveSessionStartInput,
 ): Promise<void> {

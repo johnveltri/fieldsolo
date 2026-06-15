@@ -70,11 +70,11 @@
       "subtitleText": "note-subtitle-text",
       "textarea": "note-textarea",
       "textareaValue": "note-textarea-value",
-      "primaryAction": "note-primary-action (INSTANCE `1287:1562` Button Primary Note; nested `field-book-cta-*`)",
-      "primaryActionLabel": "field-book-cta-label (inside Button instance)",
+      "primaryAction": "note-primary-action (INSTANCE `1287:1562` Button Primary Note; nested `fieldsolo-cta-*`)",
+      "primaryActionLabel": "fieldsolo-cta-label (inside Button instance)",
       "footer": "note-footer (wraps INSTANCE `1287:1566` Button Primary+Delete Note as `note-footer-cta`)",
-      "deleteButton": "field-book-cta-delete (inside Button instance)",
-      "deleteIcon": "field-book-cta-delete-icon (inside Button instance)"
+      "deleteButton": "fieldsolo-cta-delete (inside Button instance)",
+      "deleteIcon": "fieldsolo-cta-delete-icon (inside Button instance)"
     }
   },
   "codeProps": {
@@ -97,7 +97,7 @@
     ],
     "findings": [
       "2026-04-08: Component set `1279:351` — `VERTICAL` + `NO_WRAP`, 16px `itemSpacing`; `clipsContent` false on set and all five variant masters. Canvas already used kebab-case `note-*` layers (`note-content` → handle, body, primary/footer). React updated: `note-content` is the padded vertical stack; pull bar `note-drag-handle` (replacing misapplied `note-content` on the handle); `note-header` matches Figma siblings `note-title-icon`, `note-title` / `note-title-text`, optional `note-session-pill`. No `flatten()` in automation.",
-      "2026-04-08: Primary and edit footers use **Button** **Note** instances `1287:1562` / `1287:1566` from `1287:1563`. React: `FieldBookCtaButton` (`notePrimary` / `notePrimaryWithDelete`). Material and Edit Job sheets use other **Property 1** colorways in the same set."
+      "2026-04-08: Primary and edit footers use **Button** **Note** instances `1287:1562` / `1287:1566` from `1287:1563`. React: `FieldSoloCtaButton` (`notePrimary` / `notePrimaryWithDelete`). Material and Edit Job sheets use other **Property 1** colorways in the same set."
     ]
   }
 }

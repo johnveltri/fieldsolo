@@ -3,9 +3,9 @@ import type {
   JobDetailWorkStatus,
   JobId,
   JobPaymentState,
-} from '@fieldbook/shared-types';
+} from '@fieldsolo/shared-types';
 
-import type { FieldbookSupabaseClient } from './client';
+import type { FieldSoloSupabaseClient } from './client';
 
 type JobsRow = {
   id: string;
@@ -41,7 +41,7 @@ function rowToJob(row: JobsRow): Job {
  * Use with an authenticated Supabase client so only that user's rows are returned.
  */
 export async function fetchFirstJobIdForCurrentUser(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
 ): Promise<string | null> {
   const { data, error } = await client
     .from('jobs')
@@ -57,7 +57,7 @@ export async function fetchFirstJobIdForCurrentUser(
 
 /** Loads a single row from `public.jobs` (see `backend/supabase/migrations`). */
 export async function fetchJobById(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   id: JobId,
 ): Promise<Job | null> {
   const { data, error } = await client
@@ -210,7 +210,7 @@ function isFinanciallyCompleteFallback(row: ListJobsRow, hasMaterials: boolean, 
  * Rollups (time, materials, net) are computed for rows in this page only.
  */
 export async function listJobsForCurrentUserPage(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   options: {
     limit: number;
     offset: number;
@@ -280,7 +280,7 @@ function lastWorkedLabelFromColumn(lastWorkedAt: string | null): string {
 }
 
 async function enrichJobsRowsWithSessionRollups(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   rows: ListJobsRow[],
 ): Promise<ListJobsForCurrentUserItem[]> {
   const jobIds = rows.map((row) => row.id);
@@ -411,7 +411,7 @@ function mapWorkStatus(row: {
  * `listJobsForCurrentUserPage` in UI for large accounts.
  */
 export async function listJobsForCurrentUser(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
 ): Promise<ListJobsForCurrentUserItem[]> {
   const acc: ListJobsForCurrentUserItem[] = [];
   let offset = 0;
@@ -428,7 +428,7 @@ export async function listJobsForCurrentUser(
 }
 
 export async function createBlankJobForCurrentUser(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
 ): Promise<JobId> {
   const { data: authData, error: authError } = await client.auth.getUser();
   if (authError) throw authError;
@@ -467,7 +467,7 @@ export type RecentJobItem = {
  * (then `id` desc). Use for home quick-session chooser; excludes rollups.
  */
 export async function listRecentJobsForCurrentUser(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   options: { limit: number },
 ): Promise<RecentJobItem[]> {
   const limit = Math.max(1, Math.floor(options.limit));
@@ -508,7 +508,7 @@ const MS_PER_DAY = 86_400_000;
  * session-attributed lines for those jobs.
  */
 export async function getWeeklyNetEarningsCentsForCurrentUser(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
 ): Promise<WeeklyNetEarningsForCurrentUserResult> {
   const windowStartIso = new Date(Date.now() - 7 * MS_PER_DAY).toISOString();
 
@@ -625,7 +625,7 @@ export type EarningsSnapshotForCurrentUserResult = {
  * net/hr) for ranking on the Earnings page.
  */
 export async function getEarningsSnapshotForCurrentUser(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   options: { windowDays: number },
 ): Promise<EarningsSnapshotForCurrentUserResult> {
   const windowDays = Math.max(1, Math.floor(options.windowDays));
@@ -770,7 +770,7 @@ export type OutstandingPaymentsForCurrentUserResult = {
  * `is_financially_complete`). Returns the count and total revenue owed.
  */
 export async function getOutstandingPaymentsForCurrentUser(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
 ): Promise<OutstandingPaymentsForCurrentUserResult> {
   type OutstandingRow = { revenue_cents: number | null };
 
@@ -803,7 +803,7 @@ export async function getOutstandingPaymentsForCurrentUser(
  * `updated_at` then `id`. Use for Home “Jump back in”.
  */
 export async function listRecentDetailedJobsForCurrentUser(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   options: { limit: number },
 ): Promise<ListJobsForCurrentUserItem[]> {
   const limit = Math.max(1, Math.floor(options.limit));
@@ -833,7 +833,7 @@ export async function listRecentDetailedJobsForCurrentUser(
 }
 
 export async function createBlankJobForLiveSessionStart(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   input: { shortDescription: string },
 ): Promise<JobId> {
   const { data: authData, error: authError } = await client.auth.getUser();
@@ -867,7 +867,7 @@ export async function createBlankJobForLiveSessionStart(
 }
 
 export async function deleteJobById(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   id: JobId,
 ): Promise<void> {
   const { data, error } = await client
@@ -924,7 +924,7 @@ export function isNoMaterialsConfirmedColumnMissingError(error: unknown): boolea
  * Triggers server-side `is_financially_complete` refresh when the column exists.
  */
 export async function updateJobNoMaterialsConfirmed(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   id: JobId,
   noMaterialsConfirmed: boolean,
 ): Promise<void> {
@@ -947,7 +947,7 @@ export async function updateJobNoMaterialsConfirmed(
  * No-op when no row matches (already in progress, completed, etc.).
  */
 export async function bumpJobToInProgressIfNotStarted(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   jobId: JobId,
 ): Promise<void> {
   const { error } = await client
@@ -968,7 +968,7 @@ export async function bumpJobToInProgressIfNotStarted(
  * duplicate/conflicting session state.
  */
 export async function tryBumpJobToInProgressIfNotStarted(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   jobId: JobId,
 ): Promise<void> {
   try {
@@ -979,7 +979,7 @@ export async function tryBumpJobToInProgressIfNotStarted(
 }
 
 export async function updateJobById(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   id: JobId,
   input: UpdateJobInput,
 ): Promise<void> {
@@ -1030,7 +1030,7 @@ export function jobDetailWorkStatusToDbColumns(status: JobDetailWorkStatus): {
 }
 
 export async function updateJobStatusById(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   id: JobId,
   status: JobDetailWorkStatus,
 ): Promise<void> {

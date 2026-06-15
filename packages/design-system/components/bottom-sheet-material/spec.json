@@ -48,11 +48,11 @@
       "unitSelect": "material-unit-select",
       "unitSelectInput": "material-unit-select-input",
       "unitSelectCaret": "material-unit-select-caret",
-      "primaryAction": "material-primary-action (INSTANCE `1808:1148` Button Primary Material; nested `field-book-cta-*`)",
-      "primaryActionLabel": "field-book-cta-label (inside Button instance)",
+      "primaryAction": "material-primary-action (INSTANCE `1808:1148` Button Primary Material; nested `fieldsolo-cta-*`)",
+      "primaryActionLabel": "fieldsolo-cta-label (inside Button instance)",
       "footer": "material-footer (wraps INSTANCE `1808:1154` as `material-footer-cta`)",
-      "deleteButton": "field-book-cta-delete (inside Button instance)",
-      "deleteIcon": "field-book-cta-delete-icon (inside Button instance)"
+      "deleteButton": "fieldsolo-cta-delete (inside Button instance)",
+      "deleteIcon": "fieldsolo-cta-delete-icon (inside Button instance)"
     }
   },
   "codeVariantMap": {
@@ -87,7 +87,7 @@
     "note": "Inputs use `Typography/Body` (Ubuntu Sans Mono 14) per updated Figma fields, not `Typography/Input`."
   },
   "primaryCta": {
-    "component": "Shared **Button** set `1287:1563`, **Material** masters (`1808:1148` / `1808:1154`); `FieldBookCtaButton` variants `materialPrimary` / `materialPrimaryWithDelete`.",
+    "component": "Shared **Button** set `1287:1563`, **Material** masters (`1808:1148` / `1808:1154`); `FieldSoloCtaButton` variants `materialPrimary` / `materialPrimaryWithDelete`.",
     "headerLeadIcon": "Semantic/Activity/Material on wrench tile (unchanged)"
   },
   "codeProps": {
@@ -117,7 +117,7 @@
     ],
     "findings": [
       "2026-04-08: Component set `1283:351` — `VERTICAL` + `NO_WRAP`, 16px `itemSpacing`; `clipsContent` false on set and all five variant masters. Canvas already uses kebab-case `material-*` (`material-content` stack, `material-drag-handle`, `material-body`, fields, actions). React: `material-content` is the padded vertical stack; pull bar `material-drag-handle` (replacing misapplied `material-content` on the handle); header matches Figma (`material-title-icon` + `material-title` / `material-title-text` for create; edit adds `material-title-row` with pill); `material-price-group` on $ + price inputs. No `flatten()` in automation.",
-      "2026-04-08: Footer CTAs use **Button** **Material** instances `1808:1148` / `1808:1154` from `1287:1563`. React: `FieldBookCtaButton` (`materialPrimary` / `materialPrimaryWithDelete`)."
+      "2026-04-08: Footer CTAs use **Button** **Material** instances `1808:1148` / `1808:1154` from `1287:1563`. React: `FieldSoloCtaButton` (`materialPrimary` / `materialPrimaryWithDelete`)."
     ]
   }
 }

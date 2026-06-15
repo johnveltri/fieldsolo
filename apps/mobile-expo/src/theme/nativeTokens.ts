@@ -5,7 +5,7 @@ import {
   space,
   typographyJson,
   type TypographyTokenName,
-} from '@fieldbook/design-system/lib/tokens';
+} from '@fieldsolo/design-system/lib/tokens';
 
 /** Matches design-system `TopHeader` max width (`231:817`). */
 export const TOP_HEADER_MAX_WIDTH = 393;

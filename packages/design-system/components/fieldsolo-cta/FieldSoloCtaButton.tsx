@@ -10,7 +10,7 @@ import {
 const surfaceWhite = color('Foundation/Surface/Default');
 const borderSubtle = color('Foundation/Border/Subtle');
 
-export const FIELD_BOOK_CTA_VARIANTS = [
+export const FIELD_SOLO_CTA_VARIANTS = [
   'notePrimary',
   'notePrimaryWithDelete',
   'notePrimaryWithMore',
@@ -20,7 +20,7 @@ export const FIELD_BOOK_CTA_VARIANTS = [
   'brandPrimaryXl',
 ] as const;
 
-export type FieldBookCtaVariant = (typeof FIELD_BOOK_CTA_VARIANTS)[number];
+export type FieldSoloCtaVariant = (typeof FIELD_SOLO_CTA_VARIANTS)[number];
 
 function TrashGlyph({ strokeColor }: { strokeColor: string }) {
   return (
@@ -76,7 +76,7 @@ const labelBrandXl: CSSProperties = {
 };
 
 function primaryFillAndShadowForVariant(
-  variant: Exclude<FieldBookCtaVariant, 'brandPrimaryXl' | 'notePrimaryWithMore'>,
+  variant: Exclude<FieldSoloCtaVariant, 'brandPrimaryXl' | 'notePrimaryWithMore'>,
 ): { bg: string; shadow: CSSProperties } {
   const note = color('Semantic/Activity/Note');
   const material = color('Semantic/Activity/Material');
@@ -107,8 +107,8 @@ function notePrimaryFillAndShadow(): { bg: string; shadow: CSSProperties } {
   return { bg: note, shadow: { boxShadow: shadowFromColor(note) } };
 }
 
-export type FieldBookCtaButtonProps = {
-  variant: FieldBookCtaVariant;
+export type FieldSoloCtaButtonProps = {
+  variant: FieldSoloCtaVariant;
   /** Default: `SAVE TO JOB` / `SAVE CHANGES` / `END SESSION` / `MARK COMPLETED` per variant. */
   primaryLabel?: string;
   onPrimaryClick?: () => void;
@@ -121,10 +121,10 @@ export type FieldBookCtaButtonProps = {
 };
 
 /**
- * High-emphasis CTAs from Field Book (Figma **Button** `1287:1563`):
+ * High-emphasis CTAs from FieldSolo (Figma **Button** `1287:1563`):
  * note / material / job-session tint fills + self-shadow, brand XL, optional delete or more column.
  */
-export function FieldBookCtaButton({
+export function FieldSoloCtaButton({
   variant,
   primaryLabel,
   onPrimaryClick,
@@ -132,7 +132,7 @@ export function FieldBookCtaButton({
   onMoreClick,
   className,
   style,
-}: FieldBookCtaButtonProps) {
+}: FieldSoloCtaButtonProps) {
   const brand = color('Brand/Primary');
   const deleteIcon = color('Semantic/Status/Error/Text');
   const moreIcon = color('Foundation/Text/Primary');
@@ -169,7 +169,7 @@ export function FieldBookCtaButton({
   if (variant === 'brandPrimaryXl') {
     return (
       <button
-        data-name="field-book-cta-xl"
+        data-name="fieldsolo-cta-xl"
         type="button"
         className={className}
         onClick={onPrimaryClick}
@@ -182,7 +182,7 @@ export function FieldBookCtaButton({
           ...style,
         }}
       >
-        <span data-name="field-book-cta-label" style={labelBrandXl}>
+        <span data-name="fieldsolo-cta-label" style={labelBrandXl}>
           {resolvedPrimaryLabel}
         </span>
       </button>
@@ -193,7 +193,7 @@ export function FieldBookCtaButton({
     const { bg: primaryBg, shadow: primaryShadow } = notePrimaryFillAndShadow();
     return (
       <div
-        data-name="field-book-cta-with-more"
+        data-name="fieldsolo-cta-with-more"
         className={className}
         style={{
           display: 'flex',
@@ -210,7 +210,7 @@ export function FieldBookCtaButton({
         }}
       >
         <button
-          data-name="field-book-cta-primary"
+          data-name="fieldsolo-cta-primary"
           type="button"
           onClick={onPrimaryClick}
           style={{
@@ -232,12 +232,12 @@ export function FieldBookCtaButton({
             ...primaryShadow,
           }}
         >
-          <span data-name="field-book-cta-label" style={labelNotePrimary}>
+          <span data-name="fieldsolo-cta-label" style={labelNotePrimary}>
             {resolvedPrimaryLabel}
           </span>
         </button>
         <button
-          data-name="field-book-cta-more"
+          data-name="fieldsolo-cta-more"
           type="button"
           onClick={onMoreClick}
           aria-label="More options"
@@ -258,7 +258,7 @@ export function FieldBookCtaButton({
             justifyContent: 'center',
           }}
         >
-          <span data-name="field-book-cta-more-icon">
+          <span data-name="fieldsolo-cta-more-icon">
             <MoreGlyph fill={moreIcon} />
           </span>
         </button>
@@ -272,7 +272,7 @@ export function FieldBookCtaButton({
   if (variant === 'notePrimary' || variant === 'materialPrimary') {
     return (
       <button
-        data-name="field-book-cta-primary"
+        data-name="fieldsolo-cta-primary"
         type="button"
         className={className}
         onClick={onPrimaryClick}
@@ -285,7 +285,7 @@ export function FieldBookCtaButton({
           ...style,
         }}
       >
-        <span data-name="field-book-cta-label" style={labelNotePrimary}>
+        <span data-name="fieldsolo-cta-label" style={labelNotePrimary}>
           {resolvedPrimaryLabel}
         </span>
       </button>
@@ -296,7 +296,7 @@ export function FieldBookCtaButton({
 
   return (
     <div
-      data-name="field-book-cta-with-delete"
+      data-name="fieldsolo-cta-with-delete"
       className={className}
       style={{
         display: 'flex',
@@ -311,7 +311,7 @@ export function FieldBookCtaButton({
       }}
     >
       <button
-        data-name="field-book-cta-primary"
+        data-name="fieldsolo-cta-primary"
         type="button"
         onClick={onPrimaryClick}
         style={{
@@ -338,12 +338,12 @@ export function FieldBookCtaButton({
           ...primaryShadow,
         }}
       >
-        <span data-name="field-book-cta-label" style={labelNotePrimary}>
+        <span data-name="fieldsolo-cta-label" style={labelNotePrimary}>
           {resolvedPrimaryLabel}
         </span>
       </button>
       <button
-        data-name="field-book-cta-delete"
+        data-name="fieldsolo-cta-delete"
         type="button"
         onClick={onDeleteClick}
         aria-label="Delete"
@@ -364,7 +364,7 @@ export function FieldBookCtaButton({
           justifyContent: 'flex-end',
         }}
       >
-        <span data-name="field-book-cta-delete-icon">
+        <span data-name="fieldsolo-cta-delete-icon">
           <TrashGlyph strokeColor={deleteIcon} />
         </span>
       </button>

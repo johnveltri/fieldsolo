@@ -36,13 +36,13 @@
   "structure": {
     "figmaLayerNames": {
       "componentSet": "Button (vertical stack of variant masters, 16px gap)",
-      "label": "field-book-cta-label (uppercase TEXT in single-button variants; primary side of +Delete / +MORE)",
-      "primary": "field-book-cta-primary (note save / SAVE CHANGES / MARK COMPLETED row)",
-      "delete": "field-book-cta-delete (paired trash control)",
-      "deleteIcon": "field-book-cta-delete-icon (vector frame inside delete)",
-      "more": "field-book-cta-more (paired ⋮ control; 51px tall, centered icon)",
-      "moreIcon": "field-book-cta-more-icon (vertical ellipsis)",
-      "codeDataNames": "`field-book-cta-xl` on XL button; `field-book-cta-with-delete` on Primary+Delete row; `field-book-cta-with-more` on Primary+MORE row."
+      "label": "fieldsolo-cta-label (uppercase TEXT in single-button variants; primary side of +Delete / +MORE)",
+      "primary": "fieldsolo-cta-primary (note save / SAVE CHANGES / MARK COMPLETED row)",
+      "delete": "fieldsolo-cta-delete (paired trash control)",
+      "deleteIcon": "fieldsolo-cta-delete-icon (vector frame inside delete)",
+      "more": "fieldsolo-cta-more (paired ⋮ control; 51px tall, centered icon)",
+      "moreIcon": "fieldsolo-cta-more-icon (vertical ellipsis)",
+      "codeDataNames": "`fieldsolo-cta-xl` on XL button; `fieldsolo-cta-with-delete` on Primary+Delete row; `fieldsolo-cta-with-more` on Primary+MORE row."
     }
   },
   "tokens": {
@@ -70,13 +70,13 @@
   "qualityAudit": {
     "isClean": true,
     "notes": [
-      "2026-04-08: `FieldBookCtaButton` in `field-book-cta/` from Figma `1287:1563`; trash is inline SVG to match Edit Session sheet.",
+      "2026-04-08: `FieldSoloCtaButton` in `fieldsolo-cta/` from Figma `1287:1563`; trash is inline SVG to match Edit Session sheet.",
       "2026-04-11: **Button Primary+MORE** (`1836:2011`) — `notePrimaryWithMore`; ⋮ **Foundation/Text/Primary**.",
       "2026-04-11: Figma **hug height** — paired **+Delete** rows use `alignItems: stretch` so the trash column matches primary height.",
       "2026-04-12: Figma update — delete/more chrome uses **Foundation/Border/Subtle** (replaces brand-alpha stroke); **Button XL** shadow from **Brand/Primary**; **Primary+MORE** ⋮ column **51px** tall; **Primary+Delete Job/Session** primary **279px** wide."
     ],
     "findings": [
-      "2026-04-08: Component set `1287:1563` — `VERTICAL` + `NO_WRAP`, 16px `itemSpacing`; `clipsContent` false on set and variant masters. Structural renames: `field-book-cta-label` on label TEXT nodes; `Button Primary+Delete` frames → `field-book-cta-primary`, `field-book-cta-delete`, `field-book-cta-delete-icon`. Single-TEXT variants (Primary / XL) keep label-only structure. No `flatten()` in automation. `FieldBookCtaButton.tsx` uses `data-name` for primary, XL, with-delete row, label, delete, and delete-icon wrapper.",
+      "2026-04-08: Component set `1287:1563` — `VERTICAL` + `NO_WRAP`, 16px `itemSpacing`; `clipsContent` false on set and variant masters. Structural renames: `fieldsolo-cta-label` on label TEXT nodes; `Button Primary+Delete` frames → `fieldsolo-cta-primary`, `fieldsolo-cta-delete`, `fieldsolo-cta-delete-icon`. Single-TEXT variants (Primary / XL) keep label-only structure. No `flatten()` in automation. `FieldSoloCtaButton.tsx` uses `data-name` for primary, XL, with-delete row, label, delete, and delete-icon wrapper.",
       "2026-04-08: **Note** (`1279:351`), **Material** (`1283:351`), and **Edit Job, Session** (`1284:789`) use color-matched instances: **Primary Note** / **Primary+Delete Note**, **Primary Material** / **Primary+Delete Material**, **Primary+Delete Job/Session** respectively.",
       "2026-04-08: Added **Job/Session** primary-only master `1808:1151` for parity with Figma; React uses `jobSessionPrimaryWithDelete` only until a sheet needs single-primary Job/Session."
     ]

@@ -1,5 +1,5 @@
-import type { ListJobsForCurrentUserItem } from '@fieldbook/api-client';
-import { color, colorWithAlpha, radius } from '@fieldbook/design-system/lib/tokens';
+import type { ListJobsForCurrentUserItem } from '@fieldsolo/api-client';
+import { color, colorWithAlpha, radius } from '@fieldsolo/design-system/lib/tokens';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import {

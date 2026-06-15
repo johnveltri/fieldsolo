@@ -107,7 +107,7 @@ export function SearchBar({
     ...restInputProps
   } = inputProps ?? {};
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, '');
-  const inputClass = [inputClassNameProp, `fieldbook-search-bar-${uid}`]
+  const inputClass = [inputClassNameProp, `fieldsolo-search-bar-${uid}`]
     .filter(Boolean)
     .join(' ');
   const [focused, setFocused] = useState(false);
@@ -233,7 +233,7 @@ export function SearchBar({
   return (
     <div data-name="search-bar" className={className} style={{ ...row, ...style }}>
       <style>{`
-        .fieldbook-search-bar-${uid}::placeholder {
+        .fieldsolo-search-bar-${uid}::placeholder {
           color: ${placeholderColor};
           opacity: 1;
         }

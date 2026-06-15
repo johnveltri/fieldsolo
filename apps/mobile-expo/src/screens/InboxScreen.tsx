@@ -16,7 +16,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { color, radius } from '@fieldbook/design-system/lib/tokens';
+import { color, radius } from '@fieldsolo/design-system/lib/tokens';
 
 import {
   listInboxMaterials,
@@ -26,11 +26,11 @@ import {
   listJobsForCurrentUserPage,
   type InboxMaterialItem,
   type InboxNoteItem,
-} from '@fieldbook/api-client';
+} from '@fieldsolo/api-client';
 import type {
   JobDetailMaterialBucket,
   JobDetailNoteBucket,
-} from '@fieldbook/shared-types';
+} from '@fieldsolo/shared-types';
 
 import { CanvasTiledBackground } from '../components/CanvasTiledBackground';
 import {

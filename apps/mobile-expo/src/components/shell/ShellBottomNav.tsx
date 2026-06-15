@@ -9,7 +9,7 @@ import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { color as dsColor } from '@fieldbook/design-system/lib/tokens';
+import { color as dsColor } from '@fieldsolo/design-system/lib/tokens';
 
 import {
   BottomNavIconEarnings,

@@ -18,8 +18,8 @@ import {
   tryBumpJobToInProgressIfNotStarted,
   type ListJobsForCurrentUserItem,
   type RecentJobItem,
-} from '@fieldbook/api-client';
-import { color, radius } from '@fieldbook/design-system/lib/tokens';
+} from '@fieldsolo/api-client';
+import { color, radius } from '@fieldsolo/design-system/lib/tokens';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -824,7 +824,7 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
       >
         <View style={styles.headerBand}>
           <View style={styles.topHeader}>
-            <Text style={typography.displayH1}>FIELD BOOK</Text>
+            <Text style={typography.displayH1}>FIELDSOLO</Text>
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Profile"

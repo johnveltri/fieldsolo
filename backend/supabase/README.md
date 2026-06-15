@@ -1,4 +1,4 @@
-# Supabase (Fieldbook backend)
+# Supabase (FieldSolo backend)
 
 This folder is the **source of truth** for schema and local tooling. Remote Supabase projects use the same migrations via `db push` / CI.
 
@@ -40,6 +40,12 @@ Local defaults after `supabase start` are shown in the CLI output (`API URL` and
 
 The Expo app still uses the publishable anon key for Supabase Auth and session refresh. Shared
 schema migrations no longer grant direct public-table access to the `anon` role.
+
+## Storage buckets
+
+New attachment rows default to the Supabase Storage bucket named `fieldsolo`. Existing attachment
+rows can still reference their original bucket value. Before pushing the FieldSolo storage default
+migration to a hosted project, create or confirm the `fieldsolo` bucket in Supabase Storage.
 
 ## Jobs in the app
 

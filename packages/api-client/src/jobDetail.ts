@@ -9,9 +9,9 @@ import type {
   JobDetailWorkStatus,
   JobId,
   JobPaymentState,
-} from '@fieldbook/shared-types';
+} from '@fieldsolo/shared-types';
 
-import type { FieldbookSupabaseClient } from './client';
+import type { FieldSoloSupabaseClient } from './client';
 
 type JobWorkStatusDb =
   | 'not_started'
@@ -222,7 +222,7 @@ function materialLine(row: MaterialRow): JobDetailMaterialLine {
 
 /** Loads job graph and maps to `JobDetailViewModel`. */
 export async function fetchJobDetail(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   jobId: JobId,
 ): Promise<JobDetailViewModel | null> {
   const runJobSelect = (columns: string) =>
