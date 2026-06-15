@@ -1,6 +1,6 @@
-import type { JobId } from '@fieldbook/shared-types';
+import type { JobId } from '@fieldsolo/shared-types';
 
-import type { FieldbookSupabaseClient } from './client';
+import type { FieldSoloSupabaseClient } from './client';
 import type { SessionId } from './sessions';
 
 export type NoteId = string;
@@ -43,7 +43,7 @@ function assertBodyNotBlank(body: string): void {
 
 /** Inserts a new note scoped to a session, a job, or the Inbox (no parent). */
 export async function createNote(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   input: CreateNoteInput,
 ): Promise<NoteId> {
   assertBodyNotBlank(input.body);
@@ -83,7 +83,7 @@ export async function createNote(
  * transient state with zero or two non-null parents.
  */
 export async function updateNote(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   noteId: NoteId,
   input: UpdateNoteInput,
 ): Promise<void> {
@@ -153,7 +153,7 @@ export async function updateNote(
 
 /** Deletes a note by soft-deleting it (stamping `deleted_at`). */
 export async function deleteNote(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   noteId: NoteId,
 ): Promise<void> {
   const { data, error } = await client

@@ -67,7 +67,7 @@ import {
   JobDetailIconTopEdit,
 } from '../components/figma-icons/JobDetailScreenIcons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { color, colorWithAlpha, radius } from '@fieldbook/design-system/lib/tokens';
+import { color, colorWithAlpha, radius } from '@fieldsolo/design-system/lib/tokens';
 import {
   createManualSession,
   createMaterial,
@@ -85,14 +85,14 @@ import {
   updateMaterial,
   updateNote,
   updateSessionTimes,
-} from '@fieldbook/api-client';
+} from '@fieldsolo/api-client';
 import type {
   JobDetailMaterialLine,
   JobDetailNote,
   JobDetailSession,
   JobDetailViewModel,
   JobDetailWorkStatus,
-} from '@fieldbook/shared-types';
+} from '@fieldsolo/shared-types';
 
 import { useJobsListInvalidation } from '../context/JobsListInvalidationContext';
 import { isStaleJwtError, useLiveSession } from '../context/LiveSessionContext';
@@ -1306,7 +1306,7 @@ export function JobDetailScreen({
       if (isNoMaterialsConfirmedColumnMissingError(e)) {
         Alert.alert(
           'Database update required',
-          'Your Supabase project is missing the jobs.no_materials_confirmed column. Apply migrations from the Field Book repo (e.g. 20260429120000_job_no_materials_confirmed.sql), run `supabase db push` against this project, then try again.',
+          'Your Supabase project is missing the jobs.no_materials_confirmed column. Apply migrations from the FieldSolo repo (e.g. 20260429120000_job_no_materials_confirmed.sql), run `supabase db push` against this project, then try again.',
         );
       } else {
         Alert.alert(
@@ -1346,7 +1346,7 @@ export function JobDetailScreen({
       if (isNoMaterialsConfirmedColumnMissingError(e)) {
         Alert.alert(
           'Database update required',
-          'Your Supabase project is missing the jobs.no_materials_confirmed column. Apply migrations from the Field Book repo (e.g. 20260429120000_job_no_materials_confirmed.sql), run `supabase db push` against this project, then try again.',
+          'Your Supabase project is missing the jobs.no_materials_confirmed column. Apply migrations from the FieldSolo repo (e.g. 20260429120000_job_no_materials_confirmed.sql), run `supabase db push` against this project, then try again.',
         );
       } else {
         Alert.alert(

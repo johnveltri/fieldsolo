@@ -4,8 +4,8 @@ import {
   colorWithAlpha,
   radius,
   space,
-} from '@fieldbook/design-system/lib/tokens';
-import type { JobDetailSession } from '@fieldbook/shared-types';
+} from '@fieldsolo/design-system/lib/tokens';
+import type { JobDetailSession } from '@fieldsolo/shared-types';
 
 import { bg, border, fg } from '../../theme/nativeTokens';
 import type { TextStyles } from '../../theme/nativeTokens';

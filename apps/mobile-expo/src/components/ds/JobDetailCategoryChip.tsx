@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { color, radius, space } from '@fieldbook/design-system/lib/tokens';
+import { color, radius, space } from '@fieldsolo/design-system/lib/tokens';
 
 import type { TextStyles } from '../../theme/nativeTokens';
 

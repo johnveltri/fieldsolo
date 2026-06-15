@@ -43,7 +43,7 @@ type ProfileShape = {
 };
 const mockFetchProfile = jest.fn<() => Promise<ProfileShape | null>>();
 const mockUpdateProfile = jest.fn<() => Promise<ProfileShape>>();
-jest.mock('@fieldbook/api-client', () => ({
+jest.mock('@fieldsolo/api-client', () => ({
   fetchCurrentUserProfile: (...args: unknown[]) => mockFetchProfile(...(args as [])),
   updateCurrentUserProfile: (...args: unknown[]) => mockUpdateProfile(...(args as [])),
 }));

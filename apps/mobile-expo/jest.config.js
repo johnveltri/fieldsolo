@@ -5,10 +5,10 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   testMatch: ['<rootDir>/**/*.test.ts', '<rootDir>/**/*.test.tsx'],
   moduleNameMapper: {
-    '^@fieldbook/api-client$': '<rootDir>/../../packages/api-client/src/index.ts',
-    '^@fieldbook/shared-types$': '<rootDir>/../../packages/shared-types/src/index.ts',
-    '^@fieldbook/design-system/(.*)$': '<rootDir>/../../packages/design-system/$1',
-    '^@fieldbook/design-system$': '<rootDir>/../../packages/design-system/src/index.ts',
+    '^@fieldsolo/api-client$': '<rootDir>/../../packages/api-client/src/index.ts',
+    '^@fieldsolo/shared-types$': '<rootDir>/../../packages/shared-types/src/index.ts',
+    '^@fieldsolo/design-system/(.*)$': '<rootDir>/../../packages/design-system/$1',
+    '^@fieldsolo/design-system$': '<rootDir>/../../packages/design-system/src/index.ts',
   },
   transformIgnorePatterns: [
     'node_modules/(?!((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|expo-modules-core|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|react-native-safe-area-context|react-native-svg))',

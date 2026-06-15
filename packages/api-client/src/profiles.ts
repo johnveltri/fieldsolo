@@ -1,4 +1,4 @@
-import type { FieldbookSupabaseClient } from './client';
+import type { FieldSoloSupabaseClient } from './client';
 
 /** Camel-cased shape returned to the app. `trades` is always an array (possibly empty). */
 export type UserProfile = {
@@ -45,7 +45,7 @@ function normalizeName(value: string | null | undefined): string | null {
  * has not filled anything in yet).
  */
 export async function fetchCurrentUserProfile(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
 ): Promise<UserProfile | null> {
   const { data: authData, error: authError } = await client.auth.getUser();
   if (authError) throw authError;
@@ -72,7 +72,7 @@ export async function fetchCurrentUserProfile(
  * `auth.uid() = id`, so this is safe.
  */
 export async function updateCurrentUserProfile(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   input: UpdateUserProfileInput,
 ): Promise<UserProfile> {
   const { data: authData, error: authError } = await client.auth.getUser();

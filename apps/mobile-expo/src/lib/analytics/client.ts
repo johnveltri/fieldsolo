@@ -7,6 +7,11 @@ import {
   type AnalyticsConfig,
 } from './config';
 import { sanitizeProperties } from './utils';
+import { migrateStorageKey } from '../storageMigration';
+import {
+  FIELD_SOLO_ANALYTICS_ANONYMOUS_ID_KEY,
+  LEGACY_FIELD_BOOK_ANALYTICS_ANONYMOUS_ID_KEY,
+} from '../storageKeys';
 import type {
   AnalyticsAdapter,
   AnalyticsEventName,
@@ -16,7 +21,7 @@ import type {
   AnalyticsUserTraits,
 } from './types';
 
-const ANONYMOUS_ID_KEY = 'fieldbook.analytics.anonymousId';
+const ANONYMOUS_ID_KEY = FIELD_SOLO_ANALYTICS_ANONYMOUS_ID_KEY;
 
 function makeId(prefix: string): string {
   return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
@@ -116,6 +121,10 @@ class AnalyticsClient {
     if (this.ready) return;
     this.ready = true;
     try {
+      await migrateStorageKey(AsyncStorage, {
+        oldKey: LEGACY_FIELD_BOOK_ANALYTICS_ANONYMOUS_ID_KEY,
+        newKey: ANONYMOUS_ID_KEY,
+      });
       const stored = await AsyncStorage.getItem(ANONYMOUS_ID_KEY);
       if (stored) {
         this.anonymousId = stored;

@@ -20,7 +20,7 @@ import {
   LiveSessionProvider,
   useLiveSession,
 } from './src/context/LiveSessionContext';
-import type { ListJobsForCurrentUserTab } from '@fieldbook/api-client';
+import type { ListJobsForCurrentUserTab } from '@fieldsolo/api-client';
 import { analytics, emailProperties } from './src/lib/analytics';
 import { isSupabaseConfigured } from './src/lib/supabase';
 import { EarningsScreen, type EarningsWindow } from './src/screens/EarningsScreen';
@@ -30,7 +30,7 @@ import { JobsScreen } from './src/screens/JobsScreen';
 import { JobDetailScreen } from './src/screens/JobDetailScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { SignInScreen } from './src/screens/SignInScreen';
-import { color } from '@fieldbook/design-system/lib/tokens';
+import { color } from '@fieldsolo/design-system/lib/tokens';
 
 import { bg } from './src/theme/nativeTokens';
 

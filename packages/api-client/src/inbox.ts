@@ -1,6 +1,6 @@
-import type { JobDetailMaterialLine, JobDetailNote } from '@fieldbook/shared-types';
+import type { JobDetailMaterialLine, JobDetailNote } from '@fieldsolo/shared-types';
 
-import type { FieldbookSupabaseClient } from './client';
+import type { FieldSoloSupabaseClient } from './client';
 
 /**
  * Inbox = quick-capture notes/materials with no parent job and no parent
@@ -98,7 +98,7 @@ function mapMaterial(row: MaterialRow): InboxMaterialItem {
 
 /** Lists the current user's Inbox notes (no job, no session), newest first. */
 export async function listInboxNotes(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
 ): Promise<InboxNoteItem[]> {
   const { data, error } = await client
     .from('notes')
@@ -113,7 +113,7 @@ export async function listInboxNotes(
 
 /** Lists the current user's Inbox materials (no job, no session), newest first. */
 export async function listInboxMaterials(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
 ): Promise<InboxMaterialItem[]> {
   const { data, error } = await client
     .from('materials')
@@ -131,7 +131,7 @@ export async function listInboxMaterials(
  * header. Uses head-only count queries to avoid transferring rows.
  */
 export async function countInboxItems(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
 ): Promise<InboxCounts> {
   const [notesRes, matsRes] = await Promise.all([
     client

@@ -11,7 +11,7 @@ import {
 } from '../../lib/tokens';
 import { PlusIcon } from '../../icons/PlusIcon';
 import { QuickCaptureTileIcon } from '../bottom-sheet-quick-capture/QuickCaptureTileIcons';
-import { FieldBookCtaButton } from '../field-book-cta';
+import { FieldSoloCtaButton } from '../fieldsolo-cta';
 
 const sheetShadow: CSSProperties = {
   boxShadow: shadow('Shadow/Overlay/Default'),
@@ -192,7 +192,7 @@ export type MaterialBottomSheetProps = {
 
 /**
  * Material entry / edit bottom sheet (Figma component set **Material** `1283:351`).
- * Save actions use **Button** **Material** variants (`1287:1563`) via `FieldBookCtaButton` (header wrench still **Semantic/Activity/Material**).
+ * Save actions use **Button** **Material** variants (`1287:1563`) via `FieldSoloCtaButton` (header wrench still **Semantic/Activity/Material**).
  */
 export function MaterialBottomSheet({
   variant,
@@ -219,7 +219,7 @@ export function MaterialBottomSheet({
     variant === 'editJobMaterial' || variant === 'editSessionMaterial';
   const subtitle = subtitleProp ?? defaultSubtitle(variant, sessionLabel);
   const title = sheetTitle(variant);
-  const titleId = 'fieldbook-material-sheet-title';
+  const titleId = 'fieldsolo-material-sheet-title';
   const bg = color('Foundation/Background/Default');
   const borderSubtle = color('Foundation/Border/Subtle');
   const backFg = color('Foundation/Text/Secondary');
@@ -634,7 +634,7 @@ export function MaterialBottomSheet({
 
       {!isEdit ? (
         <div data-name="material-primary-action" style={{ width: '100%', maxWidth: 343 }}>
-          <FieldBookCtaButton
+          <FieldSoloCtaButton
             variant="materialPrimary"
             primaryLabel={primaryLabel(variant)}
             onPrimaryClick={onPrimaryAction}
@@ -642,7 +642,7 @@ export function MaterialBottomSheet({
         </div>
       ) : (
         <div data-name="material-footer" style={{ width: '100%', maxWidth: 343 }}>
-          <FieldBookCtaButton
+          <FieldSoloCtaButton
             variant="materialPrimaryWithDelete"
             primaryLabel={primaryLabel(variant)}
             onPrimaryClick={onPrimaryAction}

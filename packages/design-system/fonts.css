@@ -1,5 +1,5 @@
 /**
- * Field Book design-system fonts (matches design-system/tokens/typography.json).
+ * FieldSolo design-system fonts (matches design-system/tokens/typography.json).
  * Import this in web shells or Storybook root so token fontFamily names resolve.
  */
 @import url('https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Ubuntu+Sans+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');

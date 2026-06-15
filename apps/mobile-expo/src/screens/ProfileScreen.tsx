@@ -19,8 +19,8 @@ import {
   fetchCurrentUserProfile,
   updateCurrentUserProfile,
   type UserProfile,
-} from '@fieldbook/api-client';
-import { color } from '@fieldbook/design-system/lib/tokens';
+} from '@fieldsolo/api-client';
+import { color } from '@fieldsolo/design-system/lib/tokens';
 
 import { CanvasTiledBackground } from '../components/CanvasTiledBackground';
 import { shellBottomNavOuterHeight } from '../components/shell/ShellBottomNav';

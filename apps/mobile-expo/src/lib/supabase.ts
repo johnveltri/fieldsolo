@@ -1,15 +1,16 @@
-import { createFieldbookClient } from '@fieldbook/api-client';
+import { createFieldSoloClient } from '@fieldsolo/api-client';
 
 import { authStorage } from './authStorage';
+import { FIELD_SOLO_AUTH_STORAGE_KEY } from './storageKeys';
 
-type FieldbookClient = ReturnType<typeof createFieldbookClient>;
+type FieldSoloClient = ReturnType<typeof createFieldSoloClient>;
 
 const url = (process.env.EXPO_PUBLIC_SUPABASE_URL ?? '').trim();
 const anon = (process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '').trim();
 
 const configured = url.length > 0 && anon.length > 0;
 
-function createMissingSupabaseClient(): FieldbookClient {
+function createMissingSupabaseClient(): FieldSoloClient {
   return new Proxy(
     {},
     {
@@ -19,15 +20,15 @@ function createMissingSupabaseClient(): FieldbookClient {
         );
       },
     },
-  ) as FieldbookClient;
+  ) as FieldSoloClient;
 }
 
 /** Shared Supabase client for the Expo app. Requires EXPO_PUBLIC_* env vars. */
 export const supabase = configured
-  ? createFieldbookClient(url, anon, {
+  ? createFieldSoloClient(url, anon, {
       auth: {
         storage: authStorage,
-        storageKey: 'fieldbook.auth.token',
+        storageKey: FIELD_SOLO_AUTH_STORAGE_KEY,
         autoRefreshToken: true,
         persistSession: true,
         detectSessionInUrl: false,

@@ -1,6 +1,6 @@
-import type { JobId } from '@fieldbook/shared-types';
+import type { JobId } from '@fieldsolo/shared-types';
 
-import type { FieldbookSupabaseClient } from './client';
+import type { FieldSoloSupabaseClient } from './client';
 import type { SessionId } from './sessions';
 
 export type MaterialId = string;
@@ -76,7 +76,7 @@ function computeTotalCostCents(unitCostCents: number, quantity: number): number 
 
 /** Inserts a new material scoped to either a job or a session (exactly one). */
 export async function createMaterial(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   input: CreateMaterialInput,
 ): Promise<MaterialId> {
   assertDescriptionNotBlank(input.description);
@@ -126,7 +126,7 @@ export async function createMaterial(
  * unspecified field read back from the row.
  */
 export async function updateMaterial(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   materialId: MaterialId,
   input: UpdateMaterialInput,
 ): Promise<void> {
@@ -257,7 +257,7 @@ export async function updateMaterial(
 
 /** Soft-deletes a material by stamping `deleted_at`. */
 export async function deleteMaterial(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   materialId: MaterialId,
 ): Promise<void> {
   const { data, error } = await client

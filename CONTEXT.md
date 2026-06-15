@@ -1,12 +1,12 @@
-# Context — Fieldbook
+# Context — FieldSolo
 
 ## Project
 
-**Fieldbook** — design system and app work under this repo. The **`design-system/`** tree holds shared tokens, components, preview, and Expo font loading.
+**FieldSolo** — design system and app work under this repo. The **`design-system/`** tree holds shared tokens, components, preview, and Expo font loading.
 
 ## Figma
 
-- **File:** [Field Book App](https://www.figma.com/design/TdvsllfeXrnkvBqR4qb3fn/Field-Book-App---gig-work-for-skilled-trade) (`fileKey`: `TdvsllfeXrnkvBqR4qb3fn`).
+- **File:** [FieldSolo App](https://www.figma.com/design/TdvsllfeXrnkvBqR4qb3fn/Field-Book-App---gig-work-for-skilled-trade) (`fileKey`: `TdvsllfeXrnkvBqR4qb3fn`).
 - **Components** generally live in the file’s Components area (e.g. frame **“Components”** — node id may vary by branch/version).
 
 ## In progress
@@ -15,7 +15,7 @@
 
 ## Fonts / stack (high level)
 
-- Web preview and Expo load Fieldbook fonts via **`design-system/fonts.css`**, **`design-system/expo/loadFieldbookFonts.ts`**, and related typings.
+- Web preview and Expo load FieldSolo fonts via **`design-system/fonts.css`**, **`design-system/expo/loadFieldSoloFonts.ts`**, and related typings.
 
 ## Where to look next session
 

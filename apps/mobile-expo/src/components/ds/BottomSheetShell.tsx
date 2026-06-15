@@ -20,7 +20,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { color, radius, space } from '@fieldbook/design-system/lib/tokens';
+import { color, radius, space } from '@fieldsolo/design-system/lib/tokens';
 
 import { useBottomSheetStackWriters } from '../../context/BottomSheetStackContext';
 import { bg, border } from '../../theme/nativeTokens';

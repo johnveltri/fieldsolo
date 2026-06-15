@@ -4,7 +4,7 @@ import type { AuthError, Session, User } from '@supabase/supabase-js';
 import {
   deleteCurrentAccount,
   updateCurrentUserPassword,
-} from '@fieldbook/api-client';
+} from '@fieldsolo/api-client';
 
 import { analytics, errorProperties } from '../lib/analytics';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';

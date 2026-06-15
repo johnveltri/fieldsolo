@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { color, radius, space } from '@fieldbook/design-system/lib/tokens';
-import type { JobDetailSessionAttachment } from '@fieldbook/shared-types';
+import { color, radius, space } from '@fieldsolo/design-system/lib/tokens';
+import type { JobDetailSessionAttachment } from '@fieldsolo/shared-types';
 
 import type { TextStyles } from '../../theme/nativeTokens';
 import {

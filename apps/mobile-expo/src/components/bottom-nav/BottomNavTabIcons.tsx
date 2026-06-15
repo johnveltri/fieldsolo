@@ -1,7 +1,7 @@
 import Svg, { Path } from 'react-native-svg';
 
 /**
- * Bottom tab icons — paths from Figma `225:12144` / `225:12150` / `225:12156` (Field Book bottom nav).
+ * Bottom tab icons — paths from Figma `225:12144` / `225:12150` / `225:12156` (FieldSolo bottom nav).
  * Stroke colors are passed in so inactive tabs use `Foundation/Text/Primary` and the active tab uses `Brand/Primary`.
  */
 

@@ -18,8 +18,8 @@ import {
   tryBumpJobToInProgressIfNotStarted,
   type ListJobsForCurrentUserItem,
   type RecentJobItem,
-} from '@fieldbook/api-client';
-import { color, radius } from '@fieldbook/design-system/lib/tokens';
+} from '@fieldsolo/api-client';
+import { color, radius } from '@fieldsolo/design-system/lib/tokens';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,

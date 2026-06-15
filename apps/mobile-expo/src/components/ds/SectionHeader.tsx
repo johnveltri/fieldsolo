@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { color } from '@fieldbook/design-system/lib/tokens';
+import { color } from '@fieldsolo/design-system/lib/tokens';
 
 import { fg, space, TOP_HEADER_MAX_WIDTH, type TextStyles } from '../../theme/nativeTokens';
 

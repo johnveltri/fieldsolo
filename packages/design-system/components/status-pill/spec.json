@@ -3,7 +3,7 @@
     "name": "Status pill",
     "figmaNodeId": "622:143",
     "kind": "componentSet",
-    "description": "Rounded pill for job lifecycle and similar states. Typography/LABEL; padding Spacing/12 × Spacing/4; stroke 1px. Fills and strokes are bound to semantic status color variables in Figma (see `tokens.colors`). Embedded in **Job Card** (`622:161`) header in the Field Book file."
+    "description": "Rounded pill for job lifecycle and similar states. Typography/LABEL; padding Spacing/12 × Spacing/4; stroke 1px. Fills and strokes are bound to semantic status color variables in Figma (see `tokens.colors`). Embedded in **Job Card** (`622:161`) header in the FieldSolo file."
   },
   "structure": {
     "figmaLayerNames": {

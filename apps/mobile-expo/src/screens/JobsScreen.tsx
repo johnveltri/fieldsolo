@@ -24,8 +24,8 @@ import {
   listJobsForCurrentUserPage,
   type ListJobsForCurrentUserItem,
   type ListJobsForCurrentUserTab,
-} from '@fieldbook/api-client';
-import { color, colorWithAlpha, radius } from '@fieldbook/design-system/lib/tokens';
+} from '@fieldsolo/api-client';
+import { color, colorWithAlpha, radius } from '@fieldsolo/design-system/lib/tokens';
 
 import { CanvasTiledBackground } from '../components/CanvasTiledBackground';
 import {

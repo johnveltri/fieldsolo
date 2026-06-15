@@ -135,7 +135,7 @@ export function ChooseJobBottomSheet({
   const fg = color('Foundation/Text/Primary');
   const backFg = color('Foundation/Text/Secondary');
   const titleMuted = color('Foundation/Text/Muted');
-  const sheetTitleId = 'fieldbook-choose-job-title';
+  const sheetTitleId = 'fieldsolo-choose-job-title';
   const actionSubtitle =
     captureKind === 'startSession' ? sessionSubtitle() : inboxSubtitle();
 

@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { color } from '@fieldbook/design-system/lib/tokens';
+import { color } from '@fieldsolo/design-system/lib/tokens';
 
 import {
   type TextStyles,
@@ -63,7 +63,7 @@ function LeadingUnpaid({ borderColor }: { borderColor: string }) {
 
 /**
  * OPEN-tab list section header — Figma: Incomplete `443:2253`, In progress `1022:456`, Unpaid `1022:468`.
- * @see fieldbook/packages/design-system/components/jobs-open-stack-section-header/spec.json
+ * @see fieldsolo/packages/design-system/components/jobs-open-stack-section-header/spec.json
  */
 export function JobsOpenStackSectionHeader({
   kind,

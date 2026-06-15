@@ -2,7 +2,7 @@
 # https://supabase.com/docs/guides/local-development/cli/config
 # A string used to distinguish different Supabase projects on the same host. Defaults to the
 # working directory name when running `supabase init`.
-project_id = "fieldbook"
+project_id = "fieldsolo"
 
 [api]
 enabled = true
@@ -149,7 +149,7 @@ max_indexes = 5
 
 [auth]
 enabled = true
-# Email + password only for Fieldbook: keep SMS and all [auth.external.*] providers disabled.
+# Email + password only for FieldSolo: keep SMS and all [auth.external.*] providers disabled.
 # Hosted projects: Dashboard → Authentication → Providers — turn off Phone, Apple, Google, etc.;
 # leave Email enabled. The mobile app uses signInWithPassword / signUp (no OAuth redirect flow).
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used

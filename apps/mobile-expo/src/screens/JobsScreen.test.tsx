@@ -28,7 +28,7 @@ jest.mock('../context/JobsListInvalidationContext', () => ({
   }),
 }));
 
-jest.mock('@fieldbook/api-client', () => ({
+jest.mock('@fieldsolo/api-client', () => ({
   listJobsForCurrentUserPage: jest.fn(),
   createBlankJobForCurrentUser: jest.fn(),
 }));
@@ -39,7 +39,7 @@ jest.mock('../lib/supabase', () => ({
 }));
 
 describe('JobsScreen', () => {
-  const apiClient = jest.requireMock('@fieldbook/api-client') as any;
+  const apiClient = jest.requireMock('@fieldsolo/api-client') as any;
   const supabaseLib = jest.requireMock('../lib/supabase') as any;
 
   beforeEach(() => {

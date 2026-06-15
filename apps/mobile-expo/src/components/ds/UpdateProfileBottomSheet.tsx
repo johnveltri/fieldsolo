@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { color, radius, space } from '@fieldbook/design-system/lib/tokens';
+import { color, radius, space } from '@fieldsolo/design-system/lib/tokens';
 
 import { bg, border, fg } from '../../theme/nativeTokens';
 import type { TextStyles } from '../../theme/nativeTokens';

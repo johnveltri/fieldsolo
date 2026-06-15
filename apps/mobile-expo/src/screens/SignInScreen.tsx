@@ -213,7 +213,7 @@ export function SignInScreen() {
           keyboardShouldPersistTaps="handled"
         >
           <View style={[styles.card, { maxWidth: CONTENT_MAX_WIDTH, alignSelf: 'center', width: '100%' }]}>
-            <Text style={[text.title, { color: fg.primary, marginBottom: gap }]}>Fieldbook</Text>
+            <Text style={[text.title, { color: fg.primary, marginBottom: gap }]}>FieldSolo</Text>
             <Text style={[text.body, { color: fg.secondary, marginBottom: gap }]}>
               Sign in with email and password
             </Text>

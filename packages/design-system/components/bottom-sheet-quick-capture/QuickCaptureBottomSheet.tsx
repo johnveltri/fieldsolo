@@ -39,7 +39,7 @@ export function QuickCaptureBottomSheet({
   className,
   style,
 }: QuickCaptureBottomSheetProps) {
-  const titleId = 'fieldbook-quick-capture-title';
+  const titleId = 'fieldsolo-quick-capture-title';
   const bg = color('Foundation/Background/Default');
   const borderSubtle = color('Foundation/Border/Subtle');
   const fg = color('Foundation/Text/Primary');

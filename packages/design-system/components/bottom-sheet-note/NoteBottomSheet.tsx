@@ -10,7 +10,7 @@ import {
   typographyTitleH3Style,
 } from '../../lib/tokens';
 import { PlusIcon } from '../../icons/PlusIcon';
-import { FieldBookCtaButton } from '../field-book-cta';
+import { FieldSoloCtaButton } from '../fieldsolo-cta';
 
 const sheetShadow: CSSProperties = {
   boxShadow: shadow('Shadow/Overlay/Default'),
@@ -187,7 +187,7 @@ export type NoteBottomSheetProps = {
 
 /**
  * Note composer / editor bottom sheet (Figma component set **Note** `1279:351`).
- * Footer CTAs are **Button** instances (`1287:1563`) via `FieldBookCtaButton`.
+ * Footer CTAs are **Button** instances (`1287:1563`) via `FieldSoloCtaButton`.
  */
 export function NoteBottomSheet({
   variant,
@@ -209,7 +209,7 @@ export function NoteBottomSheet({
   const value = valueProp ?? defaultValue;
   const subtitle = subtitleProp ?? defaultSubtitle(variant, sessionLabel);
   const title = sheetTitle(variant);
-  const titleId = 'fieldbook-note-sheet-title';
+  const titleId = 'fieldsolo-note-sheet-title';
   const bg = color('Foundation/Background/Default');
   const borderSubtle = color('Foundation/Border/Subtle');
   const backFg = color('Foundation/Text/Secondary');
@@ -462,7 +462,7 @@ export function NoteBottomSheet({
 
       {!isEdit ? (
         <div data-name="note-primary-action" style={{ width: '100%', maxWidth: 343 }}>
-          <FieldBookCtaButton
+          <FieldSoloCtaButton
             variant="notePrimary"
             primaryLabel={primaryLabel(variant)}
             onPrimaryClick={onPrimaryAction}
@@ -470,7 +470,7 @@ export function NoteBottomSheet({
         </div>
       ) : (
         <div data-name="note-footer" style={{ width: '100%', maxWidth: 343 }}>
-          <FieldBookCtaButton
+          <FieldSoloCtaButton
             variant="notePrimaryWithDelete"
             primaryLabel={primaryLabel(variant)}
             onPrimaryClick={onPrimaryAction}

@@ -1,4 +1,4 @@
-export { createFieldbookClient, type FieldbookSupabaseClient } from './client';
+export { createFieldSoloClient, type FieldSoloSupabaseClient } from './client';
 export { fetchJobDetail } from './jobDetail';
 export {
   createBlankJobForCurrentUser,

@@ -1,6 +1,6 @@
 /**
  * View model for Job Detail screen — aligns with DB + derived UI fields.
- * Maps from Supabase via `@fieldbook/api-client` `fetchJobDetail`.
+ * Maps from Supabase via `@fieldsolo/api-client` `fetchJobDetail`.
  */
 
 /** Mirrors design-system `StatusPill` kinds for the job header pill (includes derived `paid`). */

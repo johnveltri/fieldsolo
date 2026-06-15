@@ -1,6 +1,6 @@
-import type { JobId } from '@fieldbook/shared-types';
+import type { JobId } from '@fieldsolo/shared-types';
 
-import type { FieldbookSupabaseClient } from './client';
+import type { FieldSoloSupabaseClient } from './client';
 import { tryBumpJobToInProgressIfNotStarted } from './jobs';
 
 export type SessionId = string;
@@ -34,7 +34,7 @@ function assertTimeRange(startedAt: string, endedAt: string): void {
  * Maps to `public.sessions` with `entry_mode='manual'`, `session_status='ended'`.
  */
 export async function createManualSession(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   input: CreateManualSessionInput,
 ): Promise<SessionId> {
   assertTimeRange(input.startedAt, input.endedAt);
@@ -67,7 +67,7 @@ export async function createManualSession(
 
 /** Updates start/end timestamps on an existing session (no status change). */
 export async function updateSessionTimes(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   sessionId: SessionId,
   input: UpdateSessionTimesInput,
 ): Promise<void> {
@@ -96,7 +96,7 @@ export async function updateSessionTimes(
  * and triggers the child-unassignment migration.
  */
 export async function deleteSession(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   sessionId: SessionId,
 ): Promise<void> {
   const { data, error } = await client

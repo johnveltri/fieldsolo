@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { color, radius, space } from '@fieldbook/design-system/lib/tokens';
-import type { JobDetailWorkStatus } from '@fieldbook/shared-types';
+import { color, radius, space } from '@fieldsolo/design-system/lib/tokens';
+import type { JobDetailWorkStatus } from '@fieldsolo/shared-types';
 
 import type { TextStyles } from '../../theme/nativeTokens';
 

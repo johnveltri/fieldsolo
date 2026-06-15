@@ -1,4 +1,4 @@
-import type { JobDetailWorkStatus } from '@fieldbook/shared-types';
+import type { JobDetailWorkStatus } from '@fieldsolo/shared-types';
 
 import { JOB_DETAIL_WORK_STATUS_LABEL } from '../components/ds/JobDetailStatusPill';
 import type { DropdownBottomSheetOption } from '../components/ds/DropdownBottomSheet';

@@ -15,7 +15,7 @@ export type {
  * bar / open bottom sheet that lives outside the JobDetail screen.
  *
  * Returned by `fetchActiveLiveSessionForCurrentUser` and produced by
- * `createLiveSession` in `@fieldbook/api-client`.
+ * `createLiveSession` in `@fieldsolo/api-client`.
  */
 export type ActiveLiveSession = {
   id: string;

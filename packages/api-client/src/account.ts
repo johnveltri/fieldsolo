@@ -1,4 +1,4 @@
-import type { FieldbookSupabaseClient } from './client';
+import type { FieldSoloSupabaseClient } from './client';
 
 /**
  * Updates the password for the currently-authenticated user. Wraps
@@ -6,7 +6,7 @@ import type { FieldbookSupabaseClient } from './client';
  * can surface the message.
  */
 export async function updateCurrentUserPassword(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
   newPassword: string,
 ): Promise<void> {
   const trimmed = newPassword;
@@ -29,7 +29,7 @@ export async function updateCurrentUserPassword(
  * tokens.
  */
 export async function deleteCurrentAccount(
-  client: FieldbookSupabaseClient,
+  client: FieldSoloSupabaseClient,
 ): Promise<void> {
   const { data, error } = await client.functions.invoke<{
     ok?: boolean;

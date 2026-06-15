@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { color, radius, space } from '@fieldbook/design-system/lib/tokens';
+import { color, radius, space } from '@fieldsolo/design-system/lib/tokens';
 // radius() still used for pill (Radius/Full).
 
 import { bg, border, fg } from '../../theme/nativeTokens';

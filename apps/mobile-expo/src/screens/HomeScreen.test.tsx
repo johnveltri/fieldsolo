@@ -34,7 +34,7 @@ jest.mock('expo-font', () => ({
   useFonts: () => [true],
 }));
 
-jest.mock('@fieldbook/api-client', () => ({
+jest.mock('@fieldsolo/api-client', () => ({
   createBlankJobForLiveSessionStart: (...args: unknown[]) =>
     mockCreateBlankJobForLiveSessionStart(...args),
   createNote: (...args: unknown[]) => mockCreateNote(...args),

@@ -3,7 +3,7 @@ import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { JobDetailScreen } from './JobDetailScreen';
-import type { JobDetailViewModel } from '@fieldbook/shared-types';
+import type { JobDetailViewModel } from '@fieldsolo/shared-types';
 
 jest.mock('expo-font', () => ({
   useFonts: () => [true],
@@ -351,7 +351,7 @@ jest.mock('../components/ds', () => ({
   },
 }));
 
-jest.mock('@fieldbook/api-client', () => ({
+jest.mock('@fieldsolo/api-client', () => ({
   createManualSession: jest.fn(),
   createMaterial: jest.fn(),
   createNote: jest.fn(),
@@ -376,7 +376,7 @@ jest.mock('../lib/supabase', () => ({
 }));
 
 describe('JobDetailScreen manual session and note flows', () => {
-  const apiClient = jest.requireMock('@fieldbook/api-client') as any;
+  const apiClient = jest.requireMock('@fieldsolo/api-client') as any;
 
   const baseJob: JobDetailViewModel = {
     id: 'job-1',

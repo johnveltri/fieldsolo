@@ -72,7 +72,7 @@
   },
   "implementationNotes": [
     "Quick-capture glyphs: `QuickCaptureTileIcon` (`newNote`, `newMaterial`, `addPhoto`, `voiceMemo`) scaled to ~16px in tiles and rows.",
-    "Time range: Ubuntu Sans Mono 11.9px / 20px line height + secondary color to align with Field Book density (Figma lists Inter for this line).",
+    "Time range: Ubuntu Sans Mono 11.9px / 20px line height + secondary color to align with FieldSolo density (Figma lists Inter for this line).",
     "Attachment list: pass `attachments`; `expandedAttachments` with an empty array shows the same empty message as `expandedEmpty`."
   ],
   "codeProps": {
