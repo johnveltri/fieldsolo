@@ -38,7 +38,7 @@ export type TopHeaderProps = {
 };
 
 const DEFAULT_TITLE: Record<TopHeaderVariant, string | undefined> = {
-  'Title + Profile': 'FIELD BOOK',
+  'Title + Profile': 'FIELDSOLO',
   'Title Only': 'EARNINGS',
   'Title + Inbox': 'JOBS',
   'Title + Back': 'PROFILE',

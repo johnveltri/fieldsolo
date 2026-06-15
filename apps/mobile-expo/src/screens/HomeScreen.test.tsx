@@ -160,6 +160,18 @@ describe('HomeScreen quick session', () => {
     consoleErrorSpy.mockRestore();
   });
 
+  it('renders the FieldSolo home header', () => {
+    const screen = render(
+      <HomeScreen
+        onOpenProfile={() => undefined}
+        onOpenJobDetail={() => undefined}
+        onOpenEarnings={() => undefined}
+      />,
+    );
+
+    expect(screen.getByText('FIELDSOLO')).toBeTruthy();
+  });
+
   it('cleans up the temporary quick-session job when starting the live session fails', async () => {
     mockCreateBlankJobForLiveSessionStart.mockResolvedValue('job-temp-1');
     mockStartLiveSession.mockRejectedValue(new Error('duplicate active session'));

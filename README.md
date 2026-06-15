@@ -293,10 +293,10 @@ Current progress:
 # Getting Started
 
 ```bash
-git clone https://github.com/yourusername/fieldsolo.git
+git clone https://github.com/johnveltri/fieldsolo.git
 cd fieldsolo
 npm install
-npm run dev
+npm run mobile
 ```
 
 ## Rename Checklist

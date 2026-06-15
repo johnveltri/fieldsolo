@@ -824,7 +824,7 @@ export function HomeScreen({ onOpenProfile, onOpenJobDetail, onOpenEarnings }: H
       >
         <View style={styles.headerBand}>
           <View style={styles.topHeader}>
-            <Text style={typography.displayH1}>FIELD BOOK</Text>
+            <Text style={typography.displayH1}>FIELDSOLO</Text>
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Profile"
