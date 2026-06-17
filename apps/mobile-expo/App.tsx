@@ -48,7 +48,7 @@ function AuthenticatedShell() {
   const [jobsListTab, setJobsListTab] = useState<ListJobsForCurrentUserTab>('all');
   /** Earnings page time window; lifted so Home can land on "Past Week". */
   const [earningsWindow, setEarningsWindow] = useState<EarningsWindow>('week');
-  const [mainTab, setMainTab] = useState<ShellMainTab>('jobs');
+  const [mainTab, setMainTab] = useState<ShellMainTab>('home');
   /** Profile is stacked over Home while staying on the HOME bottom-nav tab. */
   const [profileOpen, setProfileOpen] = useState(false);
   /** Inbox covers the shell (like Job Detail); opened from the Jobs header icon. */

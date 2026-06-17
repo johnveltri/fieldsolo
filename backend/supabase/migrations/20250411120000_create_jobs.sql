@@ -1,4 +1,4 @@
--- Jobs table — columns mirror @fieldbook/shared-types `Job` (camelCase in TS).
+-- Jobs table — columns mirror @fieldsolo/shared-types `Job` (camelCase in TS).
 create table public.jobs (
   id uuid primary key default gen_random_uuid (),
   title text not null,

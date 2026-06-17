@@ -185,6 +185,10 @@ jest.mock('./src/components/shell/ShellBottomNav', () => ({
   shellBottomNavOuterHeight: () => 0,
 }));
 
+function openJobsTab(screen: ReturnType<typeof render>) {
+  fireEvent.press(screen.getByText('ShellNavJobs'));
+}
+
 describe('App jobs to detail sync', () => {
   beforeEach(() => {
     homeMountCount = 0;
@@ -195,6 +199,7 @@ describe('App jobs to detail sync', () => {
   it('passes selected job id and session user id into JobDetailScreen', () => {
     const screen = render(<App />);
 
+    openJobsTab(screen);
     expect(screen.getByTestId('jobs-screen')).toBeTruthy();
 
     fireEvent.press(screen.getByText('OpenJob'));
@@ -207,6 +212,7 @@ describe('App jobs to detail sync', () => {
   it('returns to JobsScreen when detail requests close', () => {
     const screen = render(<App />);
 
+    openJobsTab(screen);
     fireEvent.press(screen.getByText('OpenJob'));
     expect(screen.getByTestId('detail-props')).toBeTruthy();
 
@@ -217,6 +223,7 @@ describe('App jobs to detail sync', () => {
   it('switches to HOME and dismisses Job Detail when the HOME tab is tapped from inside detail', () => {
     const screen = render(<App />);
 
+    openJobsTab(screen);
     fireEvent.press(screen.getByText('OpenJob'));
     expect(screen.getByTestId('detail-props')).toBeTruthy();
 
@@ -228,6 +235,7 @@ describe('App jobs to detail sync', () => {
   it('switches to EARNINGS and dismisses Job Detail when the EARNINGS tab is tapped from inside detail', () => {
     const screen = render(<App />);
 
+    openJobsTab(screen);
     fireEvent.press(screen.getByText('OpenJob'));
     expect(screen.getByTestId('detail-props')).toBeTruthy();
 
@@ -239,6 +247,7 @@ describe('App jobs to detail sync', () => {
   it('returns to JobsScreen when the JOBS tab is tapped from inside Job Detail', () => {
     const screen = render(<App />);
 
+    openJobsTab(screen);
     fireEvent.press(screen.getByText('OpenJob'));
     expect(screen.getByTestId('detail-props')).toBeTruthy();
 
@@ -258,14 +267,10 @@ describe('App shell tab caching', () => {
   it('keeps tab screens mounted when switching between HOME, JOBS, and EARNINGS', () => {
     const screen = render(<App />);
 
-    expect(screen.getByTestId('jobs-screen')).toBeTruthy();
+    expect(screen.getByTestId('home-screen')).toBeTruthy();
     expect(jobsMountCount).toBe(1);
     expect(homeMountCount).toBe(1);
     expect(earningsMountCount).toBe(1);
-
-    fireEvent.press(screen.getByText('ShellNavHome'));
-    expect(screen.getByTestId('home-screen')).toBeTruthy();
-    expect(homeMountCount).toBe(1);
 
     fireEvent.press(screen.getByText('ShellNavEarnings'));
     expect(screen.getByTestId('earnings-screen')).toBeTruthy();
@@ -287,6 +292,7 @@ describe('App inbox shell tab navigation', () => {
   it('returns to JobsScreen when the JOBS tab is tapped from Inbox', () => {
     const screen = render(<App />);
 
+    openJobsTab(screen);
     fireEvent.press(screen.getByText('OpenInbox'));
     expect(screen.getByTestId('inbox-screen')).toBeTruthy();
 
@@ -298,6 +304,7 @@ describe('App inbox shell tab navigation', () => {
   it('switches to HOME and dismisses Inbox when the HOME tab is tapped from Inbox', () => {
     const screen = render(<App />);
 
+    openJobsTab(screen);
     fireEvent.press(screen.getByText('OpenInbox'));
     expect(screen.getByTestId('inbox-screen')).toBeTruthy();
 
@@ -309,6 +316,7 @@ describe('App inbox shell tab navigation', () => {
   it('switches to EARNINGS and dismisses Inbox when the EARNINGS tab is tapped from Inbox', () => {
     const screen = render(<App />);
 
+    openJobsTab(screen);
     fireEvent.press(screen.getByText('OpenInbox'));
     expect(screen.getByTestId('inbox-screen')).toBeTruthy();
 
