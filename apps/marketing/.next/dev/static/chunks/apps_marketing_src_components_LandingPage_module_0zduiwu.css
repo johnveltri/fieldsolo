@@ -224,11 +224,6 @@
   margin-bottom: 1.25rem;
 }
 
-.LandingPage-module__3Te2Lq__valueCard h2 {
-  margin-bottom: .6rem;
-  font-size: 1.36rem;
-}
-
 .LandingPage-module__3Te2Lq__valueCard p {
   color: var(--muted);
   font: 400 .88rem/1.65 var(--font-sans, monospace);
@@ -1068,6 +1063,8 @@
 
 .LandingPage-module__3Te2Lq__stepImageFrame img {
   object-fit: cover;
+  width: 100%;
+  height: 100%;
 }
 
 .LandingPage-module__3Te2Lq__problemImage {
@@ -1084,6 +1081,411 @@
 
 .LandingPage-module__3Te2Lq__problemImage img {
   object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.LandingPage-module__3Te2Lq__navShell {
+  width: min(1280px, 100% - 4rem);
+  height: 64px;
+}
+
+.LandingPage-module__3Te2Lq__wordmark {
+  font: 700 1.5rem/2rem var(--font-serif, Georgia,serif);
+  letter-spacing: -.6px;
+}
+
+.LandingPage-module__3Te2Lq__desktopNav {
+  gap: 2rem;
+  font-size: .875rem;
+}
+
+.LandingPage-module__3Te2Lq__hero {
+  padding-bottom: 5rem;
+}
+
+.LandingPage-module__3Te2Lq__hero > .LandingPage-module__3Te2Lq__blueprint {
+  opacity: .035;
+}
+
+.LandingPage-module__3Te2Lq__valueCard {
+  isolation: isolate;
+  position: relative;
+  overflow: hidden;
+}
+
+.LandingPage-module__3Te2Lq__valueCard:after {
+  content: "";
+  z-index: -1;
+  background: var(--paper);
+  border-radius: 50%;
+  width: 174px;
+  height: 174px;
+  position: absolute;
+  top: -86px;
+  right: -86px;
+}
+
+.LandingPage-module__3Te2Lq__promise, .LandingPage-module__3Te2Lq__finalCta, .LandingPage-module__3Te2Lq__how, .LandingPage-module__3Te2Lq__pricing {
+  padding-block: 5.5rem;
+}
+
+.LandingPage-module__3Te2Lq__steps {
+  gap: 4rem;
+}
+
+.LandingPage-module__3Te2Lq__hero {
+  max-width: 80rem;
+  margin-inline: auto;
+  padding: 6rem 1rem;
+}
+
+.LandingPage-module__3Te2Lq__hero > .LandingPage-module__3Te2Lq__blueprint {
+  opacity: 0;
+  animation: 2s ease-out forwards LandingPage-module__3Te2Lq__blueprintReveal;
+}
+
+.LandingPage-module__3Te2Lq__heroGlow {
+  filter: blur(64px);
+  pointer-events: none;
+  border-radius: 999px;
+  width: 24rem;
+  height: 24rem;
+  position: absolute;
+}
+
+.LandingPage-module__3Te2Lq__heroGlowRust {
+  background: #c44b2b08;
+  top: 5rem;
+  left: -5rem;
+}
+
+.LandingPage-module__3Te2Lq__heroGlowInk {
+  background: #2b344108;
+  bottom: 5rem;
+  right: -5rem;
+}
+
+.LandingPage-module__3Te2Lq__heroInner {
+  max-width: 56rem;
+  margin-bottom: 5rem;
+}
+
+.LandingPage-module__3Te2Lq__hero h1 {
+  letter-spacing: -.025em;
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  line-height: 1.1;
+}
+
+.LandingPage-module__3Te2Lq__kicker {
+  margin-block: 1.5rem;
+  font-size: 1.125rem;
+}
+
+.LandingPage-module__3Te2Lq__heroLead {
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  line-height: 1.5;
+}
+
+.LandingPage-module__3Te2Lq__tradeTicker {
+  white-space: nowrap;
+  max-width: 56rem;
+  margin: 1.5rem auto 2.5rem;
+  font-size: 1.125rem;
+  line-height: 1.75;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, #0000, #000 10% 90%, #0000);
+  mask-image: linear-gradient(to right, #0000, #000 10% 90%, #0000);
+}
+
+.LandingPage-module__3Te2Lq__tradeTicker > div {
+  width: max-content;
+  display: flex;
+}
+
+.LandingPage-module__3Te2Lq__tradeTicker span {
+  padding-right: .5rem;
+}
+
+.LandingPage-module__3Te2Lq__heroActions {
+  gap: 1.25rem;
+}
+
+.LandingPage-module__3Te2Lq__primaryButton, .LandingPage-module__3Te2Lq__secondaryButton {
+  padding: 1rem 2.5rem;
+  font-size: 1.125rem;
+}
+
+.LandingPage-module__3Te2Lq__valueGrid {
+  gap: 2rem;
+  width: min(64rem, 100%);
+  margin-top: 4rem;
+}
+
+.LandingPage-module__3Te2Lq__valueCard {
+  box-sizing: border-box;
+  border-radius: 1rem;
+  min-height: 15.5rem;
+  padding: 2rem;
+}
+
+.LandingPage-module__3Te2Lq__valueCard:after {
+  opacity: .5;
+  border-radius: 0 0 0 100%;
+  width: 8rem;
+  height: 8rem;
+  top: -2rem;
+  right: -2rem;
+}
+
+.LandingPage-module__3Te2Lq__valueIcon {
+  background: var(--paper);
+  width: 3.5rem;
+  height: 3.5rem;
+  color: var(--rust);
+  border-radius: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  display: flex;
+}
+
+.LandingPage-module__3Te2Lq__valueIcon svg {
+  width: 1.75rem;
+  height: 1.75rem;
+  margin: 0;
+}
+
+.LandingPage-module__3Te2Lq__valueCard h2 {
+  margin-bottom: .75rem;
+  font-size: 1.25rem;
+}
+
+.LandingPage-module__3Te2Lq__valueCard p {
+  font-size: 1rem;
+  line-height: 1.625;
+}
+
+@keyframes LandingPage-module__3Te2Lq__blueprintReveal {
+  to {
+    opacity: .1;
+  }
+}
+
+@media (min-width: 640px) {
+  .LandingPage-module__3Te2Lq__hero {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .LandingPage-module__3Te2Lq__hero {
+    padding-inline: 2rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .LandingPage-module__3Te2Lq__hero {
+    padding-block: 4.5rem;
+  }
+
+  .LandingPage-module__3Te2Lq__heroInner {
+    margin-bottom: 4rem;
+  }
+
+  .LandingPage-module__3Te2Lq__valueCard {
+    min-height: 0;
+  }
+
+  .LandingPage-module__3Te2Lq__tradeTicker {
+    font-size: 1rem;
+  }
+
+  .LandingPage-module__3Te2Lq__primaryButton, .LandingPage-module__3Te2Lq__secondaryButton {
+    padding-inline: 2rem;
+    font-size: 1rem;
+  }
+}
+
+.LandingPage-module__3Te2Lq__problem {
+  gap: 4rem;
+  padding: 6rem max(1rem, 50% - 560px);
+}
+
+.LandingPage-module__3Te2Lq__problem h2 {
+  letter-spacing: -.025em;
+  margin-bottom: 2rem;
+  font-size: 3rem;
+  line-height: 1.25;
+}
+
+.LandingPage-module__3Te2Lq__page .LandingPage-module__3Te2Lq__sectionLead {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+}
+
+.LandingPage-module__3Te2Lq__problem li {
+  margin: .75rem 0;
+  font-size: 1rem;
+}
+
+.LandingPage-module__3Te2Lq__problemImage {
+  max-width: 32rem;
+}
+
+@media (max-width: 1023px) {
+  .LandingPage-module__3Te2Lq__problem {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    padding-inline: 1rem;
+  }
+
+  .LandingPage-module__3Te2Lq__problem h2 {
+    font-size: 2.25rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .LandingPage-module__3Te2Lq__problem {
+    padding: 4.5rem 1rem;
+  }
+
+  .LandingPage-module__3Te2Lq__problem h2 {
+    font-size: clamp(2.4rem, 10vw, 3rem);
+  }
+}
+
+.LandingPage-module__3Te2Lq__page .LandingPage-module__3Te2Lq__hero h1 {
+  max-width: 56rem;
+}
+
+.LandingPage-module__3Te2Lq__page .LandingPage-module__3Te2Lq__hero .LandingPage-module__3Te2Lq__badge {
+  margin: 0 0 1.5rem;
+}
+
+.LandingPage-module__3Te2Lq__page .LandingPage-module__3Te2Lq__hero .LandingPage-module__3Te2Lq__kicker {
+  max-width: 42rem;
+  margin: 1.5rem auto;
+}
+
+.LandingPage-module__3Te2Lq__page .LandingPage-module__3Te2Lq__hero .LandingPage-module__3Te2Lq__heroLead {
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+.LandingPage-module__3Te2Lq__page .LandingPage-module__3Te2Lq__hero .LandingPage-module__3Te2Lq__tradeTicker {
+  margin: 1.5rem auto 2.5rem;
+}
+
+.LandingPage-module__3Te2Lq__page .LandingPage-module__3Te2Lq__hero .LandingPage-module__3Te2Lq__primaryButton, .LandingPage-module__3Te2Lq__page .LandingPage-module__3Te2Lq__hero .LandingPage-module__3Te2Lq__secondaryButton {
+  line-height: 1.75rem;
+}
+
+.LandingPage-module__3Te2Lq__page .LandingPage-module__3Te2Lq__hero {
+  padding-top: 6.25rem;
+  padding-bottom: 5.875rem;
+}
+
+.LandingPage-module__3Te2Lq__page .LandingPage-module__3Te2Lq__heroInner {
+  width: min(56rem, 100%);
+}
+
+@media (min-width: 761px) {
+  .LandingPage-module__3Te2Lq__valueCard {
+    height: 18.125rem;
+    min-height: 0;
+  }
+}
+
+.LandingPage-module__3Te2Lq__problemImage {
+  box-shadow: none;
+  background: none;
+  border: 0;
+  overflow: visible;
+  transform: none;
+}
+
+.LandingPage-module__3Te2Lq__problemAccentRust, .LandingPage-module__3Te2Lq__problemAccentPaper {
+  pointer-events: none;
+  border-radius: 1.5rem;
+  position: absolute;
+  inset: -1rem;
+}
+
+.LandingPage-module__3Te2Lq__problemAccentRust {
+  background: #c44b2b1a;
+}
+
+.LandingPage-module__3Te2Lq__problemAccentPaper {
+  background: var(--paper);
+  border: 1px solid #2b34411a;
+  inset: -.5rem;
+}
+
+.LandingPage-module__3Te2Lq__problemPhoto {
+  z-index: 1;
+  border: 4px solid #fff;
+  border-radius: 1rem;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px #2b344140;
+}
+
+.LandingPage-module__3Te2Lq__problemPhoto img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.LandingPage-module__3Te2Lq__promise > .LandingPage-module__3Te2Lq__blueprint, .LandingPage-module__3Te2Lq__how > .LandingPage-module__3Te2Lq__blueprint, .LandingPage-module__3Te2Lq__pricing > .LandingPage-module__3Te2Lq__blueprint {
+  opacity: 0;
+  animation: 2s ease-out forwards LandingPage-module__3Te2Lq__blueprintReveal;
+}
+
+.LandingPage-module__3Te2Lq__finalCta > .LandingPage-module__3Te2Lq__pegboard {
+  opacity: 0;
+  animation: 1.5s ease-out forwards LandingPage-module__3Te2Lq__pegboardReveal;
+}
+
+.LandingPage-module__3Te2Lq__waitlist > .LandingPage-module__3Te2Lq__pegboard {
+  opacity: 0;
+  animation: 2s ease-out forwards LandingPage-module__3Te2Lq__waitlistPegboardReveal;
+}
+
+@keyframes LandingPage-module__3Te2Lq__pegboardReveal {
+  to {
+    opacity: .15;
+  }
+}
+
+@keyframes LandingPage-module__3Te2Lq__waitlistPegboardReveal {
+  to {
+    opacity: .05;
+  }
+}
+
+.LandingPage-module__3Te2Lq__pricing {
+  padding-block: 7rem;
+}
+
+.LandingPage-module__3Te2Lq__page .LandingPage-module__3Te2Lq__pricingLead {
+  text-align: center;
+  max-width: 42rem;
+  margin: 1.5rem auto 4rem;
+}
+
+.LandingPage-module__3Te2Lq__promise, .LandingPage-module__3Te2Lq__how {
+  padding-block: 6rem;
+}
+
+.LandingPage-module__3Te2Lq__finalCta {
+  padding-block: 7rem;
+}
+
+.LandingPage-module__3Te2Lq__waitlist {
+  padding-block: 6rem;
 }
 
 /*# sourceMappingURL=apps_marketing_src_components_LandingPage_module_0zduiwu.css.map*/

@@ -177,6 +177,7 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 __turbopack_context__.v({
   "badge": "LandingPage-module__3Te2Lq__badge",
   "blueprint": "LandingPage-module__3Te2Lq__blueprint",
+  "blueprintReveal": "LandingPage-module__3Te2Lq__blueprintReveal",
   "checkbox": "LandingPage-module__3Te2Lq__checkbox",
   "chevronOpen": "LandingPage-module__3Te2Lq__chevronOpen",
   "content": "LandingPage-module__3Te2Lq__content",
@@ -194,6 +195,9 @@ __turbopack_context__.v({
   "header": "LandingPage-module__3Te2Lq__header",
   "hero": "LandingPage-module__3Te2Lq__hero",
   "heroActions": "LandingPage-module__3Te2Lq__heroActions",
+  "heroGlow": "LandingPage-module__3Te2Lq__heroGlow",
+  "heroGlowInk": "LandingPage-module__3Te2Lq__heroGlowInk",
+  "heroGlowRust": "LandingPage-module__3Te2Lq__heroGlowRust",
   "heroInner": "LandingPage-module__3Te2Lq__heroInner",
   "heroLead": "LandingPage-module__3Te2Lq__heroLead",
   "how": "LandingPage-module__3Te2Lq__how",
@@ -207,6 +211,7 @@ __turbopack_context__.v({
   "notch": "LandingPage-module__3Te2Lq__notch",
   "page": "LandingPage-module__3Te2Lq__page",
   "pegboard": "LandingPage-module__3Te2Lq__pegboard",
+  "pegboardReveal": "LandingPage-module__3Te2Lq__pegboardReveal",
   "phone": "LandingPage-module__3Te2Lq__phone",
   "phoneBody": "LandingPage-module__3Te2Lq__phoneBody",
   "phoneEyebrow": "LandingPage-module__3Te2Lq__phoneEyebrow",
@@ -219,7 +224,10 @@ __turbopack_context__.v({
   "pricingLead": "LandingPage-module__3Te2Lq__pricingLead",
   "primaryButton": "LandingPage-module__3Te2Lq__primaryButton",
   "problem": "LandingPage-module__3Te2Lq__problem",
+  "problemAccentPaper": "LandingPage-module__3Te2Lq__problemAccentPaper",
+  "problemAccentRust": "LandingPage-module__3Te2Lq__problemAccentRust",
   "problemImage": "LandingPage-module__3Te2Lq__problemImage",
+  "problemPhoto": "LandingPage-module__3Te2Lq__problemPhoto",
   "profit": "LandingPage-module__3Te2Lq__profit",
   "promise": "LandingPage-module__3Te2Lq__promise",
   "secondaryButton": "LandingPage-module__3Te2Lq__secondaryButton",
@@ -239,8 +247,10 @@ __turbopack_context__.v({
   "validation": "LandingPage-module__3Te2Lq__validation",
   "valueCard": "LandingPage-module__3Te2Lq__valueCard",
   "valueGrid": "LandingPage-module__3Te2Lq__valueGrid",
+  "valueIcon": "LandingPage-module__3Te2Lq__valueIcon",
   "waitlist": "LandingPage-module__3Te2Lq__waitlist",
   "waitlistGrid": "LandingPage-module__3Te2Lq__waitlistGrid",
+  "waitlistPegboardReveal": "LandingPage-module__3Te2Lq__waitlistPegboardReveal",
   "whiteButton": "LandingPage-module__3Te2Lq__whiteButton",
   "wordmark": "LandingPage-module__3Te2Lq__wordmark",
 });
@@ -253,7 +263,6 @@ __turbopack_context__.s([
     ()=>LandingPage
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/image.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$components$2f$AnimatePresence$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/framer-motion/dist/es/components/AnimatePresence/index.mjs [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/framer-motion/dist/es/render/components/motion/proxy.mjs [app-client] (ecmascript)");
@@ -272,7 +281,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$
 ;
 var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.signature(), _s2 = __turbopack_context__.k.signature();
 "use client";
-;
 ;
 ;
 ;
@@ -299,20 +307,45 @@ const navItems = [
 const reveal = {
     hidden: {
         opacity: 0,
-        y: 26
+        y: 40
     },
     visible: {
         opacity: 1,
-        y: 0
+        y: 0,
+        transition: {
+            duration: 0.8,
+            ease: [
+                0.22,
+                1,
+                0.36,
+                1
+            ]
+        }
     }
 };
 const stagger = {
-    hidden: {},
+    hidden: {
+        opacity: 0
+    },
     visible: {
+        opacity: 1,
         transition: {
-            staggerChildren: 0.1
+            staggerChildren: 0.15,
+            delayChildren: 0.1
         }
     }
+};
+const pulse = {
+    scale: [
+        1,
+        1.03,
+        1
+    ],
+    boxShadow: [
+        "0px 4px 15px rgba(196, 75, 43, 0.2)",
+        "0px 8px 30px rgba(196, 75, 43, 0.4)",
+        "0px 4px 15px rgba(196, 75, 43, 0.2)"
+    ]
 };
 function scrollToSection(id) {
     document.getElementById(id)?.scrollIntoView({
@@ -326,7 +359,7 @@ function Blueprint({ variant = "grid" }) {
         className: variant === "grid" ? __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].blueprint : __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].pegboard
     }, void 0, false, {
         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-        lineNumber: 25,
+        lineNumber: 31,
         columnNumber: 10
     }, this);
 }
@@ -342,7 +375,7 @@ function NavLink({ id, children, onNavigate }) {
         children: children
     }, void 0, false, {
         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-        lineNumber: 29,
+        lineNumber: 35,
         columnNumber: 10
     }, this);
 }
@@ -383,7 +416,7 @@ function MultiSelect({ label, name, options, value, onChange }) {
                 value: value.join(",")
             }, void 0, false, {
                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                lineNumber: 46,
+                lineNumber: 52,
                 columnNumber: 5
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -399,7 +432,7 @@ function MultiSelect({ label, name, options, value, onChange }) {
                         children: display
                     }, void 0, false, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 48,
+                        lineNumber: 54,
                         columnNumber: 7
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$down$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronDown$3e$__["ChevronDown"], {
@@ -408,13 +441,13 @@ function MultiSelect({ label, name, options, value, onChange }) {
                         className: open ? __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].chevronOpen : undefined
                     }, void 0, false, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 48,
+                        lineNumber: 54,
                         columnNumber: 87
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                lineNumber: 47,
+                lineNumber: 53,
                 columnNumber: 5
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$components$2f$AnimatePresence$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AnimatePresence"], {
@@ -447,7 +480,7 @@ function MultiSelect({ label, name, options, value, onChange }) {
                                     onChange: ()=>toggle(option.value)
                                 }, void 0, false, {
                                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                    lineNumber: 53,
+                                    lineNumber: 59,
                                     columnNumber: 11
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -456,41 +489,41 @@ function MultiSelect({ label, name, options, value, onChange }) {
                                         size: 14
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 54,
+                                        lineNumber: 60,
                                         columnNumber: 78
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                    lineNumber: 54,
+                                    lineNumber: 60,
                                     columnNumber: 11
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                     children: option.label
                                 }, void 0, false, {
                                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                    lineNumber: 54,
+                                    lineNumber: 60,
                                     columnNumber: 105
                                 }, this)
                             ]
                         }, option.value, true, {
                             fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                            lineNumber: 52,
+                            lineNumber: 58,
                             columnNumber: 34
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                    lineNumber: 51,
+                    lineNumber: 57,
                     columnNumber: 16
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                lineNumber: 50,
+                lineNumber: 56,
                 columnNumber: 5
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-        lineNumber: 45,
+        lineNumber: 51,
         columnNumber: 10
     }, this);
 }
@@ -501,61 +534,84 @@ _s(MultiSelect, "yQaE4ebR3I264z2//QEwK7P1Reo=", false, function() {
 });
 _c2 = MultiSelect;
 function ProductCard({ step, title, children, image, imageAlt }) {
-    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("article", {
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].article, {
         className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].stepRow,
+        variants: reveal,
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].stepCopy,
                 children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].span, {
                         className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].stepNumber,
+                        initial: {
+                            scale: 0
+                        },
+                        whileInView: {
+                            scale: 1
+                        },
+                        viewport: {
+                            once: true
+                        },
+                        transition: {
+                            delay: 0.3,
+                            type: "spring",
+                            stiffness: 200
+                        },
                         children: step
                     }, void 0, false, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 63,
+                        lineNumber: 69,
                         columnNumber: 38
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                         children: title
                     }, void 0, false, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 63,
-                        columnNumber: 87
+                        lineNumber: 69,
+                        columnNumber: 237
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                         children: children
                     }, void 0, false, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 63,
-                        columnNumber: 103
+                        lineNumber: 69,
+                        columnNumber: 253
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                lineNumber: 63,
+                lineNumber: 69,
                 columnNumber: 5
             }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
                 className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].stepImageFrame,
-                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                whileHover: {
+                    scale: 1.05,
+                    rotateY: step % 2 ? -5 : 5,
+                    rotateX: 5
+                },
+                transition: {
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 20
+                },
+                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
                     src: image,
-                    alt: imageAlt,
-                    fill: true,
-                    sizes: "260px"
+                    alt: imageAlt
                 }, void 0, false, {
                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                    lineNumber: 64,
-                    columnNumber: 44
+                    lineNumber: 70,
+                    columnNumber: 181
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                lineNumber: 64,
+                lineNumber: 70,
                 columnNumber: 5
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-        lineNumber: 62,
+        lineNumber: 68,
         columnNumber: 10
     }, this);
 }
@@ -601,13 +657,13 @@ function LandingPage() {
                                         children: "Beta"
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 81,
+                                        lineNumber: 87,
                                         columnNumber: 203
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 81,
+                                lineNumber: 87,
                                 columnNumber: 40
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -619,7 +675,7 @@ function LandingPage() {
                                             children: label
                                         }, id, false, {
                                             fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                            lineNumber: 82,
+                                            lineNumber: 88,
                                             columnNumber: 104
                                         }, this)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(NavLink, {
@@ -629,18 +685,18 @@ function LandingPage() {
                                             children: "Join waitlist"
                                         }, void 0, false, {
                                             fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                            lineNumber: 82,
+                                            lineNumber: 88,
                                             columnNumber: 172
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 82,
+                                        lineNumber: 88,
                                         columnNumber: 149
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 82,
+                                lineNumber: 88,
                                 columnNumber: 9
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -650,22 +706,22 @@ function LandingPage() {
                                 onClick: ()=>setMenuOpen(!menuOpen),
                                 children: menuOpen ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {}, void 0, false, {
                                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                    lineNumber: 83,
+                                    lineNumber: 89,
                                     columnNumber: 174
                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$menu$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Menu$3e$__["Menu"], {}, void 0, false, {
                                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                    lineNumber: 83,
+                                    lineNumber: 89,
                                     columnNumber: 182
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 83,
+                                lineNumber: 89,
                                 columnNumber: 9
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 81,
+                        lineNumber: 87,
                         columnNumber: 7
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$components$2f$AnimatePresence$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AnimatePresence"], {
@@ -691,7 +747,7 @@ function LandingPage() {
                                         children: label
                                     }, id, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 86,
+                                        lineNumber: 92,
                                         columnNumber: 40
                                     }, this)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(NavLink, {
@@ -702,29 +758,29 @@ function LandingPage() {
                                         children: "Join waitlist"
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 86,
+                                        lineNumber: 92,
                                         columnNumber: 184
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                    lineNumber: 86,
+                                    lineNumber: 92,
                                     columnNumber: 123
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                            lineNumber: 85,
+                            lineNumber: 91,
                             columnNumber: 37
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 85,
+                        lineNumber: 91,
                         columnNumber: 7
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                lineNumber: 80,
+                lineNumber: 86,
                 columnNumber: 5
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -735,17 +791,74 @@ function LandingPage() {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Blueprint, {}, void 0, false, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 91,
+                                lineNumber: 97,
                                 columnNumber: 40
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                                "aria-hidden": true,
+                                className: `${__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].heroGlow} ${__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].heroGlowRust}`,
+                                animate: {
+                                    x: [
+                                        -20,
+                                        20,
+                                        -20
+                                    ],
+                                    y: [
+                                        -10,
+                                        10,
+                                        -10
+                                    ],
+                                    rotate: [
+                                        0,
+                                        5,
+                                        0
+                                    ]
+                                },
+                                transition: {
+                                    duration: 10,
+                                    repeat: Infinity,
+                                    ease: "easeInOut"
+                                }
+                            }, void 0, false, {
+                                fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                lineNumber: 98,
+                                columnNumber: 9
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                                "aria-hidden": true,
+                                className: `${__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].heroGlow} ${__TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].heroGlowInk}`,
+                                animate: {
+                                    x: [
+                                        20,
+                                        -20,
+                                        20
+                                    ],
+                                    y: [
+                                        10,
+                                        -10,
+                                        10
+                                    ],
+                                    rotate: [
+                                        0,
+                                        -5,
+                                        0
+                                    ]
+                                },
+                                transition: {
+                                    duration: 12,
+                                    repeat: Infinity,
+                                    ease: "easeInOut"
+                                }
+                            }, void 0, false, {
+                                fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                lineNumber: 99,
+                                columnNumber: 9
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
                                 className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].heroInner,
                                 initial: initial,
                                 animate: animate,
                                 variants: stagger,
-                                transition: {
-                                    duration: 0.7
-                                },
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].span, {
                                         variants: reveal,
@@ -753,7 +866,7 @@ function LandingPage() {
                                         children: "Beta"
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 92,
+                                        lineNumber: 101,
                                         columnNumber: 9
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].h1, {
@@ -761,7 +874,7 @@ function LandingPage() {
                                         children: "Free job & profit tracker"
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 92,
+                                        lineNumber: 101,
                                         columnNumber: 83
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].p, {
@@ -770,7 +883,7 @@ function LandingPage() {
                                         children: "Built for independent tradespeople. Designed for the field."
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 93,
+                                        lineNumber: 102,
                                         columnNumber: 9
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].p, {
@@ -779,16 +892,49 @@ function LandingPage() {
                                         children: "Know what you actually made on every job to price smarter."
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 94,
+                                        lineNumber: 103,
                                         columnNumber: 9
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].p, {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
                                         variants: reveal,
                                         className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].tradeTicker,
-                                        children: "Plumbing · Electrical · HVAC · Handyman · Carpentry · Contractor · Painting · Roofing · Flooring · Drywall · Landscaping · Appliances · Auto Repair"
+                                        "aria-label": "Trades supported by FieldSolo",
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                                            animate: {
+                                                x: [
+                                                    "0%",
+                                                    "-50%"
+                                                ]
+                                            },
+                                            transition: {
+                                                repeat: Infinity,
+                                                ease: "linear",
+                                                duration: 30
+                                            },
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    children: "Plumbing · Electrical · HVAC · Handyman · Carpentry · Contractor · Painting · Roofing · Flooring · Drywall · Landscaping · Appliances · Auto Repair · "
+                                                }, void 0, false, {
+                                                    fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                                    lineNumber: 104,
+                                                    columnNumber: 221
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    children: "Plumbing · Electrical · HVAC · Handyman · Carpentry · Contractor · Painting · Roofing · Flooring · Drywall · Landscaping · Appliances · Auto Repair · "
+                                                }, void 0, false, {
+                                                    fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                                    lineNumber: 104,
+                                                    columnNumber: 388
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                            lineNumber: 104,
+                                            columnNumber: 113
+                                        }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 95,
+                                        lineNumber: 104,
                                         columnNumber: 9
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -797,61 +943,81 @@ function LandingPage() {
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(NavLink, {
                                                 id: "waitlist",
-                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].span, {
                                                     className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].primaryButton,
+                                                    animate: reducedMotion ? undefined : pulse,
+                                                    transition: {
+                                                        duration: 3,
+                                                        repeat: Infinity,
+                                                        ease: "easeInOut"
+                                                    },
                                                     children: [
                                                         "Join the waitlist ",
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$arrow$2d$right$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ArrowRight$3e$__["ArrowRight"], {
                                                             size: 19
                                                         }, void 0, false, {
                                                             fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                            lineNumber: 96,
-                                                            columnNumber: 150
+                                                            lineNumber: 105,
+                                                            columnNumber: 267
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                    lineNumber: 96,
+                                                    lineNumber: 105,
                                                     columnNumber: 93
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                lineNumber: 96,
+                                                lineNumber: 105,
                                                 columnNumber: 70
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(NavLink, {
                                                 id: "how-it-works",
-                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].span, {
                                                     className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].secondaryButton,
+                                                    whileHover: {
+                                                        scale: 1.05,
+                                                        backgroundColor: "#faf6f0"
+                                                    },
+                                                    whileTap: {
+                                                        scale: 0.95
+                                                    },
                                                     children: "See how it works"
                                                 }, void 0, false, {
                                                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                    lineNumber: 96,
-                                                    columnNumber: 218
+                                                    lineNumber: 105,
+                                                    columnNumber: 342
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                lineNumber: 96,
-                                                columnNumber: 191
+                                                lineNumber: 105,
+                                                columnNumber: 315
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 96,
+                                        lineNumber: 105,
                                         columnNumber: 9
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 91,
-                                columnNumber: 53
+                                lineNumber: 100,
+                                columnNumber: 9
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
                                 className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].valueGrid,
+                                initial: "hidden",
+                                whileInView: "visible",
+                                viewport: {
+                                    once: true,
+                                    amount: 0.2
+                                },
+                                variants: stagger,
                                 children: [
                                     [
                                         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$layout$2d$dashboard$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LayoutDashboard$3e$__["LayoutDashboard"],
-                                        "Log jobs",
+                                        "Log Jobs",
                                         "Mobile-optimized UX to log jobs, time, materials, notes, and payments."
                                     ],
                                     [
@@ -864,122 +1030,249 @@ function LandingPage() {
                                         "Price smarter",
                                         "Use profit insights to identify bad jobs and improve your margins over time."
                                     ]
-                                ].map(([Icon, title, copy])=>{
+                                ].map(([Icon, title, copy], index)=>{
                                     const CardIcon = Icon;
-                                    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("article", {
+                                    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].article, {
+                                        variants: reveal,
+                                        whileHover: {
+                                            y: -10,
+                                            boxShadow: "0 20px 25px -5px rgba(43, 52, 65, 0.1), 0 10px 10px -5px rgba(43, 52, 65, 0.04)",
+                                            borderColor: "rgba(196, 75, 43, 0.2)"
+                                        },
+                                        transition: {
+                                            duration: 0.3
+                                        },
                                         className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].valueCard,
                                         children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CardIcon, {}, void 0, false, {
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].span, {
+                                                className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].valueIcon,
+                                                animate: reducedMotion ? undefined : {
+                                                    y: index % 2 === 0 ? [
+                                                        0,
+                                                        -5,
+                                                        0
+                                                    ] : [
+                                                        0,
+                                                        5,
+                                                        0
+                                                    ]
+                                                },
+                                                transition: {
+                                                    duration: 4,
+                                                    repeat: Infinity,
+                                                    ease: "easeInOut",
+                                                    delay: index * 0.5
+                                                },
+                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CardIcon, {}, void 0, false, {
+                                                    fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                                    lineNumber: 107,
+                                                    columnNumber: 1035
+                                                }, this)
+                                            }, void 0, false, {
                                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                lineNumber: 98,
-                                                columnNumber: 497
+                                                lineNumber: 107,
+                                                columnNumber: 821
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                                                 children: title
                                             }, void 0, false, {
                                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                lineNumber: 98,
-                                                columnNumber: 509
+                                                lineNumber: 107,
+                                                columnNumber: 1061
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                 children: copy
                                             }, void 0, false, {
                                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                lineNumber: 98,
-                                                columnNumber: 535
+                                                lineNumber: 107,
+                                                columnNumber: 1087
                                             }, this)
                                         ]
                                     }, String(title), true, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 98,
-                                        columnNumber: 439
+                                        lineNumber: 107,
+                                        columnNumber: 550
                                     }, this);
                                 })
                             }, void 0, false, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 98,
+                                lineNumber: 107,
                                 columnNumber: 7
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 91,
+                        lineNumber: 97,
                         columnNumber: 7
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
                         className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].problem,
                         children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                                initial: "hidden",
+                                whileInView: "visible",
+                                viewport: {
+                                    once: true,
+                                    amount: .3
+                                },
+                                variants: stagger,
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].h2, {
+                                        variants: reveal,
                                         children: "Busy does not mean profitable."
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 101,
-                                        columnNumber: 48
+                                        lineNumber: 110,
+                                        columnNumber: 151
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                        className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].sectionLead,
-                                        children: "FieldSolo helps you work smarter, not harder:"
-                                    }, void 0, false, {
-                                        fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 101,
-                                        columnNumber: 87
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                                        variants: reveal,
                                         children: [
-                                            "Know your net",
-                                            "Track expenses",
-                                            "Say no to unprofitable jobs",
-                                            "Price smarter",
-                                            "Grow your margins",
-                                            "Get paid faster"
-                                        ].map((item)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                                children: [
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$check$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CheckCircle2$3e$__["CheckCircle2"], {}, void 0, false, {
-                                                        fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                        lineNumber: 101,
-                                                        columnNumber: 328
-                                                    }, this),
-                                                    item
-                                                ]
-                                            }, item, true, {
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].sectionLead,
+                                                children: "FieldSolo helps you work smarter, not harder:"
+                                            }, void 0, false, {
                                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                lineNumber: 101,
-                                                columnNumber: 313
-                                            }, this))
-                                    }, void 0, false, {
+                                                lineNumber: 110,
+                                                columnNumber: 252
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
+                                                children: [
+                                                    "Know your net",
+                                                    "Track expenses",
+                                                    "Say no to unprofitable jobs",
+                                                    "Price smarter",
+                                                    "Grow your margins",
+                                                    "Get paid faster"
+                                                ].map((item)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$check$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CheckCircle2$3e$__["CheckCircle2"], {}, void 0, false, {
+                                                                fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                                                lineNumber: 110,
+                                                                columnNumber: 493
+                                                            }, this),
+                                                            item
+                                                        ]
+                                                    }, item, true, {
+                                                        fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                                        lineNumber: 110,
+                                                        columnNumber: 478
+                                                    }, this))
+                                            }, void 0, false, {
+                                                fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                                lineNumber: 110,
+                                                columnNumber: 335
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 101,
-                                        columnNumber: 170
+                                        lineNumber: 110,
+                                        columnNumber: 222
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 101,
+                                lineNumber: 110,
                                 columnNumber: 43
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                                initial: {
+                                    opacity: 0,
+                                    x: 40
+                                },
+                                whileInView: {
+                                    opacity: 1,
+                                    x: 0
+                                },
+                                viewport: {
+                                    once: true,
+                                    amount: .3
+                                },
+                                transition: {
+                                    duration: .8,
+                                    ease: [
+                                        0.22,
+                                        1,
+                                        .36,
+                                        1
+                                    ]
+                                },
                                 className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].problemImage,
-                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                                    src: "/images/source-0.png",
-                                    alt: "Tradesperson working on an electrical installation",
-                                    fill: true,
-                                    sizes: "(max-width: 760px) 100vw, 530px"
-                                }, void 0, false, {
-                                    fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                    lineNumber: 101,
-                                    columnNumber: 405
-                                }, this)
-                            }, void 0, false, {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].span, {
+                                        "aria-hidden": true,
+                                        className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].problemAccentRust,
+                                        animate: {
+                                            rotate: [
+                                                3,
+                                                5,
+                                                3
+                                            ]
+                                        },
+                                        transition: {
+                                            duration: 6,
+                                            repeat: Infinity,
+                                            ease: "easeInOut"
+                                        }
+                                    }, void 0, false, {
+                                        fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                        lineNumber: 110,
+                                        columnNumber: 757
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].span, {
+                                        "aria-hidden": true,
+                                        className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].problemAccentPaper,
+                                        animate: {
+                                            rotate: [
+                                                -2,
+                                                -4,
+                                                -2
+                                            ]
+                                        },
+                                        transition: {
+                                            duration: 7,
+                                            repeat: Infinity,
+                                            ease: "easeInOut"
+                                        }
+                                    }, void 0, false, {
+                                        fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                        lineNumber: 110,
+                                        columnNumber: 919
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                                        whileHover: {
+                                            scale: 1.02,
+                                            rotate: -1
+                                        },
+                                        transition: {
+                                            type: "spring",
+                                            stiffness: 300,
+                                            damping: 20
+                                        },
+                                        className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].problemPhoto,
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                                            src: "/images/source-0.png",
+                                            alt: "Tradesperson working on an electrical installation"
+                                        }, void 0, false, {
+                                            fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                            lineNumber: 110,
+                                            columnNumber: 1231
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                        lineNumber: 110,
+                                        columnNumber: 1085
+                                    }, this)
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 101,
-                                columnNumber: 368
+                                lineNumber: 110,
+                                columnNumber: 553
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 101,
+                        lineNumber: 110,
                         columnNumber: 7
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -987,49 +1280,60 @@ function LandingPage() {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Blueprint, {}, void 0, false, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 103,
+                                lineNumber: 112,
                                 columnNumber: 43
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                                initial: "hidden",
+                                whileInView: "visible",
+                                viewport: {
+                                    once: true,
+                                    amount: .4
+                                },
+                                variants: stagger,
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].h2, {
+                                        variants: reveal,
                                         children: "One place to understand every job"
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 103,
-                                        columnNumber: 61
+                                        lineNumber: 112,
+                                        columnNumber: 164
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].p, {
+                                        variants: reveal,
                                         children: "Your work comes from everywhere."
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 103,
-                                        columnNumber: 103
+                                        lineNumber: 112,
+                                        columnNumber: 238
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("small", {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].small, {
+                                        variants: reveal,
                                         children: "Referrals. Repeat customers. Angi. Thumbtack. Facebook groups. Property managers. Contractors. Calls. Texts. Another job app."
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 103,
-                                        columnNumber: 142
+                                        lineNumber: 112,
+                                        columnNumber: 309
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("blockquote", {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].blockquote, {
+                                        variants: reveal,
                                         children: "FieldSolo brings the job economics into one clear view, no matter where the work came from."
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 103,
-                                        columnNumber: 282
+                                        lineNumber: 112,
+                                        columnNumber: 481
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 103,
+                                lineNumber: 112,
                                 columnNumber: 56
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 103,
+                        lineNumber: 112,
                         columnNumber: 7
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -1038,21 +1342,41 @@ function LandingPage() {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Blueprint, {}, void 0, false, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 105,
+                                lineNumber: 114,
                                 columnNumber: 57
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].content,
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                                        children: "How it works"
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                                        initial: "hidden",
+                                        whileInView: "visible",
+                                        viewport: {
+                                            once: true,
+                                            amount: .3
+                                        },
+                                        variants: reveal,
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                            children: "How it works"
+                                        }, void 0, false, {
+                                            fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                            lineNumber: 114,
+                                            columnNumber: 209
+                                        }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 105,
+                                        lineNumber: 114,
                                         columnNumber: 102
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
                                         className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].steps,
+                                        initial: "hidden",
+                                        whileInView: "visible",
+                                        viewport: {
+                                            once: true,
+                                            amount: .1
+                                        },
+                                        variants: stagger,
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(ProductCard, {
                                                 step: 1,
@@ -1062,7 +1386,7 @@ function LandingPage() {
                                                 children: "Start a live session while you work or log the job later when the day slows down. Add the basics first. Fill in the rest when you have time."
                                             }, void 0, false, {
                                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                lineNumber: 106,
+                                                lineNumber: 115,
                                                 columnNumber: 9
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(ProductCard, {
@@ -1073,7 +1397,7 @@ function LandingPage() {
                                                 children: "Capture time, materials, notes, revenue, and payment status without the complicated paperwork."
                                             }, void 0, false, {
                                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                lineNumber: 107,
+                                                lineNumber: 116,
                                                 columnNumber: 9
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(ProductCard, {
@@ -1084,7 +1408,7 @@ function LandingPage() {
                                                 children: "Stay on top of unpaid jobs and incomplete records before they’re forgotten."
                                             }, void 0, false, {
                                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                lineNumber: 108,
+                                                lineNumber: 117,
                                                 columnNumber: 9
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(ProductCard, {
@@ -1095,7 +1419,7 @@ function LandingPage() {
                                                 children: "Review revenue, material costs, net profit, and net-per-hour for one job, or the whole month."
                                             }, void 0, false, {
                                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                lineNumber: 109,
+                                                lineNumber: 118,
                                                 columnNumber: 9
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(ProductCard, {
@@ -1106,25 +1430,25 @@ function LandingPage() {
                                                 children: "Search past jobs, see your best and worst jobs, and price smarter next time."
                                             }, void 0, false, {
                                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                lineNumber: 110,
+                                                lineNumber: 119,
                                                 columnNumber: 9
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 105,
-                                        columnNumber: 123
+                                        lineNumber: 114,
+                                        columnNumber: 243
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 105,
+                                lineNumber: 114,
                                 columnNumber: 70
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 105,
+                        lineNumber: 114,
                         columnNumber: 7
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -1133,15 +1457,35 @@ function LandingPage() {
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].content,
                             children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                                    children: "Why FieldSolo?"
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                                    initial: "hidden",
+                                    whileInView: "visible",
+                                    viewport: {
+                                        once: true,
+                                        amount: .3
+                                    },
+                                    variants: reveal,
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                        children: "Why FieldSolo?"
+                                    }, void 0, false, {
+                                        fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                        lineNumber: 122,
+                                        columnNumber: 197
+                                    }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                    lineNumber: 113,
+                                    lineNumber: 122,
                                     columnNumber: 90
                                 }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
                                     className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].featureGrid,
+                                    initial: "hidden",
+                                    whileInView: "visible",
+                                    viewport: {
+                                        once: true,
+                                        amount: .1
+                                    },
+                                    variants: stagger,
                                     children: [
                                         [
                                             "If you are too small for field service software",
@@ -1155,42 +1499,43 @@ function LandingPage() {
                                             "If you manage a team or small business",
                                             "FieldSolo is designed with solo tradespeople in mind, but sign up for our waitlist to stay in the loop for future offerings."
                                         ]
-                                    ].map(([title, body])=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("article", {
+                                    ].map(([title, body])=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].article, {
+                                            variants: reveal,
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                                                     children: title
                                                 }, void 0, false, {
                                                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                    lineNumber: 113,
-                                                    columnNumber: 833
+                                                    lineNumber: 122,
+                                                    columnNumber: 1081
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                     children: body
                                                 }, void 0, false, {
                                                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                    lineNumber: 113,
-                                                    columnNumber: 849
+                                                    lineNumber: 122,
+                                                    columnNumber: 1097
                                                 }, this)
                                             ]
                                         }, title, true, {
                                             fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                            lineNumber: 113,
-                                            columnNumber: 812
+                                            lineNumber: 122,
+                                            columnNumber: 1035
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                    lineNumber: 113,
-                                    columnNumber: 113
+                                    lineNumber: 122,
+                                    columnNumber: 233
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                            lineNumber: 113,
+                            lineNumber: 122,
                             columnNumber: 58
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 113,
+                        lineNumber: 122,
                         columnNumber: 7
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -1199,38 +1544,67 @@ function LandingPage() {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Blueprint, {}, void 0, false, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 115,
+                                lineNumber: 124,
                                 columnNumber: 56
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].content,
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                                        children: "Free! Seriously."
-                                    }, void 0, false, {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                                        initial: "hidden",
+                                        whileInView: "visible",
+                                        viewport: {
+                                            once: true,
+                                            amount: .3
+                                        },
+                                        variants: reveal,
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                                children: "Free! Seriously."
+                                            }, void 0, false, {
+                                                fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                                lineNumber: 124,
+                                                columnNumber: 208
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].pricingLead,
+                                                children: "FieldSolo is free because we want to replace your tracking spreadsheet and job notes. And we don’t believe you need expensive software for that."
+                                            }, void 0, false, {
+                                                fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                                lineNumber: 124,
+                                                columnNumber: 233
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 115,
+                                        lineNumber: 124,
                                         columnNumber: 101
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                        className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].pricingLead,
-                                        children: "FieldSolo is free because we want to replace your tracking spreadsheet and job notes. And we don’t believe you need expensive software for that."
-                                    }, void 0, false, {
-                                        fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 115,
-                                        columnNumber: 126
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].pricingGrid,
                                         children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("article", {
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].article, {
+                                                initial: {
+                                                    opacity: 0,
+                                                    x: -40
+                                                },
+                                                whileInView: {
+                                                    opacity: 1,
+                                                    x: 0
+                                                },
+                                                viewport: {
+                                                    once: true
+                                                },
+                                                transition: {
+                                                    duration: .8
+                                                },
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                                                         children: "Included in free"
                                                     }, void 0, false, {
                                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                        lineNumber: 115,
-                                                        columnNumber: 353
+                                                        lineNumber: 124,
+                                                        columnNumber: 604
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
                                                         children: [
@@ -1246,73 +1620,87 @@ function LandingPage() {
                                                                 children: [
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$check$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Check$3e$__["Check"], {}, void 0, false, {
                                                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                                        lineNumber: 115,
-                                                                        columnNumber: 586
+                                                                        lineNumber: 124,
+                                                                        columnNumber: 837
                                                                     }, this),
                                                                     item
                                                                 ]
                                                             }, item, true, {
                                                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                                lineNumber: 115,
-                                                                columnNumber: 571
+                                                                lineNumber: 124,
+                                                                columnNumber: 822
                                                             }, this))
                                                     }, void 0, false, {
                                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                        lineNumber: 115,
-                                                        columnNumber: 378
+                                                        lineNumber: 124,
+                                                        columnNumber: 629
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                lineNumber: 115,
-                                                columnNumber: 344
+                                                lineNumber: 124,
+                                                columnNumber: 464
                                             }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("article", {
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].article, {
                                                 className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].futureCard,
+                                                initial: {
+                                                    opacity: 0,
+                                                    x: 40
+                                                },
+                                                whileInView: {
+                                                    opacity: 1,
+                                                    x: 0
+                                                },
+                                                viewport: {
+                                                    once: true
+                                                },
+                                                transition: {
+                                                    duration: .8
+                                                },
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                                                         children: "How do we make money?"
                                                     }, void 0, false, {
                                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                        lineNumber: 115,
-                                                        columnNumber: 662
+                                                        lineNumber: 124,
+                                                        columnNumber: 1050
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                         children: "We don’t believe in charging for the simple stuff. We’re focusing first on building a great free platform for solo operators."
                                                     }, void 0, false, {
                                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                        lineNumber: 115,
-                                                        columnNumber: 692
+                                                        lineNumber: 124,
+                                                        columnNumber: 1080
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                         children: "Expect additional paid tiers in the future to support larger teams, automations, or features designed to run more parts of your business."
                                                     }, void 0, false, {
                                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                        lineNumber: 115,
-                                                        columnNumber: 824
+                                                        lineNumber: 124,
+                                                        columnNumber: 1212
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                lineNumber: 115,
-                                                columnNumber: 623
+                                                lineNumber: 124,
+                                                columnNumber: 881
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 115,
-                                        columnNumber: 308
+                                        lineNumber: 124,
+                                        columnNumber: 428
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 115,
+                                lineNumber: 124,
                                 columnNumber: 69
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 115,
+                        lineNumber: 124,
                         columnNumber: 7
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -1321,37 +1709,65 @@ function LandingPage() {
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].content,
                             children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].h2, {
+                                    initial: {
+                                        opacity: 0,
+                                        y: 20
+                                    },
+                                    whileInView: {
+                                        opacity: 1,
+                                        y: 0
+                                    },
+                                    viewport: {
+                                        once: true,
+                                        amount: .3
+                                    },
+                                    transition: {
+                                        duration: .8,
+                                        ease: [
+                                            0.22,
+                                            1,
+                                            .36,
+                                            1
+                                        ]
+                                    },
                                     children: "Frequently asked questions"
                                 }, void 0, false, {
                                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                    lineNumber: 117,
+                                    lineNumber: 126,
                                     columnNumber: 80
                                 }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                                    initial: "hidden",
+                                    whileInView: "visible",
+                                    viewport: {
+                                        once: true,
+                                        amount: .1
+                                    },
+                                    variants: stagger,
                                     children: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$lib$2f$marketing$2d$content$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["faqs"].map(([question, answer], index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(FaqItem, {
                                             question: question,
                                             answer: answer,
                                             open: index === 0
                                         }, question, false, {
                                             fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                            lineNumber: 117,
-                                            columnNumber: 161
+                                            lineNumber: 126,
+                                            columnNumber: 438
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                    lineNumber: 117,
-                                    columnNumber: 115
+                                    lineNumber: 126,
+                                    columnNumber: 289
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                            lineNumber: 117,
+                            lineNumber: 126,
                             columnNumber: 48
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 117,
+                        lineNumber: 126,
                         columnNumber: 7
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -1361,74 +1777,99 @@ function LandingPage() {
                                 variant: "dots"
                             }, void 0, false, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 119,
+                                lineNumber: 128,
                                 columnNumber: 44
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                                initial: "hidden",
+                                whileInView: "visible",
+                                viewport: {
+                                    once: true,
+                                    amount: .4
+                                },
+                                variants: stagger,
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].span, {
+                                        variants: reveal,
                                         className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].badge,
                                         children: "Beta available now"
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 119,
-                                        columnNumber: 77
+                                        lineNumber: 128,
+                                        columnNumber: 180
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].h2, {
+                                        variants: reveal,
                                         children: "Know which jobs were worth it"
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 119,
-                                        columnNumber: 133
+                                        lineNumber: 128,
+                                        columnNumber: 268
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].p, {
+                                        variants: reveal,
                                         children: "Log jobs. Track profit. Price smarter."
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 119,
-                                        columnNumber: 171
+                                        lineNumber: 128,
+                                        columnNumber: 338
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(NavLink, {
-                                        id: "waitlist",
-                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                            className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].whiteButton,
-                                            children: [
-                                                "Join the waitlist ",
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$arrow$2d$right$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ArrowRight$3e$__["ArrowRight"], {
-                                                    size: 19
-                                                }, void 0, false, {
-                                                    fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                    lineNumber: 119,
-                                                    columnNumber: 294
-                                                }, this)
-                                            ]
-                                        }, void 0, true, {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                                        variants: reveal,
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(NavLink, {
+                                            id: "waitlist",
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].span, {
+                                                className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].whiteButton,
+                                                whileHover: {
+                                                    scale: 1.05,
+                                                    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)"
+                                                },
+                                                whileTap: {
+                                                    scale: .95
+                                                },
+                                                children: [
+                                                    "Join the waitlist ",
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$arrow$2d$right$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ArrowRight$3e$__["ArrowRight"], {
+                                                        size: 19
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                                        lineNumber: 128,
+                                                        columnNumber: 635
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
+                                                lineNumber: 128,
+                                                columnNumber: 468
+                                            }, this)
+                                        }, void 0, false, {
                                             fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                            lineNumber: 119,
-                                            columnNumber: 239
+                                            lineNumber: 128,
+                                            columnNumber: 445
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 119,
-                                        columnNumber: 216
+                                        lineNumber: 128,
+                                        columnNumber: 415
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("small", {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].small, {
+                                        variants: reveal,
                                         children: "Free job & profit tracking for independent tradespeople."
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 119,
-                                        columnNumber: 335
+                                        lineNumber: 128,
+                                        columnNumber: 696
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 119,
+                                lineNumber: 128,
                                 columnNumber: 72
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 119,
+                        lineNumber: 128,
                         columnNumber: 7
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Waitlist, {
@@ -1443,13 +1884,13 @@ function LandingPage() {
                         onSubmit: submit
                     }, void 0, false, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 120,
+                        lineNumber: 129,
                         columnNumber: 7
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                lineNumber: 90,
+                lineNumber: 96,
                 columnNumber: 5
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
@@ -1461,20 +1902,20 @@ function LandingPage() {
                                 children: "FieldSolo"
                             }, void 0, false, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 122,
+                                lineNumber: 131,
                                 columnNumber: 44
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 children: "Free job tracking for tradespeople who work for themselves."
                             }, void 0, false, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 122,
+                                lineNumber: 131,
                                 columnNumber: 70
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 122,
+                        lineNumber: 131,
                         columnNumber: 39
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -1485,7 +1926,7 @@ function LandingPage() {
                                     children: label
                                 }, id, false, {
                                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                    lineNumber: 122,
+                                    lineNumber: 131,
                                     columnNumber: 209
                                 }, this)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(NavLink, {
@@ -1493,13 +1934,13 @@ function LandingPage() {
                                 children: "Waitlist"
                             }, void 0, false, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 122,
+                                lineNumber: 131,
                                 columnNumber: 254
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 122,
+                        lineNumber: 131,
                         columnNumber: 142
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("small", {
@@ -1510,19 +1951,19 @@ function LandingPage() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 122,
+                        lineNumber: 131,
                         columnNumber: 301
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                lineNumber: 122,
+                lineNumber: 131,
                 columnNumber: 5
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-        lineNumber: 79,
+        lineNumber: 85,
         columnNumber: 10
     }, this);
 }
@@ -1536,7 +1977,12 @@ function FaqItem({ question, answer, open }) {
     _s2();
     const [isOpen, setOpen] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(open);
     const id = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useId"])();
-    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("article", {
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].article, {
+        variants: reveal,
+        whileHover: {
+            scale: 1.01,
+            backgroundColor: "rgba(250, 246, 240, 0.8)"
+        },
         className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].faqItem,
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1548,22 +1994,22 @@ function FaqItem({ question, answer, open }) {
                         children: question
                     }, void 0, false, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 128,
-                        columnNumber: 129
+                        lineNumber: 137,
+                        columnNumber: 228
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                         className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].faqMark,
                         children: isOpen ? "−" : "+"
                     }, void 0, false, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 128,
-                        columnNumber: 152
+                        lineNumber: 137,
+                        columnNumber: 251
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                lineNumber: 128,
-                columnNumber: 46
+                lineNumber: 137,
+                columnNumber: 145
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 id: id,
@@ -1572,18 +2018,18 @@ function FaqItem({ question, answer, open }) {
                     children: answer
                 }, void 0, false, {
                     fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                    lineNumber: 128,
-                    columnNumber: 251
+                    lineNumber: 137,
+                    columnNumber: 350
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                lineNumber: 128,
-                columnNumber: 221
+                lineNumber: 137,
+                columnNumber: 320
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-        lineNumber: 128,
+        lineNumber: 137,
         columnNumber: 10
     }, this);
 }
@@ -1600,39 +2046,107 @@ function Waitlist({ submitted, setSubmitted, trades, setTrades, trackingTools, s
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Blueprint, {}, void 0, false, {
                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                lineNumber: 134,
+                lineNumber: 143,
                 columnNumber: 99
             }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                initial: {
+                    opacity: 0,
+                    scale: .8,
+                    y: 40
+                },
+                animate: {
+                    opacity: 1,
+                    scale: 1,
+                    y: 0
+                },
+                transition: {
+                    type: "spring",
+                    stiffness: 200,
+                    damping: 20
+                },
                 children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].span, {
                         className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].successIcon,
+                        initial: {
+                            scale: 0,
+                            rotate: -180
+                        },
+                        animate: {
+                            scale: 1,
+                            rotate: 0
+                        },
+                        transition: {
+                            delay: .2,
+                            type: "spring",
+                            stiffness: 200,
+                            damping: 15
+                        },
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$check$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Check$3e$__["Check"], {}, void 0, false, {
                             fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                            lineNumber: 134,
-                            columnNumber: 154
+                            lineNumber: 143,
+                            columnNumber: 456
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 134,
-                        columnNumber: 117
+                        lineNumber: 143,
+                        columnNumber: 269
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].h2, {
+                        initial: {
+                            opacity: 0,
+                            y: 20
+                        },
+                        animate: {
+                            opacity: 1,
+                            y: 0
+                        },
+                        transition: {
+                            delay: .4
+                        },
                         children: "You’re on the list!"
                     }, void 0, false, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 134,
-                        columnNumber: 170
+                        lineNumber: 143,
+                        columnNumber: 479
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].p, {
+                        initial: {
+                            opacity: 0,
+                            y: 20
+                        },
+                        animate: {
+                            opacity: 1,
+                            y: 0
+                        },
+                        transition: {
+                            delay: .5
+                        },
                         children: "Thanks for joining the FieldSolo waitlist. We’ll be in touch with early access and product updates."
                     }, void 0, false, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 134,
-                        columnNumber: 198
+                        lineNumber: 143,
+                        columnNumber: 611
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].button, {
                         className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].primaryButton,
+                        initial: {
+                            opacity: 0,
+                            y: 20
+                        },
+                        animate: {
+                            opacity: 1,
+                            y: 0
+                        },
+                        transition: {
+                            delay: .6
+                        },
+                        whileHover: {
+                            scale: 1.03
+                        },
+                        whileTap: {
+                            scale: .97
+                        },
                         onClick: ()=>{
                             setSubmitted(false);
                             window.scrollTo({
@@ -1643,19 +2157,19 @@ function Waitlist({ submitted, setSubmitted, trades, setTrades, trackingTools, s
                         children: "Back to top"
                     }, void 0, false, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 134,
-                        columnNumber: 304
+                        lineNumber: 143,
+                        columnNumber: 821
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                lineNumber: 134,
+                lineNumber: 143,
                 columnNumber: 112
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-        lineNumber: 134,
+        lineNumber: 143,
         columnNumber: 25
     }, this);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -1666,68 +2180,116 @@ function Waitlist({ submitted, setSubmitted, trades, setTrades, trackingTools, s
                 variant: "dots"
             }, void 0, false, {
                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                lineNumber: 135,
+                lineNumber: 144,
                 columnNumber: 61
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].waitlistGrid,
                 children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                        initial: "hidden",
+                        whileInView: "visible",
+                        viewport: {
+                            once: true,
+                            amount: .2
+                        },
+                        variants: stagger,
                         children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].span, {
+                                variants: reveal,
                                 className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].earlyBadge,
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("b", {
                                         children: "Beta"
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 135,
-                                        columnNumber: 167
+                                        lineNumber: 144,
+                                        columnNumber: 295
                                     }, this),
                                     " Early access"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 135,
-                                columnNumber: 131
+                                lineNumber: 144,
+                                columnNumber: 234
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].h2, {
+                                variants: reveal,
                                 children: "Join the FieldSolo waitlist"
                             }, void 0, false, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 135,
-                                columnNumber: 198
+                                lineNumber: 144,
+                                columnNumber: 333
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].p, {
+                                variants: reveal,
                                 children: "FieldSolo is still in beta, but is growing fast. If you’re interested in helping shape the future of FieldSolo with us, we’d love to have you."
                             }, void 0, false, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 135,
-                                columnNumber: 234
+                                lineNumber: 144,
+                                columnNumber: 401
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("aside", {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].aside, {
+                                variants: reveal,
+                                animate: {
+                                    y: [
+                                        -5,
+                                        5,
+                                        -5
+                                    ]
+                                },
+                                transition: {
+                                    duration: 6,
+                                    repeat: Infinity,
+                                    ease: "easeInOut"
+                                },
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$check$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Check$3e$__["Check"], {}, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 135,
-                                        columnNumber: 390
+                                        lineNumber: 144,
+                                        columnNumber: 709
                                     }, this),
                                     " Secure your spot for early access."
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 135,
-                                columnNumber: 383
+                                lineNumber: 144,
+                                columnNumber: 582
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 135,
+                        lineNumber: 144,
                         columnNumber: 126
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].form, {
                         className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].form,
                         onSubmit: onSubmit,
+                        initial: {
+                            opacity: 0,
+                            x: 40
+                        },
+                        whileInView: {
+                            opacity: 1,
+                            x: 0
+                        },
+                        viewport: {
+                            once: true,
+                            amount: .2
+                        },
+                        transition: {
+                            duration: .8,
+                            ease: [
+                                0.22,
+                                1,
+                                .36,
+                                1
+                            ],
+                            delay: .2
+                        },
+                        whileHover: {
+                            boxShadow: "0 25px 50px -12px rgba(43, 52, 65, 0.15)"
+                        },
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                 children: [
@@ -1739,13 +2301,13 @@ function Waitlist({ submitted, setSubmitted, trades, setTrades, trackingTools, s
                                         placeholder: "Enter your first name"
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 137,
+                                        lineNumber: 146,
                                         columnNumber: 24
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 137,
+                                lineNumber: 146,
                                 columnNumber: 7
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -1759,13 +2321,13 @@ function Waitlist({ submitted, setSubmitted, trades, setTrades, trackingTools, s
                                         placeholder: "Enter your email"
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 138,
+                                        lineNumber: 147,
                                         columnNumber: 27
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 138,
+                                lineNumber: 147,
                                 columnNumber: 7
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -1779,7 +2341,7 @@ function Waitlist({ submitted, setSubmitted, trades, setTrades, trackingTools, s
                                         onChange: setTrades
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 139,
+                                        lineNumber: 148,
                                         columnNumber: 20
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1787,13 +2349,13 @@ function Waitlist({ submitted, setSubmitted, trades, setTrades, trackingTools, s
                                         children: trades.length ? "" : "Choose at least one trade"
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 139,
+                                        lineNumber: 148,
                                         columnNumber: 130
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 139,
+                                lineNumber: 148,
                                 columnNumber: 7
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("fieldset", {
@@ -1802,10 +2364,17 @@ function Waitlist({ submitted, setSubmitted, trades, setTrades, trackingTools, s
                                         children: "Do you currently pay for field service software?"
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 140,
+                                        lineNumber: 149,
                                         columnNumber: 17
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].label, {
+                                        whileHover: {
+                                            scale: 1.02,
+                                            backgroundColor: "rgba(250, 246, 240, 1)"
+                                        },
+                                        whileTap: {
+                                            scale: .98
+                                        },
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                 name: "usesSoftware",
@@ -1814,17 +2383,24 @@ function Waitlist({ submitted, setSubmitted, trades, setTrades, trackingTools, s
                                                 required: true
                                             }, void 0, false, {
                                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                lineNumber: 140,
-                                                columnNumber: 89
+                                                lineNumber: 149,
+                                                columnNumber: 194
                                             }, this),
                                             " No"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 140,
+                                        lineNumber: 149,
                                         columnNumber: 82
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].label, {
+                                        whileHover: {
+                                            scale: 1.02,
+                                            backgroundColor: "rgba(250, 246, 240, 1)"
+                                        },
+                                        whileTap: {
+                                            scale: .98
+                                        },
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                 name: "usesSoftware",
@@ -1833,20 +2409,20 @@ function Waitlist({ submitted, setSubmitted, trades, setTrades, trackingTools, s
                                                 required: true
                                             }, void 0, false, {
                                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                                lineNumber: 140,
-                                                columnNumber: 169
+                                                lineNumber: 149,
+                                                columnNumber: 386
                                             }, this),
                                             " Yes"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 140,
-                                        columnNumber: 162
+                                        lineNumber: 149,
+                                        columnNumber: 274
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 140,
+                                lineNumber: 149,
                                 columnNumber: 7
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -1860,7 +2436,7 @@ function Waitlist({ submitted, setSubmitted, trades, setTrades, trackingTools, s
                                         onChange: setTrackingTools
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 141,
+                                        lineNumber: 150,
                                         columnNumber: 51
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1868,13 +2444,13 @@ function Waitlist({ submitted, setSubmitted, trades, setTrades, trackingTools, s
                                         children: trackingTools.length ? "" : "Choose at least one option"
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 141,
+                                        lineNumber: 150,
                                         columnNumber: 192
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 141,
+                                lineNumber: 150,
                                 columnNumber: 7
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -1888,7 +2464,7 @@ function Waitlist({ submitted, setSubmitted, trades, setTrades, trackingTools, s
                                         onChange: setJobSources
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 142,
+                                        lineNumber: 151,
                                         columnNumber: 52
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1896,56 +2472,63 @@ function Waitlist({ submitted, setSubmitted, trades, setTrades, trackingTools, s
                                         children: jobSources.length ? "" : "Choose at least one option"
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 142,
+                                        lineNumber: 151,
                                         columnNumber: 178
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 142,
+                                lineNumber: 151,
                                 columnNumber: 7
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].button, {
                                 className: __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$marketing$2f$src$2f$components$2f$LandingPage$2e$module$2e$css__$5b$app$2d$client$5d$__$28$css__module$29$__["default"].primaryButton,
                                 type: "submit",
+                                whileHover: {
+                                    scale: 1.03,
+                                    boxShadow: "0 10px 15px -3px rgba(196, 75, 43, 0.3)"
+                                },
+                                whileTap: {
+                                    scale: .97
+                                },
                                 children: [
                                     "Join the waitlist ",
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$arrow$2d$right$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ArrowRight$3e$__["ArrowRight"], {
                                         size: 19
                                     }, void 0, false, {
                                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                        lineNumber: 143,
-                                        columnNumber: 80
+                                        lineNumber: 152,
+                                        columnNumber: 196
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 143,
+                                lineNumber: 152,
                                 columnNumber: 7
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("small", {
                                 children: "No spam. Just early access, product updates, and opportunities to share your feedback."
                             }, void 0, false, {
                                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                                lineNumber: 143,
-                                columnNumber: 113
+                                lineNumber: 152,
+                                columnNumber: 236
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                        lineNumber: 136,
+                        lineNumber: 145,
                         columnNumber: 5
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-                lineNumber: 135,
+                lineNumber: 144,
                 columnNumber: 89
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/apps/marketing/src/components/LandingPage.tsx",
-        lineNumber: 135,
+        lineNumber: 144,
         columnNumber: 10
     }, this);
 }

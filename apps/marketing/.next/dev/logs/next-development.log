@@ -18,3 +18,37 @@
 {"timestamp":"00:10:46.282","source":"Browser","level":"WARN","message":"Image with src \"/images/source-0.png\" has \"fill\" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height."}
 {"timestamp":"00:10:46.293","source":"Server","level":"WARN","message":"[browser] \"Image with src \\\"/images/source-0.png\\\" has \\\"fill\\\" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.\""}
 {"timestamp":"00:10:46.293","source":"Browser","level":"WARN","message":"Image with src \"/images/source-0.png\" has \"fill\" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height."}
+{"timestamp":"00:20:42.119","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:20:42.164","source":"Browser","level":"WARN","message":"Image with src \"/images/source-0.png\" has \"fill\" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height."}
+{"timestamp":"00:20:42.204","source":"Server","level":"WARN","message":"[browser] \"Image with src \\\"/images/source-0.png\\\" has \\\"fill\\\" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.\""}
+{"timestamp":"00:20:42.204","source":"Browser","level":"WARN","message":"Image with src \"/images/source-0.png\" has \"fill\" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height."}
+{"timestamp":"00:23:24.041","source":"Browser","level":"WARN","message":"Image with src \"/images/source-0.png\" has \"fill\" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height."}
+{"timestamp":"00:23:24.247","source":"Server","level":"WARN","message":"[browser] \"Image with src \\\"/images/source-0.png\\\" has \\\"fill\\\" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.\""}
+{"timestamp":"00:23:24.248","source":"Browser","level":"WARN","message":"Image with src \"/images/source-0.png\" has \"fill\" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height."}
+{"timestamp":"00:25:05.803","source":"Server","level":"LOG","message":"✓ Compiled in 24ms"}
+{"timestamp":"00:26:40.420","source":"Server","level":"LOG","message":"✓ Compiled in 11ms"}
+{"timestamp":"00:29:36.669","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:31:57.671","source":"Server","level":"LOG","message":"✓ Compiled in 49ms"}
+{"timestamp":"00:32:25.458","source":"Server","level":"LOG","message":"✓ Compiled in 16ms"}
+{"timestamp":"00:32:46.743","source":"Server","level":"LOG","message":"✓ Compiled in 10ms"}
+{"timestamp":"00:34:49.896","source":"Server","level":"LOG","message":"✓ Compiled in 4ms"}
+{"timestamp":"00:38:03.037","source":"Server","level":"LOG","message":"✓ Compiled in 16ms"}
+{"timestamp":"00:38:38.386","source":"Server","level":"LOG","message":"✓ Compiled in 6ms"}
+{"timestamp":"00:39:22.956","source":"Server","level":"LOG","message":"✓ Compiled in 4ms"}
+{"timestamp":"00:39:33.926","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:39:36.502","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:40:51.309","source":"Server","level":"LOG","message":"✓ Compiled in 7ms"}
+{"timestamp":"00:44:22.100","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:47:31.154","source":"Server","level":"LOG","message":"✓ Compiled in 24ms"}
+{"timestamp":"00:48:07.653","source":"Server","level":"LOG","message":"✓ Compiled in 14ms"}
+{"timestamp":"00:48:38.556","source":"Server","level":"LOG","message":"✓ Compiled in 25ms"}
+{"timestamp":"00:49:08.707","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:49:17.909","source":"Server","level":"LOG","message":"✓ Compiled in 36ms"}
+{"timestamp":"00:49:37.642","source":"Server","level":"LOG","message":"✓ Compiled in 5ms"}
+{"timestamp":"00:51:30.346","source":"Server","level":"LOG","message":"✓ Compiled in 6ms"}
+{"timestamp":"00:52:36.159","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:53:00.910","source":"Server","level":"LOG","message":"✓ Compiled in 9ms"}
+{"timestamp":"00:53:25.358","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:54:39.534","source":"Server","level":"LOG","message":"✓ Compiled in 4ms"}
+{"timestamp":"00:55:04.467","source":"Server","level":"LOG","message":"✓ Compiled in 7ms"}
+{"timestamp":"00:56:18.683","source":"Server","level":"LOG","message":"✓ Compiled in 14ms"}

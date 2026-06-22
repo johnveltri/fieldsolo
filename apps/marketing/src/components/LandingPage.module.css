@@ -15,6 +15,93 @@
 @media (prefers-reduced-motion: reduce) { .page *, .page *::before, .page *::after { scroll-behavior:auto!important; animation-duration:.01ms!important; transition-duration:.01ms!important; } }
 
 .stepImageFrame { position:relative; width:260px; height:520px; justify-self:center; overflow:hidden; border:8px solid var(--ink); border-radius:38px; background:var(--ink); box-shadow:12px 15px 30px rgba(43,52,65,.22); }
-.stepImageFrame img { object-fit:cover; }
+.stepImageFrame img { width:100%; height:100%; object-fit:cover; }
 .problemImage { position:relative; aspect-ratio:4 / 3; overflow:hidden; max-width:530px; margin:auto; border:4px solid #fff; border-radius:20px; box-shadow:12px 15px 0 rgba(196,75,43,.12), 0 14px 28px rgba(43,52,65,.16); transform:rotate(-1.5deg); }
-.problemImage img { object-fit:cover; }
+.problemImage img { width:100%; height:100%; object-fit:cover; }
+
+/* Figma desktop header geometry: 64px bar, 32px gutters, 24px wordmark. */
+.navShell { height:64px; width:min(1280px, calc(100% - 4rem)); }
+.wordmark { font:700 1.5rem/2rem var(--font-serif,Georgia,serif); letter-spacing:-.6px; }
+.desktopNav { gap:2rem; font-size:.875rem; }
+
+/* Desktop spacing matched to the 1129px-wide Figma frame. */
+.hero { padding-bottom:5rem; }
+.hero > .blueprint { opacity:.035; }
+.valueCard { position:relative; isolation:isolate; overflow:hidden; }
+.valueCard::after { content:""; position:absolute; z-index:-1; top:-86px; right:-86px; width:174px; height:174px; border-radius:50%; background:var(--paper); }
+.promise,.finalCta { padding-block:5.5rem; }
+.how,.pricing { padding-block:5.5rem; }
+.steps { gap:4rem; }
+
+/* ZIP prototype hero: exact desktop rhythm and motion surfaces. */
+.hero {
+  max-width:80rem;
+  margin-inline:auto;
+  padding:6rem 1rem;
+}
+.hero > .blueprint { opacity:0; animation:blueprintReveal 2s ease-out forwards; }
+.heroGlow { position:absolute; width:24rem; height:24rem; border-radius:999px; filter:blur(64px); pointer-events:none; }
+.heroGlowRust { top:5rem; left:-5rem; background:rgba(196,75,43,.03); }
+.heroGlowInk { right:-5rem; bottom:5rem; background:rgba(43,52,65,.03); }
+.heroInner { max-width:56rem; margin-bottom:5rem; }
+.hero h1 { font-size:clamp(3rem,6vw,4.5rem); line-height:1.1; letter-spacing:-.025em; }
+.kicker { margin-block:1.5rem; font-size:1.125rem; }
+.heroLead { font-size:clamp(1.25rem,2vw,1.5rem); line-height:1.5; }
+.tradeTicker { max-width:56rem; margin:1.5rem auto 2.5rem; overflow:hidden; mask-image:linear-gradient(to right,transparent,black 10%,black 90%,transparent); font-size:1.125rem; line-height:1.75; white-space:nowrap; }
+.tradeTicker > div { display:flex; width:max-content; }
+.tradeTicker span { padding-right:.5rem; }
+.heroActions { gap:1.25rem; }
+.primaryButton,.secondaryButton { padding:1rem 2.5rem; font-size:1.125rem; }
+.valueGrid { width:min(64rem,100%); gap:2rem; margin-top:4rem; }
+.valueCard { min-height:15.5rem; box-sizing:border-box; padding:2rem; border-radius:1rem; }
+.valueCard::after { width:8rem; height:8rem; top:-2rem; right:-2rem; border-radius:0 0 0 100%; opacity:.5; }
+.valueIcon { display:flex; width:3.5rem; height:3.5rem; align-items:center; justify-content:center; margin-bottom:1.5rem; border-radius:1rem; background:var(--paper); color:var(--rust); }
+.valueIcon svg { margin:0; width:1.75rem; height:1.75rem; }
+.valueCard h2 { font-size:1.25rem; margin-bottom:.75rem; }
+.valueCard p { font-size:1rem; line-height:1.625; }
+@keyframes blueprintReveal { to { opacity:.1; } }
+@media (min-width:640px) { .hero { padding-inline:1.5rem; } }
+@media (min-width:1024px) { .hero { padding-inline:2rem; } }
+@media (max-width:760px) { .hero { padding-block:4.5rem; } .heroInner { margin-bottom:4rem; } .valueCard { min-height:0; } .tradeTicker { font-size:1rem; } .primaryButton,.secondaryButton { padding-inline:2rem; font-size:1rem; } }
+
+/* ZIP prototype problem section: 1280px canvas, 96px section rhythm. */
+.problem { gap:4rem; padding:6rem max(1rem, calc((100% - 1120px) / 2)); }
+.problem h2 { margin-bottom:2rem; font-size:3rem; line-height:1.25; letter-spacing:-.025em; }
+.page .sectionLead { margin:0 0 1rem; font-size:1.25rem; }
+.problem li { margin:.75rem 0; font-size:1rem; }
+.problemImage { max-width:32rem; }
+@media (max-width:1023px) { .problem { grid-template-columns:1fr; gap:4rem; padding-inline:1rem; } .problem h2 { font-size:2.25rem; } }
+@media (max-width:760px) { .problem { padding:4.5rem 1rem; } .problem h2 { font-size:clamp(2.4rem,10vw,3rem); } }
+
+/* Higher specificity is intentional: restore the ZIP hero's utility margins after the global reset. */
+.page .hero h1 { max-width:56rem; }
+.page .hero .badge { margin:0 0 1.5rem; }
+.page .hero .kicker { max-width:42rem; margin:1.5rem auto; }
+.page .hero .heroLead { max-width:56rem; margin:0 auto; }
+.page .hero .tradeTicker { margin:1.5rem auto 2.5rem; }
+.page .hero .primaryButton,.page .hero .secondaryButton { line-height:1.75rem; }
+.page .hero { padding-top:6.25rem; padding-bottom:5.875rem; }
+.page .heroInner { width:min(56rem,100%); }
+@media (min-width:761px) { .valueCard { min-height:0; height:18.125rem; } }
+
+/* Motion-only layers used by the ZIP-equivalent problem composition. */
+.problemImage { overflow:visible; border:0; box-shadow:none; transform:none; background:transparent; }
+.problemAccentRust,.problemAccentPaper { position:absolute; inset:-1rem; border-radius:1.5rem; pointer-events:none; }
+.problemAccentRust { background:rgba(196,75,43,.1); }
+.problemAccentPaper { inset:-.5rem; border:1px solid rgba(43,52,65,.1); background:var(--paper); }
+.problemPhoto { position:relative; z-index:1; width:100%; height:100%; overflow:hidden; border:4px solid #fff; border-radius:1rem; box-shadow:0 25px 50px -12px rgba(43,52,65,.25); }
+.problemPhoto img { width:100%; height:100%; object-fit:cover; }
+.promise > .blueprint,.how > .blueprint,.pricing > .blueprint { opacity:0; animation:blueprintReveal 2s ease-out forwards; }
+.finalCta > .pegboard { opacity:0; animation:pegboardReveal 1.5s ease-out forwards; }
+.waitlist > .pegboard { opacity:0; animation:waitlistPegboardReveal 2s ease-out forwards; }
+@keyframes pegboardReveal { to { opacity:.15; } }
+@keyframes waitlistPegboardReveal { to { opacity:.05; } }
+
+/* ZIP pricing header: centered 672px copy block with 112px section rhythm. */
+.pricing { padding-block:7rem; }
+.page .pricingLead { max-width:42rem; margin:1.5rem auto 4rem; text-align:center; }
+
+/* Restore the uploaded prototype's section rhythm after the earlier Figma overrides. */
+.promise,.how { padding-block:6rem; }
+.finalCta { padding-block:7rem; }
+.waitlist { padding-block:6rem; }
