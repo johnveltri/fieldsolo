@@ -1,0 +1,3 @@
+module.exports=[82851,a=>{"use strict";var b=a.i(7997);let c={metadataBase:new URL(process.env.NEXT_PUBLIC_SITE_URL??"https://fieldsolo.com"),title:{default:"FieldSolo | Built for the work after the work",template:"%s | FieldSolo"},description:"FieldSolo helps skilled trade professionals keep jobs, notes, materials, and the next move in one place.",applicationName:"FieldSolo",robots:{index:!1,follow:!1,googleBot:{index:!1,follow:!1,noimageindex:!0}}};a.s(["default",0,function({children:a}){return(0,b.jsx)("html",{lang:"en",children:(0,b.jsx)("body",{children:a})})},"metadata",0,c,"viewport",0,{colorScheme:"light",themeColor:"#f4eddf"}])},68815,a=>{a.n(a.i(82851))}];
+
+//# sourceMappingURL=apps_marketing_src_app_layout_tsx_0z5pgte._.js.map
