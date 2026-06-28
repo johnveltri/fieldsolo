@@ -597,6 +597,7 @@
 }
 
 .LandingPage-module__3Te2Lq__faqItem {
+  background: #fff;
   border: 1px solid #2b344121;
   border-radius: 14px;
   overflow: hidden;
@@ -612,7 +613,7 @@
   text-align: left;
   font: 700 1rem/1.35 var(--font-sans, monospace);
   cursor: pointer;
-  background: #fff;
+  background: none;
   border: 0;
   justify-content: space-between;
   padding: 1.3rem 1.5rem;
@@ -1100,6 +1101,37 @@
   font-size: .875rem;
 }
 
+.LandingPage-module__3Te2Lq__desktopNav > a {
+  transition: color .2s;
+  position: relative;
+}
+
+.LandingPage-module__3Te2Lq__desktopNav > a:after {
+  content: "";
+  background: var(--rust);
+  transform-origin: center;
+  border-radius: 999px;
+  height: 2px;
+  transition: transform .2s;
+  position: absolute;
+  bottom: -.45rem;
+  left: 0;
+  right: 0;
+  transform: scaleX(0);
+}
+
+.LandingPage-module__3Te2Lq__desktopNav > a.LandingPage-module__3Te2Lq__navLinkActive {
+  color: var(--rust);
+}
+
+.LandingPage-module__3Te2Lq__desktopNav > a.LandingPage-module__3Te2Lq__navLinkActive:after {
+  transform: scaleX(1);
+}
+
+.LandingPage-module__3Te2Lq__desktopNav > a:last-child:after, .LandingPage-module__3Te2Lq__mobileStickyCta {
+  display: none;
+}
+
 .LandingPage-module__3Te2Lq__hero {
   padding-bottom: 5rem;
 }
@@ -1486,6 +1518,36 @@
 
 .LandingPage-module__3Te2Lq__waitlist {
   padding-block: 6rem;
+}
+
+@media (max-width: 760px) {
+  .LandingPage-module__3Te2Lq__mobileStickyCta {
+    z-index: 19;
+    right: 1rem;
+    bottom: max(.75rem, env(safe-area-inset-bottom));
+    pointer-events: none;
+    justify-content: center;
+    display: flex;
+    position: fixed;
+    left: 1rem;
+  }
+
+  .LandingPage-module__3Te2Lq__mobileStickyCta > a {
+    background: var(--rust);
+    pointer-events: auto;
+    border: 1px solid #ffffff40;
+    border-radius: 999px;
+    justify-content: center;
+    align-items: center;
+    gap: .45rem;
+    width: min(100%, 26rem);
+    padding: .8rem 1rem;
+    font-size: .875rem;
+    font-weight: 700;
+    display: flex;
+    box-shadow: 0 10px 24px #2b344138;
+    color: #fff !important;
+  }
 }
 
 /*# sourceMappingURL=apps_marketing_src_components_LandingPage_module_0zduiwu.css.map*/

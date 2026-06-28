@@ -12,6 +12,8 @@ import styles from "./LandingPage.module.css";
 const navItems = [
   ["How it works", "how-it-works"], ["Why FieldSolo", "features"], ["Pricing", "pricing"], ["FAQ", "faq"],
 ] as const;
+type NavItemId = (typeof navItems)[number][1];
+const navItemIds = new Set<string>(navItems.map(([, id]) => id));
 
 const reveal = {
   hidden: { opacity: 0, y: 40 },
@@ -31,8 +33,8 @@ function Blueprint({ variant = "grid" }: { variant?: "grid" | "dots" }) {
   return <div aria-hidden className={variant === "grid" ? styles.blueprint : styles.pegboard} />;
 }
 
-function NavLink({ id, children, onNavigate }: { id: string; children: ReactNode; onNavigate?: () => void }) {
-  return <a href={`#${id}`} onClick={(event) => { event.preventDefault(); onNavigate?.(); scrollToSection(id); }}>{children}</a>;
+function NavLink({ id, children, onNavigate, active = false }: { id: string; children: ReactNode; onNavigate?: () => void; active?: boolean }) {
+  return <a className={active ? styles.navLinkActive : undefined} aria-current={active ? "page" : undefined} href={`#${id}`} onClick={(event) => { event.preventDefault(); onNavigate?.(); scrollToSection(id); }}>{children}</a>;
 }
 
 function MultiSelect({ label, name, options, value, onChange }: {
@@ -73,6 +75,9 @@ function ProductCard({ step, title, children, image, imageAlt }: { step: number;
 
 export function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<NavItemId | null>(null);
+  const [pastHero, setPastHero] = useState(false);
+  const [waitlistVisible, setWaitlistVisible] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [trades, setTrades] = useState<string[]>([]);
   const [trackingTools, setTrackingTools] = useState<string[]>([]);
@@ -82,16 +87,59 @@ export function LandingPage() {
   const initial = reducedMotion ? false : "hidden";
   const submit = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); if (!trades.length || !trackingTools.length || !jobSources.length) return; setSubmitted(true); };
 
+  useEffect(() => {
+    const sections = Array.from(document.querySelectorAll<HTMLElement>("main#top > section"));
+    const hero = sections[0];
+    const waitlist = document.getElementById("waitlist");
+    if (!hero || !waitlist) return;
+    let frame = 0;
+
+    const updateScrollState = () => {
+      const probe = 64 + window.innerHeight * 0.2;
+      const current = sections.find((section) => {
+        const rect = section.getBoundingClientRect();
+        return rect.top <= probe && rect.bottom > probe;
+      });
+      setActiveSection(current?.id && navItemIds.has(current.id) ? current.id as NavItemId : null);
+      const heroRect = hero.getBoundingClientRect();
+      const waitlistRect = waitlist.getBoundingClientRect();
+      setPastHero(heroRect.bottom <= 64);
+      setWaitlistVisible(waitlistRect.top < window.innerHeight && waitlistRect.bottom > 0);
+    };
+
+    const scheduleUpdate = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(updateScrollState);
+    };
+
+    const sectionObserver = new IntersectionObserver(scheduleUpdate, { rootMargin: "-64px 0px -70% 0px", threshold: 0 });
+    sections.forEach((section) => sectionObserver.observe(section));
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    window.addEventListener("hashchange", scheduleUpdate);
+    scheduleUpdate();
+
+    return () => {
+      sectionObserver.disconnect();
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener("hashchange", scheduleUpdate);
+    };
+  }, []);
+
   return <div className={styles.page}>
     <header className={styles.header}>
       <div className={styles.navShell}><a className={styles.wordmark} href="#top" onClick={(e) => { e.preventDefault(); setMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>FieldSolo <em>Beta</em></a>
-        <nav className={styles.desktopNav} aria-label="Main navigation">{navItems.map(([label, id]) => <NavLink key={id} id={id}>{label}</NavLink>)}<NavLink id="waitlist"><span className={styles.navCta}>Join waitlist</span></NavLink></nav>
+        <nav className={styles.desktopNav} aria-label="Main navigation">{navItems.map(([label, id]) => <NavLink key={id} id={id} active={activeSection === id}>{label}</NavLink>)}<NavLink id="waitlist"><span className={styles.navCta}>Join waitlist</span></NavLink></nav>
         <button className={styles.menuButton} aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
       </div>
       <AnimatePresence>{menuOpen && <motion.nav className={styles.mobileNav} aria-label="Mobile navigation" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}>
         {navItems.map(([label, id]) => <NavLink key={id} id={id} onNavigate={() => setMenuOpen(false)}>{label}</NavLink>)}<NavLink id="waitlist" onNavigate={() => setMenuOpen(false)}><span className={styles.mobileCta}>Join waitlist</span></NavLink>
       </motion.nav>}</AnimatePresence>
     </header>
+
+    <AnimatePresence>{pastHero && !waitlistVisible && <motion.div className={styles.mobileStickyCta} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 16 }} transition={{ duration: reducedMotion ? 0 : .2 }}><NavLink id="waitlist"><span>Join waitlist</span><ArrowRight size={17} aria-hidden /></NavLink></motion.div>}</AnimatePresence>
 
     <main id="top">
       <section className={styles.hero}><Blueprint />
@@ -134,7 +182,7 @@ export function LandingPage() {
 
 function FaqItem({ question, answer, open }: { question: string; answer: string; open?: boolean }) {
   const [isOpen, setOpen] = useState(open); const id = useId();
-  return <motion.article variants={reveal} whileHover={{ scale: 1.01, backgroundColor: "rgba(250, 246, 240, 0.8)" }} className={styles.faqItem}><button aria-expanded={isOpen} aria-controls={id} onClick={() => setOpen(!isOpen)}><span>{question}</span><span className={styles.faqMark}>{isOpen ? "−" : "+"}</span></button><div id={id} hidden={!isOpen}><p>{answer}</p></div></motion.article>;
+  return <motion.article variants={reveal} whileHover={{ scale: 1.01, backgroundColor: "rgba(250, 246, 240, 0.8)", borderColor: "rgba(196, 75, 43, 0.3)", boxShadow: "0 4px 6px -1px rgba(43, 52, 65, 0.1), 0 2px 4px -2px rgba(43, 52, 65, 0.1)" }} className={styles.faqItem}><button aria-expanded={isOpen} aria-controls={id} onClick={() => setOpen(!isOpen)}><span>{question}</span><span className={styles.faqMark}>{isOpen ? "−" : "+"}</span></button><div id={id} hidden={!isOpen}><p>{answer}</p></div></motion.article>;
 }
 
 function Waitlist({ submitted, setSubmitted, trades, setTrades, trackingTools, setTrackingTools, jobSources, setJobSources, onSubmit }: {
